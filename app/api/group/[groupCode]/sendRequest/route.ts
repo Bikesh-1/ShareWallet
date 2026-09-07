@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { createNotification } from "@/lib/notification/createNotification";
 
 export async function POST(req: Request, { params }: { params: Promise<{ groupCode: string }> }) {
     try {
@@ -73,6 +74,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
                 month
             }
         })
+
+
 
         const pendingCount = await prisma.sentrequest.count({
             where: {
