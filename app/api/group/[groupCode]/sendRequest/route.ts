@@ -2,116 +2,149 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { createNotification } from "@/lib/notification/createNotification";
 
-export async function POST(req: Request, { params }: { params: Promise<{ groupCode: string }> }) {
+
+export async function POST(req: Request, { params, }: { params: Promise<{ groupCode: string; }>; }
+) {
     try {
         const { groupCode } = await params;
-        const { reason, amount, month } = await req.json();
         const session = await getServerSession(authOptions);
-        if (!session) {
+
+        if (!session?.user?.email) {
             return NextResponse.json(
-                { error: "Unauthorized. Please sign into continue" },
+                { error: "Unauthorized" },
                 { status: 401 }
-            )
+            );
         }
+
+        const body = await req.json();
+        const reason = body?.reason?.trim();
+        const amount = Number(body?.amount);
+        const month = body?.month || null;
+
+        if (!reason) {
+            return NextResponse.json({ error: "Reason is required", }, { status: 400 });
+        }
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            return NextResponse.json({ error: "Amount must be greater than 0", }, { status: 400 });
+        }
+
         const user = await prisma.user.findUnique({
             where: {
-                email: session.user.email
-            }
-        })
+                email: session.user.email,
+            },
+        });
+
         if (!user) {
-            return NextResponse.json(
-                { error: "User account not found." },
-                { status: 404 }
-            )
+            return NextResponse.json({ error: "User not found", }, { status: 404 });
         }
+
         const group = await prisma.group.findFirst({
             where: {
                 groupCode,
                 OR: [
                     {
-                        createdId: user.id
+                        createdId: user.id,
                     },
                     {
                         groupmember: {
                             some: {
-                                userId: user.id
-                            }
-                        }
-                    }
-                ]
-            }
-        })
+                                userId: user.id,
+                            },
+                        },
+                    },
+                ],
+            },
+        });
 
         if (!group) {
-            return NextResponse.json(
-                { error: "Group not found or you are not a member of this group." },
-                { status: 404 }
-            )
-        }
-        const existingRequest = await prisma.sentrequest.findFirst({
-            where: {
-                userId: user.id,
-                groupId: group.id,
-                month,
-            }
-        })
-
-        if (existingRequest) {
-            return NextResponse.json(
-                { error: "You have already sent request , wait for your friend response. " },
-                { status: 409 }
-            )
+            return NextResponse.json({ error: "Group not found or you are not a member", }, { status: 404 });
         }
 
-        await prisma.sentrequest.create({
-            data: {
-                userId: user.id,
-                groupId: group.id,
-                reason,
-                amount,
-                month
-            }
-        })
-
-
-
-        const pendingCount = await prisma.sentrequest.count({
+        const members = await prisma.user.findMany({
             where: {
-                userId: user.id,
-                status: "PENDING"
-            }
-        })
-        const acceptedCount = await prisma.sentrequest.count({
-            where: {
-                userId: user.id,
-                status: "ACCEPTED"
-            }
-        });
-        const rejectedCount = await prisma.sentrequest.count({
-            where: {
-                userId: user.id,
-                status: "REJECTED"
-            }
-        });
-        return NextResponse.json(
-            {
-                message: "Your request is sucessfull.",
-                counts: {
-                    pending: pendingCount,
-                    accepted: acceptedCount,
-                    rejected: rejectedCount
-                }
+                OR: [
+                    {
+                        id: group.createdId,
+                    },
+                    {
+                        groupmember: {
+                            some: {
+                                groupId:
+                                    group.id,
+                            },
+                        },
+                    },
+                ],
             },
-            { status: 201 }
-        )
+            select: {
+                id: true,
+            },
+        });
 
-    } catch {
+        if (members.length === 0) {
+            return NextResponse.json({ error: "No group members found", }, { status: 400 });
+        }
+
+        const result = await prisma.$transaction(
+            async (tx) => {
+                const request = await tx.sentrequest.create({
+                    data: {
+                        userId: user.id,
+                        groupId: group.id,
+                        reason,
+                        amount: String(amount),
+                        month,
+                        status: "PENDING",
+                    },
+                });
+
+                const baseAmount = Math.floor(amount / members.length);
+                const remainder = amount % members.length;
+                const approvalData = members.map(
+                    (member) => ({
+                        requestId: request.id,
+                        userId: member.id,
+                        status: "PENDING" as const,
+                    })
+                );
+
+                await tx.requestApproval.createMany({
+                    data: approvalData,
+                    skipDuplicates: true,
+                });
+
+                const contributionData = members.map((member, index) => ({
+                    requestId: request.id,
+                    userId: member.id,
+                    groupId: group.id,
+                    amount: baseAmount + (index < remainder ? 1 : 0),
+                    month,
+                    status: "PENDING" as const,
+                })
+                );
+
+                await tx.contribution.createMany({
+                    data: contributionData,
+                });
+                return request;
+            }
+        );
+
+        return NextResponse.json({
+            success: true,
+            message: "Money request created successfully",
+            request: result,
+        },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("CREATE REQUEST ERROR:", error);
         return NextResponse.json(
-            { error: "An unexpected error occurred." },
+            { error: error instanceof Error ? error.message : "Failed to create money request", },
             { status: 500 }
-        )
+        );
     }
 }
 
