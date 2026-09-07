@@ -22,6 +22,7 @@ model User {
   approvals               RequestApproval[]
   sentrequest             Sentrequest[]
   message                 Message[]
+  notifications Notification[]
   payoutAccount           PayoutAccount?
   sentTransactions        Transaction[]       @relation("TransactionSender")
   receivedTransactions    Transaction[]       @relation("TransactionReceiver")
@@ -72,6 +73,7 @@ model Group {
   description         String
   monthlyContribution Int
   dueDate             String
+  notifications Notification[]
   groupmember         Groupmember[]
   contribution        Contribution[]
   transactions        Transaction[]
@@ -118,6 +120,7 @@ model Sentrequest {
   amount        String
   month         String
   contributions Contribution[]
+  notifications Notification[]
   approvals     RequestApproval[]
   transactions Transaction[]
   status        RequestStatus     @default(PENDING)
@@ -166,6 +169,8 @@ model Transaction {
   provider  String?
   providerReference String?
 
+  payoutKey String? @unique
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -181,9 +186,7 @@ model Transaction {
 }
 model PayoutAccount {
   id                String       @id @default(cuid())
-
   userId            String       @unique
-
   type              PayoutType
   upiId             String?
   accountHolderName String?
@@ -195,6 +198,39 @@ model PayoutAccount {
   updatedAt         DateTime     @updatedAt
   user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean  @default(false)
+  requestId String?
+  groupId   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request Sentrequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
+  group Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([requestId])
+  @@index([groupId])
+}
+
+enum NotificationType {
+  MONEY_REQUEST
+  REQUEST_APPROVED
+  REQUEST_REJECTED
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  PAYOUT_INITIATED
+  PAYOUT_SUCCESS
+  PAYOUT_FAILED
+  REFUND_SUCCESS
+}
+
 
 enum PayoutType {
   UPI

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
 
+
 export default function Home() {
   const router = useRouter();
 
@@ -39,7 +40,9 @@ export default function Home() {
 
         <h1 className="max-w-5xl text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] font-bold tracking-tight">
           The Future of <br />
-          Group Savings
+          Group <span className="relative text-[#4F47EA] cursor-pointer after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:rounded-full after:bg-[#4F47EA] after:transition-all after:duration-300 after:ease-out hover:after:w-full">
+            Savings
+          </span>
           <span className="text-[#4F47EA]">.</span>
         </h1>
 
@@ -54,31 +57,11 @@ export default function Home() {
             Get Started
           </button>
 
-          <button
-            className="
-              w-full
-              sm:w-auto
-              text-white
-              bg-black
-              px-5
-              py-2.5
-              rounded-lg
-              text-[15px]
-              font-medium
-              cursor-pointer
-              flex
-              items-center
-              justify-center
-              gap-2
-              transition-all
-              duration-200
-              ease-out
-              hover:scale-105
-              active:scale-95
-            "
-          >
+          <button className="w-full sm:w-auto text-white bg-black px-5 py-2.5 rounded-lg text-[15px] font-medium cursor-pointer flex items-center justify-center gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95">
             Learn More
           </button>
+          <h1 className="caveat text-left text-gray-400 absolute top-1/2 left-20 text-2xl -rotate-12">Smalls <br /> steps <br /> Big Futures</h1>
+          <h1 className="caveat text-left text-gray-400 absolute top-20 right-20 text-2xl -rotate-12"> Better <br /> together</h1>
         </div>
       </div>
     </div>

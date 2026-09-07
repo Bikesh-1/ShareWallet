@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import Navbar from "@/components/navbar";
 
-export default function VerifyAccountPage() {
+function VerifyAccountContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const token = searchParams.get("token");
 
-    const [status, setStatus] = useState<"loading" | "success" | "error" >("loading");
+    const [status, setStatus] = useState<
+        "loading" | "success" | "error"
+    >("loading");
 
     const [message, setMessage] = useState(
         "Verifying your email..."
@@ -47,7 +49,10 @@ export default function VerifyAccountPage() {
                     }, 2500);
                 } else {
                     setStatus("error");
-                    setMessage(data.message);
+                    setMessage(
+                        data.message ||
+                        "Verification failed."
+                    );
                 }
             } catch {
                 setStatus("error");
@@ -60,13 +65,23 @@ export default function VerifyAccountPage() {
 
     return (
         <div className="min-h-screen w-full relative bg-white text-black flex items-center justify-center">
-            <div className="absolute inset-0 z-0"
+            
+            <div
+                className="absolute inset-0 z-0"
                 style={{
-                    backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
+                    backgroundImage:
+                        `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),
+                         linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
                     backgroundSize: "20px 20px",
                     backgroundPosition: "0 0, 0 0",
-                    maskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)`,
-                    WebkitMaskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)`,
+                    maskImage:
+                        `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),
+                         repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),
+                         radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)`,
+                    WebkitMaskImage:
+                        `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),
+                         repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),
+                         radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)`,
                     maskComposite: "intersect",
                     WebkitMaskComposite: "source-in",
                 }}
@@ -74,7 +89,8 @@ export default function VerifyAccountPage() {
 
             <div>
                 <Navbar />
-                <div className="w-105 rounded-lg border  text-white bg-black p-8 relative z-20">
+
+                <div className="w-105 rounded-lg border text-white bg-black p-8 relative z-20">
 
                     <div className="flex justify-center">
                         {status === "loading" && (
@@ -113,7 +129,9 @@ export default function VerifyAccountPage() {
 
                     {status === "success" && (
                         <button
-                            onClick={() => router.push("/signin")}
+                            onClick={() =>
+                                router.push("/signin")
+                            }
                             className="mt-8 w-full text-black border border-[#dadada] bg-white px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
                         >
                             Continue to Login
@@ -123,14 +141,20 @@ export default function VerifyAccountPage() {
                     {status === "error" && (
                         <>
                             <button
-                                onClick={() => router.push("/verify-email")}
+                                onClick={() =>
+                                    router.push(
+                                        "/verify-email"
+                                    )
+                                }
                                 className="mt-8 w-full text-black border border-[#dadada] bg-white px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
                             >
                                 Resend Verification Email
                             </button>
 
                             <button
-                                onClick={() => router.push("/signup")}
+                                onClick={() =>
+                                    router.push("/signup")
+                                }
                                 className="mt-3 w-full rounded-lg border border-white px-3 py-2 text-[15px] font-medium cursor-pointer"
                             >
                                 Back to Signup
@@ -140,6 +164,22 @@ export default function VerifyAccountPage() {
                 </div>
             </div>
         </div>
+    );
+}
 
+export default function VerifyAccountPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="min-h-screen flex items-center justify-center bg-white">
+                    <Loader2
+                        className="animate-spin text-black"
+                        size={45}
+                    />
+                </div>
+            }
+        >
+            <VerifyAccountContent />
+        </Suspense>
     );
 }

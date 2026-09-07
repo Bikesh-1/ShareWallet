@@ -86,7 +86,7 @@ export async function POST(req: Request) {
 
 }
 
-export async function GET(res: Response) {
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
         if (!session) {

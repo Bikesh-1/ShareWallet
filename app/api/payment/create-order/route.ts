@@ -69,6 +69,18 @@ export async function POST(req: Request) {
 
         const orderId = `SW_CONTRIBUTION_${contribution.id}`;
 
+        const transaction = await prisma.transaction.create({
+            data: {
+                groupId: contribution.groupId,
+                senderId: contribution.userId,
+                amount: contribution.amount,
+                type: "CONTRIBUTION",
+                status: "PENDING",
+                requestId: contribution.requestId,
+                provider: "CASHFREE",
+            },
+        });
+
         const order = await createCashfreeOrder({
             orderId,
             amount: contribution.amount,
@@ -80,6 +92,7 @@ export async function POST(req: Request) {
             {
                 orderId,
                 paymentSessionId: order.payment_session_id,
+                transaction
             },
             { status: 200 }
         );

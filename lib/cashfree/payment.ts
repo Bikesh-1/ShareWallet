@@ -32,8 +32,8 @@ export async function createCashfreeOrder({
         },
 
         order_meta: {
-          return_url:
-            `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?order_id={order_id}`,
+          return_url:`${process.env.NEXT_PUBLIC_APP_URL}/payment/success?order_id={order_id}`,
+          notify_url:`${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/cashfree`,
         },
       }),
     }
