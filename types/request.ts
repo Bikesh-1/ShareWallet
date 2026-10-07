@@ -25,6 +25,7 @@ export type SendRequestPayload = {
   month: string;
 };
 
+
 export type SendRequestResponse = {
   message: string;
   counts: {
