@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextResponse, userAgent } from "next/server";
 
 export async function GET(
     req: Request,
@@ -16,22 +16,48 @@ export async function GET(
                 { status: 401 }
             )
         }
-        const groupDetails = await prisma.group.findUnique({
-            where: {
+
+        const user = await prisma.user.findUnique({
+            where:{email:session.user.email}
+        })
+
+        if(!user){
+            return NextResponse.json(
+                {error:"User not found"},
+                {status:404}
+            )
+        }
+
+        const groupDetails = await prisma.group.findFirst({
+            where:{
                 groupCode,
+                OR:[
+                    {createdId: user.id},
+                    {
+                        groupmember:{
+                            some:{userId: user.id}
+                        }
+                    }
+                ]
             },
-            include: {
-                groupmember: {
-                    include: {
-                        user: {
-                            include: {
+            include:{
+                groupmember:{
+                    include:{
+                        user:{
+                            include:{
                                 userdetails: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        if (!groupDetails) {
+            return NextResponse.json(
+                { error: "Group not found or access denied" },
+                { status: 404 }
+            );
+        }
         return NextResponse.json(
             { groupDetails, message: "Group details retrieved successfully.", },
             { status: 200 }

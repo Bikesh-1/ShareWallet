@@ -1,7 +1,9 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { error } from "next/dist/build/output/log";
 import { NextResponse } from "next/server";
+import { use } from "react";
 
 export async function POST(req: Request, { params }: { params: Promise<{ groupCode: string }> }) {
     try {
@@ -66,10 +68,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
             data: {
                 userId: user.id,
                 groupId: group.id,
-                // useremail: user.email,
-                // groupCode: group.groupCode,
-                amount: amount,
-                month: month,
+                amount: group.monthlyContribution,
+                month,
+                status:"PENDING",
             }
         })
         await prisma.group.update({
@@ -86,7 +87,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
             { message: "Contribution submitted successfully." },
             { status: 201 }
         )
-    } catch{
+    } catch {
         return NextResponse.json(
             { error: "An unexpected error occurred." },
             { status: 500 }
@@ -104,6 +105,40 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
                 { status: 401 }
             )
         }
+
+        const user = await prisma.user.findUnique({
+            where:{email:session.user.email}
+        })
+
+        if(!user){
+            return NextResponse.json(
+                {error:"User not found"},
+                {status:404}
+            )
+        }
+
+        const group = await prisma.group.findFirst({
+            where:{
+                groupCode,
+                OR:[
+                    {createdId: user.id},
+                    {
+                        groupmember:{
+                            some:{userId: user.id}
+                        }
+                    }
+                ]
+            },
+            select:{id: true},
+        })
+
+        if(!group){
+            return NextResponse.json(
+                {error:"Group not found or access denied"},
+                {status:404}
+            );
+        }
+
         const contributionDetails = await prisma.contribution.findMany({
             where: {
                 group: {
@@ -122,7 +157,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
             { contributionDetails, message: "Contribution details retrieved successfully." },
             { status: 200 }
         )
-    } catch{
+    } catch {
         return NextResponse.json(
             { error: "An unexpected error occurred." },
             { status: 500 }

@@ -22,14 +22,12 @@ function VerifyEmailContent() {
         setLoading(true);
 
         try {
-            const res = await fetch("/api/auth/resend", {
+            const res = await fetch("/api/resend", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    email,
-                }),
+                body: JSON.stringify({email}),
             });
 
             const data = await res.json();
