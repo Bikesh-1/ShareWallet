@@ -14,7 +14,13 @@ export default function Creategroup() {
     const [dueDate, setDuedate] = useState("");
     const totalAmount = 0;
     const router = useRouter();
-    
+
+    const currentDate = new Date();
+    const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+        .toISOString().split("T")[0];
+    const currentMonthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+        .toISOString().split("T")[0];
+
     const{data: Group} = useGroupDetails();
 
     const queryClient = useQueryClient();
@@ -52,7 +58,6 @@ export default function Creategroup() {
 
     return (
         <div className="min-h-screen w-full relative bg-white ">
-
             <div className="absolute inset-0 z-0"
                 style={{
                     backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
@@ -64,176 +69,105 @@ export default function Creategroup() {
                     WebkitMaskComposite: "source-in",
                 }}
             />
-                <LoginNavbar />
-
+            <LoginNavbar />
             <div className="w-full h-screen flex items-center justify-center relative z-10">
-                <div className="w-1/3  h-[80vh] flex items-center justify-center ">
+                <div className="w-1/3 h-[80vh] flex items-center justify-center">
                     <div className="bg-white border rounded h-[80vh] p-8 w-full max-w-md">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-[#0a0a0a]">
-                                Before You Create
-                            </h2>
+                            <h2 className="text-2xl font-bold text-[#0a0a0a]">Before You Create</h2>
                             <p className="text-red-700 text-sm mt-1 font-black">
                                 Please review these important guidelines before creating your savings group.
                             </p>
                         </div>
-
                         <div className="space-y-5 text-sm">
-
                             <div className="flex gap-3">
                                 <span className="text-[#4F47EA] font-bold">-</span>
                                 <div>
-                                    <p className="font-semibold text-black">
-                                        Group Deletion
-                                    </p>
-                                    <p className="text-gray-700">
-                                        Groups cannot be deleted directly after creation. If required,
-                                        contact our support team.
-                                    </p>
+                                    <p className="font-semibold text-black">Group Deletion</p>
+                                    <p className="text-gray-700">Groups cannot be deleted directly after creation. If required, contact our support team.</p>
                                 </div>
                             </div>
-
                             <div className="flex gap-3">
                                 <span className="text-[#4F47EA] font-bold">-</span>
                                 <div>
-                                    <p className="font-semibold text-black">
-                                        Invite Members
-                                    </p>
-                                    <p className="text-gray-700">
-                                        After creating the group, you can invite your friends to join.
-                                    </p>
+                                    <p className="font-semibold text-black">Invite Members</p>
+                                    <p className="text-gray-700">After creating the group, you can invite your friends to join.</p>
                                 </div>
                             </div>
-
                             <div className="flex gap-3">
                                 <span className="text-[#4F47EA] font-bold">-</span>
                                 <div>
-                                    <p className="font-semibold text-black">
-                                        Member Management
-                                    </p>
-                                    <p className="text-gray-700">
-                                        Once a member joins the group, they cannot be removed.
-                                    </p>
+                                    <p className="font-semibold text-black">Member Management</p>
+                                    <p className="text-gray-700">Once a member joins the group, they cannot be removed.</p>
                                 </div>
                             </div>
-
                             <div className="flex gap-3">
                                 <span className="text-[#4F47EA] font-bold">-</span>
                                 <div>
-                                    <p className="font-semibold text-black">
-                                        Contributions
-                                    </p>
-                                    <p className="text-gray-700">
-                                        Ensure every member understands the monthly contribution amount
-                                        before joining.
-                                    </p>
+                                    <p className="font-semibold text-black">Contributions</p>
+                                    <p className="text-gray-700">Ensure every member understands the monthly contribution amount before joining.</p>
                                 </div>
                             </div>
-
                         </div>
-
                         <div className="mt-8 border-t border-gray-300 pt-5">
                             <p className="text-xs text-gray-600">
-                                <span className="font-semibold">Tip:</span> Choose a meaningful
-                                group name and set a realistic savings goal for better tracking.
+                                <span className="font-semibold">Tip:</span> Choose a meaningful group name and set a realistic savings goal for better tracking.
                             </p>
                         </div>
-
                     </div>
-
                 </div>
                 <div className="w-2/3 h-[80vh] flex items-center justify-center">
                     <div className="bg-black w-[60vw] h-[80vh] rounded px-10 py-8 flex flex-col justify-center text-white">
                         <div className="mb-3">
-                            <h1 className="text-3xl font-bold">
-                                Create Group
-                            </h1>
-                            <p className="text-sm mt-1">
-                                Build your savings group and invite friends to start contributing together.
-                            </p>
+                            <h1 className="text-3xl font-bold">Create Group</h1>
+                            <p className="text-sm mt-1">Build your savings group and invite friends to start contributing together.</p>
                         </div>
-
-                        <form
-                            className="flex flex-col gap-3"
-                            onSubmit={handlegroupCreation}
-                        >
+                        <form className="flex flex-col gap-3" onSubmit={handlegroupCreation}>
                             <div>
-                                <label className="block text-sm font-semibold mb-2">
-                                    Group Name
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="e.g. Goa Trip Fund"
-                                    value={groupName}
+                                <label className="block text-sm font-semibold mb-2">Group Name</label>
+                                <input type="text" placeholder="e.g. Goa Trip Fund" value={groupName}
                                     onChange={(e) => setGroupName(e.target.value)}
-                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2  outline-none focus:border-[#4F47EA] transition"
-                                />
+                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold mb-2">
-                                    Description
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Describe the purpose of your group"
-                                    value={description}
+                                <label className="block text-sm font-semibold mb-2">Description</label>
+                                <input type="text" placeholder="Describe the purpose of your group" value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2  outline-none focus:border-[#4F47EA] transition"
-                                />
+                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
                             </div>
                             <div className="grid grid-cols-2 gap-5">
                                 <div>
-                                    <label className="block text-sm font-semibold mb-2">
-                                        Monthly Contribution
-                                    </label>
-                                    <input
-                                        type="number"
-                                        placeholder="₹500"
-                                        value={monthlyContribution}
-                                        onChange={(e) =>
-                                            setMonthlyContribution(Number(e.target.value))
-                                        }
-                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition"
-                                    />
+                                    <label className="block text-sm font-semibold mb-2">Monthly Contribution</label>
+                                    <input type="number" placeholder="₹500" value={monthlyContribution}
+                                        onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
                                 </div>
-
                                 <div>
-                                    <label className="block text-sm font-semibold mb-2">
-                                        Group Total Contribution
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value="₹ 0"
-                                        readOnly
-                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none bg-gray-100 text-gray-600 cursor-not-allowed"
-                                    />
+                                    <label className="block text-sm font-semibold mb-2">Group Total Contribution</label>
+                                    <input type="text" value="₹ 0" readOnly
+                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none bg-gray-100 text-gray-600 cursor-not-allowed" />
                                 </div>
                             </div>
                             <div className="w-1/2">
-                                <label className="block text-sm font-semibold mb-2">
-                                    Monthly Due Date
-                                </label>
+                                <label className="block text-sm font-semibold mb-2">Monthly Due Date</label>
                                 <input
                                     type="date"
                                     value={dueDate}
+                                    min={currentMonthStart}
+                                    max={currentMonthEnd}
                                     onChange={(e) => setDuedate(e.target.value)}
-                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2  outline-none focus:border-[#4F47EA] transition"
+                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition"
                                 />
+                                <p className="text-xs text-gray-400 mt-1">Choose a date from the current month only.</p>
                             </div>
-                            <button
-                            disabled={mutation.isPending}
-                                type="submit"
-                                className="mt-3 text-black border bg-white px-3 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
-                            >
+                            <button disabled={mutation.isPending} type="submit"
+                                className="mt-3 text-black border bg-white px-3 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
                                 {mutation.isPending ? "creating..." : "Create Group"}
                             </button>
                         </form>
-
                     </div>
                 </div>
-                
             </div>
         </div>
-
     )
 }
