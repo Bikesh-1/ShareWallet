@@ -139,8 +139,12 @@ export async function GET(
 
         return NextResponse.json(
             {
-                request,
+                request: {
+                    ...request,
+                    currentUserContribution,
+                },
                 currentUserContribution,
+                currentUserId: user.id,
             },
             { status: 200 }
         );
