@@ -8,7 +8,7 @@ import { useContributionDetail, useGroupContribution } from "@/hooks/useGroupCon
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { contribution } from "@/services/contribution.service";
 import { toast } from "sonner";
-import { sendRequest, updateRequestStatus } from "@/services/request.service";
+import { sendRequest, updateRequestApproval } from "@/services/request.service";
 import type { SendRequestPayload } from "@/types/request";
 import { useGroupRequests } from "@/hooks/useGroupRequests";
 import { useSession } from "next-auth/react";
@@ -17,7 +17,7 @@ import { useSession } from "next-auth/react";
 
 
 export default function GroupPage() {
-  const [month, setMonth] = useState("");
+  const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [reason, setReason] = useState("");
   const [amount, setAmount] = useState("");
   const [openContri, setOpenContri] = useState(false);
@@ -58,8 +58,54 @@ export default function GroupPage() {
 
   const mutation = useMutation({
     mutationFn: contribution,
-    onSuccess: (data) => {
-      toast.success(data.message);
+    onSuccess: async (data) => {
+      try {
+        if (!data.contribution?.id) {
+          throw new Error("Contribution record was not returned by the server.");
+        }
+
+        const orderResponse = await fetch("/api/payment/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contributionId: data.contribution.id }),
+        });
+        const orderData = await orderResponse.json();
+        if (!orderResponse.ok) {
+          throw new Error(orderData.error || "Unable to create Cashfree order.");
+        }
+        if (!orderData.paymentSessionId) {
+          throw new Error("Cashfree payment session was not created.");
+        }
+
+        if (!window.Cashfree) {
+          await new Promise<void>((resolve, reject) => {
+            const existing = document.querySelector<HTMLScriptElement>("#cashfree-sdk");
+            const script = existing || document.createElement("script");
+            const onLoad = () => window.Cashfree ? resolve() : reject(new Error("Cashfree SDK failed to initialize."));
+            const onError = () => reject(new Error("Unable to load Cashfree SDK."));
+            script.addEventListener("load", onLoad, { once: true });
+            script.addEventListener("error", onError, { once: true });
+            if (!existing) {
+              script.id = "cashfree-sdk";
+              script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+              script.async = true;
+              document.head.appendChild(script);
+            }
+          });
+        }
+
+        if (!window.Cashfree) throw new Error("Cashfree SDK is unavailable.");
+        const cashfree = window.Cashfree({
+          mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === "production" ? "production" : "sandbox",
+        });
+        setOpenContri(false);
+        await cashfree.checkout({
+          paymentSessionId: orderData.paymentSessionId,
+          redirectTarget: "_self",
+        });
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Unable to start Cashfree payment.");
+      }
       queryClient.invalidateQueries({
         queryKey: ["group", groupCode],
       })
@@ -107,8 +153,8 @@ export default function GroupPage() {
       requestId: string;
       status: "ACCEPTED" | "REJECTED";
     }) =>
-      updateRequestStatus(groupCode, requestId, {
-        status,
+      updateRequestApproval(groupCode, requestId, {
+        status: status === "ACCEPTED" ? "APPROVED" : "REJECTED",
       }),
 
     onSuccess: (data) => {
