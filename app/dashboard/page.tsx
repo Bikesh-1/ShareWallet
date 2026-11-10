@@ -247,16 +247,10 @@ export default function Dashboard() {
             {menuItems.map((item) => {
               const Icon = item.icon;
               const sectionComponents = {
-    home: HomeSection,
-    group: GroupsSection,
-    friend: FriendsSection,
-    contribution: ContributionSection,
-    activity: ActivitySection,
-    notification: NotificationsSection,
-    profile: ProfileSection,
-    setting: SettingsSection,
+    home: HomeSection, group: GroupsSection, friend: FriendsSection,
+    contribution: ContributionSection, activity: ActivitySection,
+    notification: NotificationsSection, profile: ProfileSection, setting: SettingsSection,
   };
-
   const renderContent = () => {
     const Section = sectionComponents[page as keyof typeof sectionComponents] || HomeSection;
     return <Section>{renderSectionContent()}</Section>;
