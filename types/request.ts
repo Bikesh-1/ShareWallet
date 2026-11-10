@@ -10,6 +10,7 @@ export type SentRequest = {
   amount: string;
   month: string;
   status: RequestStatus;
+  approvals?: { status: "PENDING" | "APPROVED" | "REJECTED" }[];
   requestAt: string;
   actionAt: string | null;
   user: {
