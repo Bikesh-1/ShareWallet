@@ -52,8 +52,8 @@ export default function LoginNavbar() {
   };
 
   return (
-    <div className="w-full p-8 h-10  flex items-center justify-end absolute">
-      <div className="flex items-center gap-8">
+    <div className="relative z-30 flex h-20 w-full shrink-0 items-center justify-end border-b border-[#dedede] bg-[#f4f4f5]/95 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8">
+      <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
         <button
           onClick={() => (setPopup(true))}
           disabled={!!userDetails}
