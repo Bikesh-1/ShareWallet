@@ -57,6 +57,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
                 userId: user.id,
                 groupId: group.id,
                 month,
+                requestId: null,
             },
         });
         if (existingContribution?.status === "PAID") {
