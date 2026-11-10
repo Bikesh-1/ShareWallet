@@ -83,3 +83,24 @@ export const updateRequestStatus = async (
 
   return result;
 };
+
+export const updateRequestApproval = async (
+  groupCode: string,
+  requestId: string,
+  data: { status: "APPROVED" | "REJECTED" }
+) => {
+  const response = await fetch(
+    `/api/group/${groupCode}/sendRequest/${requestId}/approval`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }
+  );
+
+  const result = await response.json();
+  if (!response.ok) {
+    throw new Error(result.error || "Failed to update request approval.");
+  }
+  return result;
+};
