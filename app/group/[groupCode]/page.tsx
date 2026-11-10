@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import LoginNavbar from "@/components/loginNavbar";
@@ -53,6 +53,38 @@ export default function GroupPage() {
 
 
   const queryClient = useQueryClient();
+  const [financialSummary, setFinancialSummary] = useState<{
+    totalContributions: number;
+    contributionCount: number;
+    pendingContributionAmount: number;
+    pendingContributionCount: number;
+    totalPayouts: number;
+    totalRefunds: number;
+    netFlow: number;
+    totalRequests: number;
+  } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/group/${groupCode}/financial-dashboard`)
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to load group finances");
+        return result;
+      })
+      .then((result) => {
+        if (active) setFinancialSummary(result.summary);
+      })
+      .catch((error) => {
+        console.error("GROUP FINANCIAL SUMMARY ERROR:", error);
+      });
+    return () => {
+      active = false;
+    };
+  }, [groupCode]);
+
+  const money = (value: number) =>
+    Number(value || 0).toLocaleString("en-IN");
 
   const mutation = useMutation({
     mutationFn: contribution,
@@ -303,6 +335,55 @@ export default function GroupPage() {
             </button>
 
           </div>
+          <div className="mt-8 rounded-xl border border-[#252525] bg-[#101010] p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+              <div>
+                <h2 className="text-xl font-semibold text-white">Group Financial Overview</h2>
+                <p className="text-xs text-gray-500 mt-1">Only confirmed payments are counted in received and wallet totals.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => router.push(`/group/${groupCode}/transactions`)}
+                className="text-sm text-white border border-[#444] rounded-lg px-3 py-2 hover:bg-[#222]"
+              >
+                View transactions
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+                <p className="text-xs tracking-wide text-gray-400">TOTAL CONTRIBUTION RECEIVED</p>
+                <p className="text-2xl font-semibold text-green-400 mt-2">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p>
+                <p className="text-xs text-gray-500 mt-1">{financialSummary?.contributionCount ?? 0} successful contributions</p>
+              </div>
+              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+                <p className="text-xs tracking-wide text-gray-400">CURRENT WALLET BALANCE</p>
+                <p className="text-2xl font-semibold text-white mt-2">₹{money(financialSummary?.netFlow ?? groupDetails.totalAmount)}</p>
+                <p className="text-xs text-gray-500 mt-1">Received − payouts − refunds</p>
+              </div>
+              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+                <p className="text-xs tracking-wide text-gray-400">TOTAL PAYOUTS</p>
+                <p className="text-2xl font-semibold text-blue-400 mt-2">₹{money(financialSummary?.totalPayouts ?? 0)}</p>
+                <p className="text-xs text-gray-500 mt-1">Successfully paid out</p>
+              </div>
+              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+                <p className="text-xs tracking-wide text-gray-400">TOTAL REFUNDS</p>
+                <p className="text-2xl font-semibold text-orange-400 mt-2">₹{money(financialSummary?.totalRefunds ?? 0)}</p>
+                <p className="text-xs text-gray-500 mt-1">Successfully refunded</p>
+              </div>
+              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+                <p className="text-xs tracking-wide text-gray-400">PENDING CONTRIBUTIONS</p>
+                <p className="text-2xl font-semibold text-yellow-400 mt-2">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p>
+                <p className="text-xs text-gray-500 mt-1">{financialSummary?.pendingContributionCount ?? 0} payments awaiting confirmation</p>
+              </div>
+              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+                <p className="text-xs tracking-wide text-gray-400">MONEY REQUESTS</p>
+                <p className="text-2xl font-semibold text-white mt-2">{financialSummary?.totalRequests ?? groupRequests?.sentrequestDetails.length ?? 0}</p>
+                <p className="text-xs text-gray-500 mt-1">Total requests created</p>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-4">
               Members of Group
