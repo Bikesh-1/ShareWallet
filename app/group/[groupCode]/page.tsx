@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { sendRequest, updateRequestApproval } from "@/services/request.service";
 import type { SendRequestPayload } from "@/types/request";
 import { useGroupRequests } from "@/hooks/useGroupRequests";
-import { useSession } from "next-auth/react";
 
 
 
@@ -28,7 +27,6 @@ export default function GroupPage() {
     id: string;
     status: "ACCEPTED" | "REJECTED";
   } | null>(null);
-  const { data: session } = useSession();
   const groupCode = params.groupCode as string;
   const router = useRouter();
   const {
