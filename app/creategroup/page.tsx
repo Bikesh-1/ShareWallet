@@ -12,7 +12,7 @@ export default function Creategroup() {
     const [description, setDescription] = useState("");
     const [monthlyContribution, setMonthlyContribution] = useState<number>(0);
     const [dueDate, setDuedate] = useState("");
-    const [totalAmount, setTotalamount] = useState<number>(0);
+    const totalAmount = 0;
     const router = useRouter();
     
     const{data: Group} = useGroupDetails();
@@ -199,22 +199,19 @@ export default function Creategroup() {
 
                                 <div>
                                     <label className="block text-sm font-semibold mb-2">
-                                        Target Amount
+                                        Group Total Contribution
                                     </label>
                                     <input
-                                        type="number"
-                                        placeholder="₹50,000"
-                                        value={totalAmount}
-                                        onChange={(e) =>
-                                            setTotalamount(Number(e.target.value))
-                                        }
-                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition"
+                                        type="text"
+                                        value="₹ 0"
+                                        readOnly
+                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none bg-gray-100 text-gray-600 cursor-not-allowed"
                                     />
                                 </div>
                             </div>
                             <div className="w-1/2">
                                 <label className="block text-sm font-semibold mb-2">
-                                    Due Date
+                                    Monthly Due Date
                                 </label>
                                 <input
                                     type="date"
