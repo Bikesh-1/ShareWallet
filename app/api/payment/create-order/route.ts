@@ -99,60 +99,32 @@ export async function POST(req: Request) {
             );
         }
 
-        const orderId =
-            `SW_CONTRIBUTION_${contribution.id}`;
+        const orderPrefix = `SW_CONTRIBUTION_${contribution.id}_`;
+        let transaction = await prisma.transaction.findFirst({
+            where: {
+                senderId: user.id,
+                type: "CONTRIBUTION",
+                status: "PENDING",
+                providerReference: { startsWith: orderPrefix },
+            },
+            orderBy: { createdAt: "desc" },
+        });
 
-        let transaction =
-            await prisma.transaction.findFirst({
-                where: {
-                    providerReference:
-                        orderId,
-                    type: "CONTRIBUTION",
-                },
-            });
-
-        if (
-            transaction?.status ===
-            "SUCCESS"
-        ) {
-            return NextResponse.json(
-                {
-                    error:
-                        "Payment already completed",
-                },
-                { status: 400 }
-            );
-        }
+        const orderId = transaction?.providerReference || `${orderPrefix}${Date.now()}`;
 
         if (!transaction) {
-            transaction =
-                await prisma.transaction.create({
-                    data: {
-                        groupId:
-                            contribution.groupId,
-
-                        senderId:
-                            contribution.userId,
-
-                        amount:
-                            contribution.amount,
-
-                        type:
-                            "CONTRIBUTION",
-
-                        status:
-                            "PENDING",
-
-                        requestId:
-                            contribution.requestId,
-
-                        provider:
-                            "CASHFREE",
-
-                        providerReference:
-                            orderId,
-                    },
-                });
+            transaction = await prisma.transaction.create({
+                data: {
+                    groupId: contribution.groupId,
+                    senderId: contribution.userId,
+                    amount: contribution.amount,
+                    type: "CONTRIBUTION",
+                    status: "PENDING",
+                    requestId: contribution.requestId,
+                    provider: "CASHFREE",
+                    providerReference: orderId,
+                },
+            });
         }
 
         const order =
