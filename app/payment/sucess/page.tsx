@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import PaymentSuccessContent from "./success-content";
+import PaymentSuccessContent from "../success-content";
 
 export default function PaymentSuccessPage() {
   return (
