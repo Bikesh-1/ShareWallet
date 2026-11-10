@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
         const contributionId = orderId
             .slice("SW_CONTRIBUTION_".length)
-            .replace(/_\\d+$/, "");
+            .replace(/_\d+$/, "");
 
         const contribution = await prisma.contribution.findUnique({ where: { id: contributionId } });
 
