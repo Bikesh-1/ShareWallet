@@ -235,6 +235,22 @@ export default function Dashboard() {
     </div>;
   };
 
+  const sectionComponents = {
+    home: HomeSection,
+    group: GroupsSection,
+    friend: FriendsSection,
+    contribution: ContributionSection,
+    activity: ActivitySection,
+    notification: NotificationsSection,
+    profile: ProfileSection,
+    setting: SettingsSection,
+  };
+
+  const renderContent = () => {
+    const Section = sectionComponents[page as keyof typeof sectionComponents] || HomeSection;
+    return <Section>{renderSectionContent()}</Section>;
+  };
+
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <LoginNavbar />
@@ -246,17 +262,7 @@ export default function Dashboard() {
             </div>
             {menuItems.map((item) => {
               const Icon = item.icon;
-              const sectionComponents = {
-    home: HomeSection, group: GroupsSection, friend: FriendsSection,
-    contribution: ContributionSection, activity: ActivitySection,
-    notification: NotificationsSection, profile: ProfileSection, setting: SettingsSection,
-  };
-  const renderContent = () => {
-    const Section = sectionComponents[page as keyof typeof sectionComponents] || HomeSection;
-    return <Section>{renderSectionContent()}</Section>;
-  };
-
-  return (
+              return (
                 <button
                   key={item.id}
                   onClick={() => setPage(item.id)}
