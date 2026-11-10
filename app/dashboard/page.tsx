@@ -4,13 +4,13 @@ import LoginNavbar from "../../components/loginNavbar";
 import Home from "../../components/home";
 import Sidebarmsg from "../../components/sidebarusermsg";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   House, Users, Wallet, Activity, UserRound, Settings, Bell,
-  Search, Plus, ExternalLink, RefreshCw, IndianRupee, CalendarDays,
+  Search, Plus, ExternalLink, RefreshCw,
   CheckCircle2, Clock3, XCircle, ArrowDownLeft, ArrowUpRight,
   ShieldCheck, LogOut, UserPlus, CreditCard
 } from "lucide-react";
