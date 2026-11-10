@@ -69,10 +69,9 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
                         id: group.createdId,
                     },
                     {
-                        groupmember: {
+                        groupmembers: {
                             some: {
-                                groupId:
-                                    group.id,
+                                groupId: group.id,
                             },
                         },
                     },
