@@ -68,15 +68,27 @@ export async function GET(
 
     const [
       contributions,
+      pendingContributions,
       payouts,
       refunds,
       requests,
     ] = await Promise.all([
-      prisma.transaction.findMany({
+      prisma.contribution.findMany({
         where: {
           groupId: group.id,
-          type: "CONTRIBUTION",
-          status: "SUCCESS",
+          requestId: null,
+          status: "PAID",
+        },
+        select: {
+          amount: true,
+        },
+      }),
+
+      prisma.contribution.findMany({
+        where: {
+          groupId: group.id,
+          requestId: null,
+          status: "PENDING",
         },
         select: {
           amount: true,
@@ -131,8 +143,12 @@ export async function GET(
     ]);
 
     const totalContributions = contributions.reduce(
-      (sum, transaction) =>
-        sum + transaction.amount,
+      (sum, contribution) => sum + contribution.amount,
+      0
+    );
+
+    const pendingContributionAmount = pendingContributions.reduce(
+      (sum, contribution) => sum + contribution.amount,
       0
     );
 
@@ -212,6 +228,9 @@ export async function GET(
 
         summary: {
           totalContributions,
+          contributionCount: contributions.length,
+          pendingContributionAmount,
+          pendingContributionCount: pendingContributions.length,
           totalPayouts,
           totalRefunds,
           netFlow,
