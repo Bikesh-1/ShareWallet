@@ -259,7 +259,7 @@ export default function GroupPage() {
 
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#f4f4f5] text-[#111111]">
+    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-[#f4f4f5] text-[#111111]">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -277,8 +277,8 @@ export default function GroupPage() {
       </div>
 
 
-      <div className="relative z-10 mx-auto grid w-full max-w-[1480px] grid-cols-1 items-start gap-6 px-4 pb-12 pt-6 sm:px-6 lg:grid-cols-[minmax(0,1.9fr)_minmax(320px,0.9fr)] lg:gap-6 lg:px-8 lg:pt-8">
-        <div className="min-w-0 w-full overflow-hidden rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-7 lg:p-8">
+      <div className="relative z-10 mx-auto grid h-[calc(100vh-5rem)] min-h-0 w-full max-w-[1600px] flex-1 grid-rows-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-4 overflow-hidden px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,1.9fr)_minmax(320px,0.9fr)] lg:grid-rows-1 lg:gap-6 lg:px-8 lg:py-5">
+        <div className="min-h-0 min-w-0 h-full w-full overflow-y-auto overscroll-contain rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-7 lg:p-8">
 
           <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl">
             {groupDetails.groupName}
@@ -416,7 +416,7 @@ export default function GroupPage() {
             </div>
           </div>
         </div>
-        <div className="min-w-0 h-fit w-full self-start rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-6 lg:p-7">
+        <div className="min-h-0 min-w-0 h-full w-full overflow-y-auto overscroll-contain self-start rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-6 lg:p-7">
           <div className="mb-6 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-white">Activity</h2>
