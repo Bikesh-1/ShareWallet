@@ -19,6 +19,14 @@ import { useFriendList } from "@/hooks/useFriendList";
 import { useUserDetails } from "@/hooks/useUserDetails";
 import { createFriend } from "@/services/friend.service";
 import { useRouter } from "next/navigation";
+import HomeSection from "@/components/dashboard/HomeSection";
+import GroupsSection from "@/components/dashboard/GroupsSection";
+import FriendsSection from "@/components/dashboard/FriendsSection";
+import ContributionSection from "@/components/dashboard/ContributionSection";
+import ActivitySection from "@/components/dashboard/ActivitySection";
+import NotificationsSection from "@/components/dashboard/NotificationsSection";
+import ProfileSection from "@/components/dashboard/ProfileSection";
+import SettingsSection from "@/components/dashboard/SettingsSection";
 
 const menuItems = [
   { id: "home", label: "Home", icon: House },
@@ -160,7 +168,7 @@ export default function Dashboard() {
     </div>
   ) : <EmptyState title="No transactions yet" detail="Your contribution and payment records will appear here." />;
 
-  const renderContent = () => {
+  const renderSectionContent = () => {
     if (page === "home") return <Home />;\n    if (page === "home__unused") return <div className="space-y-7">
       <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-[#15142b] to-[#101014] p-6 sm:p-8">
         <p className="text-sm text-zinc-400">Welcome back,</p>
@@ -238,7 +246,23 @@ export default function Dashboard() {
             </div>
             {menuItems.map((item) => {
               const Icon = item.icon;
-              return (
+              const sectionComponents = {
+    home: HomeSection,
+    group: GroupsSection,
+    friend: FriendsSection,
+    contribution: ContributionSection,
+    activity: ActivitySection,
+    notification: NotificationsSection,
+    profile: ProfileSection,
+    setting: SettingsSection,
+  };
+
+  const renderContent = () => {
+    const Section = sectionComponents[page as keyof typeof sectionComponents] || HomeSection;
+    return <Section>{renderSectionContent()}</Section>;
+  };
+
+  return (
                 <button
                   key={item.id}
                   onClick={() => setPage(item.id)}
