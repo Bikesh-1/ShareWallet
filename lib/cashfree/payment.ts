@@ -11,6 +11,13 @@ export async function createCashfreeOrder({
   customerId: string;
   customerPhone: string;
 }) {
+  if (!cashfreeConfig.clientId || !cashfreeConfig.clientSecret) {
+    throw new Error("Cashfree credentials are missing. Configure CASHFREE_CLIENT_ID and CASHFREE_CLIENT_SECRET.");
+  }
+  if (!process.env.NEXT_PUBLIC_APP_URL) {
+    throw new Error("NEXT_PUBLIC_APP_URL is missing.");
+  }
+
   const response = await fetch(
     `${cashfreeConfig.baseUrl}/pg/orders`,
     {
