@@ -84,6 +84,43 @@ export default function MoneyRequestPage() {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [paying, setPaying] = useState(false);
+    const [cashfreeReady, setCashfreeReady] = useState(false);
+
+    const cashfreeMode =
+        process.env.NEXT_PUBLIC_CASHFREE_ENV === "production"
+            ? "production"
+            : "sandbox";
+
+    useEffect(() => {
+        const scriptId = "cashfree-checkout-sdk";
+        let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+        const markReady = () => {
+            if (window.Cashfree) setCashfreeReady(true);
+        };
+
+        if (window.Cashfree) {
+            markReady();
+            return;
+        }
+
+        if (!script) {
+            script = document.createElement("script");
+            script.id = scriptId;
+            script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+            script.async = true;
+            document.head.appendChild(script);
+        }
+
+        script.addEventListener("load", markReady);
+        script.addEventListener("error", () => {
+            toast.error("Unable to load Cashfree checkout. Please refresh.");
+        });
+
+        return () => {
+            script?.removeEventListener("load", markReady);
+        };
+    }, []);
 
     async function fetchRequest() {
         try {
@@ -159,11 +196,11 @@ export default function MoneyRequestPage() {
                 throw new Error("Payment session was not created");
             }
 
-            if (!window.Cashfree) {
-                throw new Error("Cashfree SDK is not loaded. Please refresh the page.");
+            if (!window.Cashfree || !cashfreeReady) {
+                throw new Error("Cashfree checkout is still loading. Please try again.");
             }
 
-            const cashfree = window.Cashfree({mode: "sandbox",});
+            const cashfree = window.Cashfree({ mode: cashfreeMode });
 
             await cashfree.checkout({
                 paymentSessionId:data.paymentSessionId,
@@ -180,7 +217,7 @@ export default function MoneyRequestPage() {
     if (loading) {
         return (
             <>
-                <script src="https://sdk.cashfree.com/js/v3/cashfree.js" async/>
+
                 <div className="min-h-screen bg-white text-black flex items-center justify-center">
                     <div className="flex flex-col items-center gap-3">
                         <Loader2 size={40} className="animate-spin"/>
@@ -235,7 +272,7 @@ export default function MoneyRequestPage() {
 
     return (
         <>
-            <script src="https://sdk.cashfree.com/js/v3/cashfree.js" async/>
+
             <main className="min-h-screen bg-white text-black px-4 py-8 md:px-8">
                 <div className="mx-auto max-w-5xl">
                     <div className="flex items-center justify-between gap-4 mb-8">
