@@ -109,6 +109,17 @@ export default function Dashboard() {
       setTransactionsError("");
       try {
         const response = await fetch("/api/transactions", { cache: "no-store" });
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          const body = await response.text();
+          console.error("Expected JSON from /api/transactions, received:", {
+            url: response.url,
+            status: response.status,
+            contentType,
+            body: body.slice(0, 300),
+          });
+          throw new Error(`Transactions API returned non-JSON response (${response.status}). Check the API URL and server logs.`);
+        }
         const data = await response.json();
         if (!response.ok) throw new Error(data?.error || "Could not load transactions");
         if (active) setTransactions(data.transactions || []);
