@@ -4,5 +4,6 @@ export type UserDetails = {
   dateOfbirth: string;
   user: {
     coustumerId: string;
+    walletBalance: number;
   };
 };
