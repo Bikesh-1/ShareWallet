@@ -417,9 +417,13 @@ export default function GroupPage() {
           </div>
         </div>
         <div className="min-w-0 h-fit w-full self-start rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-6 lg:p-7">
-          <div className="mb-6 flex items-center justify-between gap-3"><div><h2 className="text-2xl font-bold tracking-tight text-white">
-            Activity
-          </h2>
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-white">Activity</h2>
+              <p className="mt-1 text-xs text-gray-500">Recent group activity</p>
+            </div>
+            <span className="rounded-full border border-[#245a3b] bg-[#10291b] px-3 py-1 text-xs font-semibold text-green-400">LIVE</span>
+          </div>
           {contributionDetails.map((item) => (
             <div key={item.id} className="mt-4">
               <div className="flex items-start rounded-2xl border border-[#242424] bg-[#111111] px-4 py-4 transition hover:border-[#3a3a3a]">
@@ -543,7 +547,7 @@ export default function GroupPage() {
 
       {openContri && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
-          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded bg-white p-5 text-black shadow-2xl sm:p-8">
+          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
 
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-black">
@@ -599,7 +603,7 @@ export default function GroupPage() {
 
       {openRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
-          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded bg-white p-5 text-black shadow-2xl sm:p-8">
+          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
 
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-black">
