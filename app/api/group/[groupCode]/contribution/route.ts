@@ -1,9 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { error } from "next/dist/build/output/log";
 import { NextResponse } from "next/server";
-import { use } from "react";
 
 export async function POST(req: Request, { params }: { params: Promise<{ groupCode: string }> }) {
     try {
@@ -50,6 +48,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
                 { status: 404 }
             )
         }
+        if (!month || typeof month !== "string") {
+            return NextResponse.json({ error: "Contribution month is required." }, { status: 400 });
+        }
+
         const existingContribution = await prisma.contribution.findFirst({
             where: {
                 userId: user.id,
@@ -57,34 +59,25 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
                 month,
             },
         });
-        if (existingContribution) {
+        if (existingContribution?.status === "PAID") {
             return NextResponse.json(
-                { error: "You have already submitted your contribution for this month." },
+                { error: "Your contribution for this month is already paid." },
                 { status: 409 }
             );
         }
 
-        await prisma.contribution.create({
+        const createdContribution = existingContribution || await prisma.contribution.create({
             data: {
                 userId: user.id,
                 groupId: group.id,
                 amount: group.monthlyContribution,
                 month,
-                status:"PENDING",
+                status: "PENDING",
             }
-        })
-        await prisma.group.update({
-            where: {
-                id: group.id,
-            },
-            data: {
-                totalAmount: {
-                    increment: Number(amount),
-                },
-            },
         });
+
         return NextResponse.json(
-            { message: "Contribution submitted successfully." },
+            { message: "Contribution created. Continue to Cashfree checkout.", contribution: createdContribution },
             { status: 201 }
         )
     } catch {
