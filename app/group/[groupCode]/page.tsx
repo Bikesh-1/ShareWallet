@@ -280,19 +280,45 @@ export default function GroupPage() {
       <div className="relative z-10 mx-auto grid h-[calc(100vh-5rem)] min-h-0 w-full max-w-[1600px] flex-1 grid-rows-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-4 overflow-hidden px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,1.9fr)_minmax(320px,0.9fr)] lg:grid-rows-1 lg:gap-6 lg:px-8 lg:py-5">
         <div className="min-h-0 min-w-0 h-full w-full overflow-y-auto overscroll-contain rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-7 lg:p-8">
 
-          <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl">
-            {groupDetails.groupName}
-          </h1>
-
-          <p className="mt-2 text-sm text-gray-400 sm:text-base">
-            Manage your monthly savings group.
-          </p>
+          <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-green-400">SHAREWALLET · SAVINGS GROUP</p>
+              <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl">
+                {groupDetails.groupName}
+              </h1>
+              <p className="mt-2 text-sm text-gray-400 sm:text-base">
+                Manage your monthly savings group.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 rounded-full border border-[#245a3b] bg-[#10291b] px-3 py-2 text-xs font-semibold text-green-400">
+              <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.7)]" />
+              Group active
+            </div>
+          </div>
 
           <div className="mt-8 space-y-0 rounded-2xl border border-[#242424] bg-[#101010] px-4 sm:px-5">
 
             <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
               <span className="text-gray-400">Group Code</span>
-              <span className="font-semibold">{groupDetails.groupCode}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold tracking-wide">{groupDetails.groupCode}</span>
+                <button
+                  type="button"
+                  aria-label="Copy group code"
+                  title="Copy group code"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(groupDetails.groupCode);
+                      toast.success("Group code copied");
+                    } catch {
+                      toast.error("Unable to copy group code");
+                    }
+                  }}
+                  className="rounded-lg border border-[#383838] bg-[#1b1b1b] px-3 py-1.5 text-xs font-medium text-gray-300 transition hover:border-green-500/60 hover:text-green-400"
+                >
+                  Copy
+                </button>
+              </div>
             </div>
 
             <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
@@ -385,9 +411,15 @@ export default function GroupPage() {
           </div>
 
           <div className="mt-9">
-            <h2 className="mb-4 text-xl font-bold tracking-tight">
-              Members of Group
-            </h2>
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-green-400">YOUR COMMUNITY</p>
+                <h2 className="mt-1 text-xl font-bold tracking-tight">Group members</h2>
+              </div>
+              <span className="rounded-full border border-[#333] bg-[#171717] px-3 py-1 text-xs text-gray-300">
+                {groupDetails.groupmember.length} {groupDetails.groupmember.length === 1 ? "member" : "members"}
+              </span>
+            </div>
 
             <div className="space-y-3">
               {groupDetails.groupmember.map((member) => (
@@ -424,6 +456,13 @@ export default function GroupPage() {
             </div>
             <span className="rounded-full border border-[#245a3b] bg-[#10291b] px-3 py-1 text-xs font-semibold text-green-400">LIVE</span>
           </div>
+          {contributionDetails.length === 0 && (!groupRequests?.sentrequestDetails || groupRequests.sentrequestDetails.length === 0) && (
+            <div className="mt-8 rounded-2xl border border-dashed border-[#383838] bg-[#111111] px-5 py-8 text-center">
+              <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#333] bg-[#1b1b1b] text-xl text-green-400">↗</div>
+              <p className="font-semibold text-white">Your group journey starts here</p>
+              <p className="mt-1 text-sm text-gray-500">Contributions and money requests will appear here.</p>
+            </div>
+          )}
           {contributionDetails.map((item) => (
             <div key={item.id} className="mt-4">
               <div className="flex items-start rounded-2xl border border-[#242424] bg-[#111111] px-4 py-4 transition hover:border-[#3a3a3a]">
@@ -444,6 +483,11 @@ export default function GroupPage() {
               </div>
             </div>
           ))}
+          {contributionDetails.length > 0 && groupRequests?.sentrequestDetails.length === 0 && (
+            <p className="mt-4 rounded-xl border border-dashed border-[#333] px-4 py-4 text-center text-sm text-gray-500">
+              No money requests yet.
+            </p>
+          )}
           {groupRequests?.sentrequestDetails.map((item) => (
             <div
               key={item.id}
