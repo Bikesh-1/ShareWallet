@@ -169,7 +169,8 @@ export default function Dashboard() {
   ) : <EmptyState title="No transactions yet" detail="Your contribution and payment records will appear here." />;
 
   const renderSectionContent = () => {
-    if (page === "home") return <Home />;\n    if (page === "home__unused") return <div className="space-y-7">
+    if (page === "home") return <Home />;
+    if (page === "home__unused") return <div className="space-y-7">
       <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-[#15142b] to-[#101014] p-6 sm:p-8">
         <p className="text-sm text-zinc-400">Welcome back,</p>
         <h1 className="mt-1 text-3xl font-bold text-white">{profile?.name || "ShareWallet member"}</h1>
