@@ -91,6 +91,14 @@ export async function POST(req: Request) {
             );
         }
 
+        const customerPhone = user.userdetails?.mobileNumber?.replace(/\\D/g, "") || "";
+        if (!/^\\d{10}$/.test(customerPhone)) {
+            return NextResponse.json(
+                { error: "Please add a valid 10-digit mobile number to your profile before paying." },
+                { status: 400 }
+            );
+        }
+
         const orderId =
             `SW_CONTRIBUTION_${contribution.id}`;
 
@@ -157,10 +165,7 @@ export async function POST(req: Request) {
                 customerId:
                     user.id,
 
-                customerPhone:
-                    user.userdetails
-                        ?.mobileNumber ??
-                    "",
+                customerPhone,
             });
 
         return NextResponse.json(
