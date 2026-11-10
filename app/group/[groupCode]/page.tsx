@@ -259,12 +259,12 @@ export default function GroupPage() {
 
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-white">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#f4f4f5] text-[#111111]">
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
-          backgroundSize: "20px 20px",
+          backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.045) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.045) 1px, transparent 1px)`,
+          backgroundSize: "28px 28px",
           backgroundPosition: "0 0, 0 0",
           maskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 100% 100%, #000 50%, transparent 90%)`,
           WebkitMaskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 100% 100%, #000 50%, transparent 90%)`,
@@ -277,32 +277,32 @@ export default function GroupPage() {
       </div>
 
 
-      <div className="relative z-10 mx-auto grid w-full max-w-[1520px] grid-cols-1 items-start gap-6 px-4 pb-10 pt-6 sm:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(320px,0.95fr)] lg:gap-7 lg:px-8 lg:pt-8">
-        <div className="min-w-0 w-full rounded border border-[#1d1d1d] bg-black p-4 text-white sm:p-6 lg:p-8">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1480px] grid-cols-1 items-start gap-6 px-4 pb-12 pt-6 sm:px-6 lg:grid-cols-[minmax(0,1.9fr)_minmax(320px,0.9fr)] lg:gap-6 lg:px-8 lg:pt-8">
+        <div className="min-w-0 w-full overflow-hidden rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-7 lg:p-8">
 
-          <h1 className="break-words text-2xl font-bold tracking-wide">
+          <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl">
             {groupDetails.groupName}
           </h1>
 
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="mt-2 text-sm text-gray-400 sm:text-base">
             Manage your monthly savings group.
           </p>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-8 space-y-0 rounded-2xl border border-[#242424] bg-[#101010] px-4 sm:px-5">
 
-            <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-[#1f1f1f] pb-3">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
               <span className="text-gray-400">Group Code</span>
               <span className="font-semibold">{groupDetails.groupCode}</span>
             </div>
 
-            <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-[#1f1f1f] pb-3">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
               <span className="text-gray-400">Monthly Contribution</span>
               <span className="font-semibold">
                 ₹ {groupDetails.monthlyContribution}
               </span>
             </div>
 
-            <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-[#1f1f1f] pb-3">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
               <span className="text-gray-400">Total Amount</span>
               <span className="font-semibold text-green-400">
                 ₹ {groupDetails.totalAmount}
@@ -310,73 +310,73 @@ export default function GroupPage() {
             </div>
 
             <div>
-              <p className="text-gray-400 mb-2">Description</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Description</p>
               <p className="leading-7 text-gray-300">
                 {groupDetails.description}
               </p>
             </div>
 
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               onClick={() => setOpenContri(true)}
-              className="w-full sm:w-auto text-black border border-[#dadada] bg-white px-4 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+              className="w-full rounded-xl border border-white bg-white px-5 py-3 text-sm font-semibold text-black shadow-lg shadow-white/5 transition hover:-translate-y-0.5 hover:bg-gray-100 sm:w-auto"
             >
               Contribute
             </button>
 
 
-            <button onClick={() => router.push(`/group/${groupCode}/message`)} className="w-full sm:w-auto text-white border border-white px-4 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
+            <button onClick={() => router.push(`/group/${groupCode}/message`)} className="w-full rounded-xl border border-[#3a3a3a] bg-[#151515] px-5 py-3 text-sm font-semibold text-white transition hover:border-gray-500 hover:bg-[#202020] sm:w-auto">
               Message
             </button>
 
-            <button onClick={() => setOpenRequest(true)} className="w-full sm:w-auto text-white bg-red-600 px-4 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
+            <button onClick={() => setOpenRequest(true)} className="w-full rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-red-950/30 transition hover:-translate-y-0.5 hover:bg-red-500 sm:w-auto">
               Request Money
             </button>
 
           </div>
-          <div className="mt-8 rounded-xl border border-[#252525] bg-[#101010] p-5">
+          <div className="mt-8 rounded-2xl border border-[#292929] bg-gradient-to-br from-[#151515] to-[#090909] p-4 shadow-inner sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
               <div>
-                <h2 className="text-xl font-semibold text-white">Group Financial Overview</h2>
+                <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">Group Financial Overview</h2>
                 <p className="text-xs text-gray-500 mt-1">Only confirmed payments are counted in received and wallet totals.</p>
               </div>
               <button
                 type="button"
                 onClick={() => router.push(`/group/${groupCode}/transactions`)}
-                className="text-sm text-white border border-[#444] rounded-lg px-3 py-2 hover:bg-[#222]"
+                className="rounded-xl border border-[#414141] bg-[#171717] px-4 py-2.5 text-sm font-medium text-white transition hover:border-[#666] hover:bg-[#242424]"
               >
                 View transactions
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
                 <p className="break-words text-xs tracking-wide text-gray-400">TOTAL CONTRIBUTION RECEIVED</p>
                 <p className="text-2xl font-semibold text-green-400 mt-2">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p>
                 <p className="text-xs text-gray-500 mt-1">{financialSummary?.contributionCount ?? 0} successful contributions</p>
               </div>
-              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
                 <p className="break-words text-xs tracking-wide text-gray-400">CURRENT WALLET BALANCE</p>
                 <p className="text-2xl font-semibold text-white mt-2">₹{money(financialSummary?.netFlow ?? groupDetails.totalAmount)}</p>
                 <p className="text-xs text-gray-500 mt-1">Received − payouts − refunds</p>
               </div>
-              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
                 <p className="break-words text-xs tracking-wide text-gray-400">TOTAL PAYOUTS</p>
                 <p className="text-2xl font-semibold text-blue-400 mt-2">₹{money(financialSummary?.totalPayouts ?? 0)}</p>
                 <p className="text-xs text-gray-500 mt-1">Successfully paid out</p>
               </div>
-              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
                 <p className="break-words text-xs tracking-wide text-gray-400">TOTAL REFUNDS</p>
                 <p className="text-2xl font-semibold text-orange-400 mt-2">₹{money(financialSummary?.totalRefunds ?? 0)}</p>
                 <p className="text-xs text-gray-500 mt-1">Successfully refunded</p>
               </div>
-              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
                 <p className="break-words text-xs tracking-wide text-gray-400">PENDING CONTRIBUTIONS</p>
                 <p className="text-2xl font-semibold text-yellow-400 mt-2">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p>
                 <p className="text-xs text-gray-500 mt-1">{financialSummary?.pendingContributionCount ?? 0} payments awaiting confirmation</p>
               </div>
-              <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
+              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
                 <p className="break-words text-xs tracking-wide text-gray-400">MONEY REQUESTS</p>
                 <p className="text-2xl font-semibold text-white mt-2">{financialSummary?.totalRequests ?? groupRequests?.sentrequestDetails.length ?? 0}</p>
                 <p className="text-xs text-gray-500 mt-1">Total requests created</p>
@@ -384,8 +384,8 @@ export default function GroupPage() {
             </div>
           </div>
 
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="mt-9">
+            <h2 className="mb-4 text-xl font-bold tracking-tight">
               Members of Group
             </h2>
 
@@ -393,7 +393,7 @@ export default function GroupPage() {
               {groupDetails.groupmember.map((member) => (
                 <div
                   key={member.id}
-                  className="text-white flex items-center justify-between bg-[#141414] border border-[#202020] rounded-xl px-4 py-3"
+                  className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#292929] bg-[#121212] px-4 py-4 text-white transition hover:border-[#454545]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-gray-700"></div>
@@ -416,13 +416,13 @@ export default function GroupPage() {
             </div>
           </div>
         </div>
-        <div className="min-w-0 h-fit w-full self-start rounded bg-black p-4 sm:p-6 lg:p-8">
-          <h2 className="text-2xl font-semibold text-[#dadada]">
+        <div className="min-w-0 h-fit w-full self-start rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-6 lg:p-7">
+          <div className="mb-6 flex items-center justify-between gap-3"><div><h2 className="text-2xl font-bold tracking-tight text-white">
             Activity
           </h2>
           {contributionDetails.map((item) => (
-            <div key={item.id} className="mt-6 space-y-4">
-              <div className="flex justify-between items-start border-l-2 border-gray-700 pl-4">
+            <div key={item.id} className="mt-4">
+              <div className="flex items-start rounded-2xl border border-[#242424] bg-[#111111] px-4 py-4 transition hover:border-[#3a3a3a]">
                 <div>
                   <p className="text-[#dadada]">
                     <span className="font-semibold">
@@ -443,9 +443,9 @@ export default function GroupPage() {
           {groupRequests?.sentrequestDetails.map((item) => (
             <div
               key={item.id}
-              className="mt-6 space-y-4"
+              className="mt-4"
             >
-              <div className="flex justify-between items-start border-l-2 border-gray-700 pl-4">
+              <div className="flex items-start rounded-2xl border border-[#242424] bg-[#111111] px-4 py-4 transition hover:border-[#3a3a3a]">
 
                 <div className="w-full">
 
