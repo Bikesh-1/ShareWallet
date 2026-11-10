@@ -205,6 +205,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
                         userdetails: true,
                     },
                 },
+                approvals: {
+                    where: { userId: user.id },
+                    select: { status: true },
+                },
             },
 
             orderBy: {
