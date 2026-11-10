@@ -398,7 +398,7 @@ export default function GroupPage() {
                   </p>
 
                   {item.status === "PENDING" &&
-                    item.userId !== session?.user?.email && (
+                    item.approvals?.[0]?.status === "PENDING" && (
                       <div className="flex gap-3 mt-4">
 
                         <button
