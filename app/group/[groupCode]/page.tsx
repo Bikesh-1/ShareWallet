@@ -277,7 +277,7 @@ export default function GroupPage() {
       </div>
 
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-6 px-4 py-6 sm:px-6 lg:py-8 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1520px] grid-cols-1 items-start gap-6 px-4 pb-10 pt-6 sm:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(320px,0.95fr)] lg:gap-7 lg:px-8 lg:pt-8">
         <div className="min-w-0 w-full rounded border border-[#1d1d1d] bg-black p-4 text-white sm:p-6 lg:p-8">
 
           <h1 className="break-words text-2xl font-bold tracking-wide">
@@ -416,7 +416,7 @@ export default function GroupPage() {
             </div>
           </div>
         </div>
-        <div className="min-w-0 w-full rounded bg-black p-4 sm:p-6 lg:p-8 xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto">
+        <div className="min-w-0 h-fit w-full self-start rounded bg-black p-4 sm:p-6 lg:p-8">
           <h2 className="text-2xl font-semibold text-[#dadada]">
             Activity
           </h2>
