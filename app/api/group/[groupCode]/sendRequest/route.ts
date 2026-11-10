@@ -20,14 +20,14 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
         const body = await req.json();
         const reason = body?.reason?.trim();
         const amount = Number(body?.amount);
-        const month = body?.month || null;
+        const month = body?.month || new Date().toISOString().slice(0, 7);
 
         if (!reason) {
             return NextResponse.json({ error: "Reason is required", }, { status: 400 });
         }
 
-        if (!Number.isFinite(amount) || amount <= 0) {
-            return NextResponse.json({ error: "Amount must be greater than 0", }, { status: 400 });
+        if (!Number.isSafeInteger(amount) || amount <= 0) {
+            return NextResponse.json({ error: "Amount must be a positive whole number", }, { status: 400 });
         }
 
         const user = await prisma.user.findUnique({
