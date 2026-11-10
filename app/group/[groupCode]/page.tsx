@@ -259,7 +259,7 @@ export default function GroupPage() {
 
 
   return (
-    <div className="min-h-screen w-full relative bg-white">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-white">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -277,10 +277,10 @@ export default function GroupPage() {
       </div>
 
 
-      <div className="p-6 flex gap-6 min-h-screen items-center justify-between relative z-10">
-        <div className="w-2/3 bg-black border border-[#1d1d1d] rounded p-8 text-white">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-6 px-4 py-6 sm:px-6 lg:py-8 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+        <div className="min-w-0 w-full rounded border border-[#1d1d1d] bg-black p-4 text-white sm:p-6 lg:p-8">
 
-          <h1 className="text-2xl font-bold tracking-wide">
+          <h1 className="break-words text-2xl font-bold tracking-wide">
             {groupDetails.groupName}
           </h1>
 
@@ -290,19 +290,19 @@ export default function GroupPage() {
 
           <div className="mt-8 space-y-4">
 
-            <div className="flex justify-between border-b border-[#1f1f1f] pb-3">
+            <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-[#1f1f1f] pb-3">
               <span className="text-gray-400">Group Code</span>
               <span className="font-semibold">{groupDetails.groupCode}</span>
             </div>
 
-            <div className="flex justify-between border-b border-[#1f1f1f] pb-3">
+            <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-[#1f1f1f] pb-3">
               <span className="text-gray-400">Monthly Contribution</span>
               <span className="font-semibold">
                 ₹ {groupDetails.monthlyContribution}
               </span>
             </div>
 
-            <div className="flex justify-between border-b border-[#1f1f1f] pb-3">
+            <div className="flex min-w-0 flex-wrap items-start justify-between gap-x-4 gap-y-1 border-b border-[#1f1f1f] pb-3">
               <span className="text-gray-400">Total Amount</span>
               <span className="font-semibold text-green-400">
                 ₹ {groupDetails.totalAmount}
@@ -317,20 +317,20 @@ export default function GroupPage() {
             </div>
 
           </div>
-          <div className="flex items-center justify-center gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <button
               onClick={() => setOpenContri(true)}
-              className=" w-auto text-black border border-[#dadada] bg-white px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+              className="w-full sm:w-auto text-black border border-[#dadada] bg-white px-4 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
             >
               Contribute
             </button>
 
 
-            <button onClick={() => router.push(`/group/${groupCode}/message`)} className="text-white border border-white px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
+            <button onClick={() => router.push(`/group/${groupCode}/message`)} className="w-full sm:w-auto text-white border border-white px-4 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
               Message
             </button>
 
-            <button onClick={() => setOpenRequest(true)} className=" w-auto text-white   bg-red-600 px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
+            <button onClick={() => setOpenRequest(true)} className="w-full sm:w-auto text-white bg-red-600 px-4 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
               Request Money
             </button>
 
@@ -352,32 +352,32 @@ export default function GroupPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
               <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
-                <p className="text-xs tracking-wide text-gray-400">TOTAL CONTRIBUTION RECEIVED</p>
+                <p className="break-words text-xs tracking-wide text-gray-400">TOTAL CONTRIBUTION RECEIVED</p>
                 <p className="text-2xl font-semibold text-green-400 mt-2">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p>
                 <p className="text-xs text-gray-500 mt-1">{financialSummary?.contributionCount ?? 0} successful contributions</p>
               </div>
               <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
-                <p className="text-xs tracking-wide text-gray-400">CURRENT WALLET BALANCE</p>
+                <p className="break-words text-xs tracking-wide text-gray-400">CURRENT WALLET BALANCE</p>
                 <p className="text-2xl font-semibold text-white mt-2">₹{money(financialSummary?.netFlow ?? groupDetails.totalAmount)}</p>
                 <p className="text-xs text-gray-500 mt-1">Received − payouts − refunds</p>
               </div>
               <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
-                <p className="text-xs tracking-wide text-gray-400">TOTAL PAYOUTS</p>
+                <p className="break-words text-xs tracking-wide text-gray-400">TOTAL PAYOUTS</p>
                 <p className="text-2xl font-semibold text-blue-400 mt-2">₹{money(financialSummary?.totalPayouts ?? 0)}</p>
                 <p className="text-xs text-gray-500 mt-1">Successfully paid out</p>
               </div>
               <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
-                <p className="text-xs tracking-wide text-gray-400">TOTAL REFUNDS</p>
+                <p className="break-words text-xs tracking-wide text-gray-400">TOTAL REFUNDS</p>
                 <p className="text-2xl font-semibold text-orange-400 mt-2">₹{money(financialSummary?.totalRefunds ?? 0)}</p>
                 <p className="text-xs text-gray-500 mt-1">Successfully refunded</p>
               </div>
               <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
-                <p className="text-xs tracking-wide text-gray-400">PENDING CONTRIBUTIONS</p>
+                <p className="break-words text-xs tracking-wide text-gray-400">PENDING CONTRIBUTIONS</p>
                 <p className="text-2xl font-semibold text-yellow-400 mt-2">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p>
                 <p className="text-xs text-gray-500 mt-1">{financialSummary?.pendingContributionCount ?? 0} payments awaiting confirmation</p>
               </div>
               <div className="rounded-lg border border-[#242424] bg-[#171717] p-4">
-                <p className="text-xs tracking-wide text-gray-400">MONEY REQUESTS</p>
+                <p className="break-words text-xs tracking-wide text-gray-400">MONEY REQUESTS</p>
                 <p className="text-2xl font-semibold text-white mt-2">{financialSummary?.totalRequests ?? groupRequests?.sentrequestDetails.length ?? 0}</p>
                 <p className="text-xs text-gray-500 mt-1">Total requests created</p>
               </div>
@@ -416,7 +416,7 @@ export default function GroupPage() {
             </div>
           </div>
         </div>
-        <div className="w-1/3 bg-black h-[80vh] rounded p-8">
+        <div className="min-w-0 w-full rounded bg-black p-4 sm:p-6 lg:p-8 xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto">
           <h2 className="text-2xl font-semibold text-[#dadada]">
             Activity
           </h2>
@@ -542,8 +542,8 @@ export default function GroupPage() {
       </div>
 
       {openContri && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-10">
-          <div className="w-full max-w-md rounded bg-white text-black p-8 shadow-2xl relative z-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
+          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded bg-white p-5 text-black shadow-2xl sm:p-8">
 
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-black">
@@ -598,8 +598,8 @@ export default function GroupPage() {
       )}
 
       {openRequest && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-10">
-          <div className="w-full max-w-md rounded bg-white text-black p-8 shadow-2xl relative z-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
+          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded bg-white p-5 text-black shadow-2xl sm:p-8">
 
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-black">
