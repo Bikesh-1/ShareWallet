@@ -132,6 +132,9 @@ export default function GroupPage() {
       queryClient.invalidateQueries({
         queryKey: ["group", groupCode],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["requests", groupCode],
+      });
 
       setOpenRequest(false);
     },
