@@ -77,6 +77,16 @@ export async function POST(req: Request) {
                         }
                     }
                 })
+
+                await tx.notification.create({
+                    data: {
+                        userId: contribution.userId,
+                        groupId: contribution.groupId,
+                        type: "PAYMENT_SUCCESS",
+                        title: "Contribution successful",
+                        message: `Your contribution of ₹${contribution.amount} has been received.`,
+                    },
+                });
             })
         }
 
