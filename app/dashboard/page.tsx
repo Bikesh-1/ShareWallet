@@ -161,7 +161,7 @@ export default function Dashboard() {
   ) : <EmptyState title="No transactions yet" detail="Your contribution and payment records will appear here." />;
 
   const renderContent = () => {
-    if (page === "home") return <div className="space-y-7">
+    if (page === "home") return <Home />;\n    if (page === "home__unused") return <div className="space-y-7">
       <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-[#15142b] to-[#101014] p-6 sm:p-8">
         <p className="text-sm text-zinc-400">Welcome back,</p>
         <h1 className="mt-1 text-3xl font-bold text-white">{profile?.name || "ShareWallet member"}</h1>
@@ -228,35 +228,37 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08080b]">
+    <div className="min-h-screen bg-[#f5f5f5]">
       <LoginNavbar />
-      <div className="flex min-h-screen pt-10">
-        <aside className="fixed bottom-0 left-0 top-10 z-20 flex w-[250px] flex-col justify-between border-r border-zinc-800 bg-black p-2 max-md:w-[76px]">
-          <div>
-            <div className="my-4 flex items-center justify-center px-2">
-              <Image src="/whitelogo.png" alt="ShareWallet" width={150} height={52} className="h-auto w-[150px] max-md:w-12" />
+      <div className="flex">
+        <div className="bg-black w-64 h-dvh p-2 relative z-20 flex justify-between flex-col">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-center m-4">
+              <Image src="/whitelogo.png" alt="logo" width={150} height={150} />
             </div>
-            <nav className="flex flex-col gap-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                return <button key={item.id} onClick={() => setPage(item.id)} title={item.label} className={`flex items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all max-md:justify-center max-md:px-2 ${page === item.id ? "bg-[#4f47ea81] text-white shadow-md" : "text-[#dadada] hover:bg-zinc-800"}`}>
-                  <Icon size={19} /><span className="max-md:hidden">{item.label}</span>
-                </button>;
-              })}
-            </nav>
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setPage(item.id)}
+                  className={`cursor-pointer flex items-center gap-3 px-4 py-3 rounded font-medium text-sm transition-all text-left ${
+                    page === item.id
+                      ? "bg-[#4f47ea81] text-white shadow-md"
+                      : "text-[#dadada] hover:bg-zinc-800"
+                  }`}
+                >
+                  <Icon size={18} />
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
           <Sidebarmsg />
-        </aside>
-        <main className="ml-[250px] min-h-[calc(100vh-40px)] flex-1 overflow-x-hidden p-5 pt-8 sm:p-8 max-md:ml-[76px]">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-6 flex items-center justify-between border-b border-zinc-800 pb-4">
-              <div><p className="text-xs uppercase tracking-[0.2em] text-zinc-600">Dashboard / {pageTitle}</p><h2 className="mt-1 text-sm font-medium text-zinc-300">{pageTitle}</h2></div>
-              <button onClick={refresh} title="Refresh dashboard data" className="rounded-lg border border-zinc-800 p-2 text-zinc-400 hover:bg-zinc-900 hover:text-white"><RefreshCw size={17} /></button>
-            </div>
-            {renderContent()}
-          </div>
-        </main>
+        </div>
+        <div className="flex-1 p-8 overflow-y-auto">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
-}
