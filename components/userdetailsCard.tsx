@@ -33,6 +33,14 @@ export default function Userdetails() {
 
         {userdetails ? (
           <div className="mt-6 space-y-4">
+            <div className="rounded-xl border border-[#4F47EA]/30 bg-[#4F47EA]/10 p-4">
+              <p className="text-xs uppercase tracking-wider text-gray-400">ShareWallet Balance</p>
+              <p className="mt-2 text-2xl font-bold text-white">
+                ₹{Number(userdetails.user.walletBalance || 0).toLocaleString("en-IN")}
+              </p>
+              <p className="mt-1 text-xs text-gray-500">Money received from approved group requests</p>
+            </div>
+
             <div className="space-y-3 text-sm">
               <div className="flex justify-between border-b border-[#1d1d1d] pb-2">
                 <span className="text-gray-400">Name</span>
