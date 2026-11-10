@@ -57,7 +57,7 @@ function PanelHeader({ title, description, action }: { title: string; descriptio
     <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#6d63ef]">ShareWallet</p>
-        <h1 className="text-3xl font-bold tracking-tight text-white">{title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-[#101014]">{title}</h1>
         <p className="mt-2 text-sm text-zinc-400">{description}</p>
       </div>
       {action}
@@ -81,7 +81,7 @@ function StatCard({ label, value, detail, icon: Icon }: { label: string; value: 
 function EmptyState({ title, detail }: { title: string; detail: string }) {
   return <div className="rounded-2xl border border-dashed border-zinc-700 px-6 py-14 text-center">
     <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 text-zinc-400"><Wallet size={21} /></div>
-    <h3 className="font-semibold text-white">{title}</h3><p className="mt-1 text-sm text-zinc-500">{detail}</p>
+    <h3 className="font-semibold text-[#101014]">{title}</h3><p className="mt-1 text-sm text-zinc-500">{detail}</p>
   </div>;
 }
 
@@ -204,20 +204,23 @@ export default function Dashboard() {
     </div>;
 
     if (page === "contribution") return <div>
-      <PanelHeader title="Contributions" description="Review your contribution payments and their latest payment status." action={<button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-white"><RefreshCw size={15} /> Refresh</button>} />
+      <PanelHeader title="Contributions" description="Review your contribution payments and their latest payment status." action={<button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> Refresh</button>} />
       <div className="mb-5 grid gap-4 sm:grid-cols-3"><StatCard label="Successful contributions" value={money(totalContributed)} detail="Based on successful transactions" icon={CheckCircle2} /><StatCard label="Pending transactions" value={String(pendingTransactions.length)} detail={money(pendingTransactions.reduce((s, t) => s + Number(t.amount || 0), 0)) + " pending amount"} icon={Clock3} /><StatCard label="Total payouts" value={money(totalPayouts)} detail="Successful payouts" icon={CreditCard} /></div>
       <div className="mb-4 flex flex-wrap gap-2">{["ALL", "CONTRIBUTION", "PENDING", "SUCCESS", "FAILED"].map((filter) => <button key={filter} onClick={() => setTransactionFilter(filter)} className={`rounded-lg px-3 py-2 text-xs ${transactionFilter === filter ? "bg-[#4F47EA] text-white" : "border border-zinc-700 text-zinc-400"}`}>{filter === "ALL" ? "All" : filter}</button>)}</div>
       {transactionsLoading ? <p className="text-zinc-400">Loading payments…</p> : transactionsError ? <p className="text-red-400">{transactionsError}</p> : transactionRows(filteredTransactions)}
     </div>;
 
     if (page === "activity") return <div>
-      <PanelHeader title="Activity" description="A chronological timeline of your recent payments and group transactions." action={<button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-white"><RefreshCw size={15} /> Refresh</button>} />
+      <PanelHeader title="Activity" description="A chronological timeline of your recent payments and group transactions." action={<button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> Refresh</button>} />
       {transactionsLoading ? <p className="text-zinc-400">Loading activity…</p> : transactionsError ? <p className="text-red-400">{transactionsError}</p> : transactionRows(transactions)}
     </div>;
 
     if (page === "notification") return <div>
-      <PanelHeader title="Notifications" description="Payment updates and pending transaction alerts from your account." action={<button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-white"><RefreshCw size={15} /> Check updates</button>} />
-      {transactionsLoading ? <p className="text-zinc-400">Checking for updates…</p> : transactionsError ? <p className="text-red-400">{transactionsError}</p> : pendingTransactions.length ? <div className="space-y-3">{pendingTransactions.map((item) => <div key={item.id} className="flex gap-3 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4"><Clock3 className="mt-1 shrink-0 text-amber-300" size={19} /><div><p className="font-medium text-white">Payment pending</p><p className="mt-1 text-sm text-zinc-400">{money(Number(item.amount || 0))} · {item.group?.groupName || "ShareWallet transaction"}</p><p className="mt-1 text-xs text-zinc-500">{new Date(item.createdAt).toLocaleString()}</p></div></div>)}</div> : <EmptyState title="You're all caught up" detail="There are no pending transaction alerts right now." />}
+      <PanelHeader title="Notifications" description="Payment updates and pending transaction alerts from your account." action={
+        <button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> 
+        Check updates
+        </button>} />
+      {transactionsLoading ? <p className="text-zinc-400">Checking for updates…</p> : transactionsError ? <p className="text-red-400">{transactionsError}</p> : pendingTransactions.length ? <div className="space-y-3">{pendingTransactions.map((item) => <div key={item.id} className="flex gap-3 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4"><Clock3 className="mt-1 shrink-0 text-amber-300" size={19} /><div><p className="font-medium text-black">Payment pending</p><p className="mt-1 text-sm text-zinc-400">{money(Number(item.amount || 0))} · {item.group?.groupName || "ShareWallet transaction"}</p><p className="mt-1 text-xs text-zinc-500">{new Date(item.createdAt).toLocaleString()}</p></div></div>)}</div> : <EmptyState title="You're all caught up" detail="There are no pending transaction alerts right now." />}
       <p className="mt-4 text-xs text-zinc-600">This view currently displays pending payment alerts available from your transaction history. Dedicated push/in-app notification records are not configured in the existing API.</p>
     </div>;
 
@@ -253,7 +256,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div className="min-h-screen bg-white">
       <LoginNavbar />
       <div className="flex">
         <div className="bg-black w-64 h-dvh p-2 relative z-20 flex justify-between flex-col">
@@ -267,11 +270,10 @@ export default function Dashboard() {
                 <button
                   key={item.id}
                   onClick={() => setPage(item.id)}
-                  className={`cursor-pointer flex items-center gap-3 px-4 py-3 rounded font-medium text-sm transition-all text-left ${
-                    page === item.id
+                  className={`cursor-pointer flex items-center gap-3 px-4 py-3 rounded font-medium text-sm transition-all text-left ${page === item.id
                       ? "bg-[#4f47ea81] text-white shadow-md"
                       : "text-[#dadada] hover:bg-zinc-800"
-                  }`}
+                    }`}
                 >
                   <Icon size={18} />
                   {item.label}
@@ -286,4 +288,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-  );
+  )
+};
