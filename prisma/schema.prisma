@@ -20,6 +20,7 @@ model User {
   groupmembers            Groupmember[]
   contribution            Contribution[]
   verificationTokens      VerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
   approvals               RequestApproval[]
   sentrequest             Sentrequest[]
   message                 Message[]
@@ -266,4 +267,16 @@ enum RequestStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
