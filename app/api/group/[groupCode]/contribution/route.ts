@@ -14,7 +14,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
             return NextResponse.json({ error: "Unauthorized. Please sign in to continue." }, { status: 401 });
         }
 
-        if (typeof month !== "string" || !/^\\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+        if (typeof month !== "string" || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
             return NextResponse.json({ error: "Month must use YYYY-MM format." }, { status: 400 });
         }
 
