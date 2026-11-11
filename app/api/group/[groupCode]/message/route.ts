@@ -77,7 +77,16 @@ export async function GET(_req: Request, { params }: RouteContext) {
 
     const messages = await prisma.message.findMany({
       where: { groupId: group.id },
-      include: { user: { include: { userdetails: true } } },
+      include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              coustumerId: true,
+              userdetails: { select: { name: true, profilephoto: true } },
+            },
+          },
+        },
       orderBy: { createdAt: "asc" },
       take: 500,
     });

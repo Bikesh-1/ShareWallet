@@ -25,7 +25,7 @@ export async function POST(req: Request) {
                 { status: 404 }
             )
         }
-        const groupCode = "SWG" + Math.random().toString(36).substring(2, 8).toUpperCase();
+        const groupCode = "SWG" + crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
         const createGroup = await prisma.group.create({
             data: {
                 groupName,

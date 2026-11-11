@@ -43,10 +43,13 @@ export async function GET(
             include:{
                 groupmember:{
                     include:{
-                        user:{
-                            include:{
-                                userdetails: true,
-                            }
+                        user: {
+                            select: {
+                                id: true,
+                                email: true,
+                                coustumerId: true,
+                                userdetails: { select: { name: true, profilephoto: true } },
+                            },
                         }
                     }
                 }

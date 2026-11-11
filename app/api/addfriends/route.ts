@@ -112,10 +112,11 @@ export async function GET() {
             },
             include: {
                 receiver: {
-                    include: {
-                        userdetails: true
-
-                    }
+                    select: {
+                        id: true,
+                        coustumerId: true,
+                        userdetails: { select: { name: true, profilephoto: true } },
+                    },
                 }
             },
         })

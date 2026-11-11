@@ -32,20 +32,22 @@ export async function POST(req: Request) {
       );
     }
 
-    await prisma.user.update({
-      where: {
-        id: verificationToken.userId,
-      },
-      data: {
-        isVerfied: true,
-      },
+    const consumed = await prisma.$transaction(async (tx) => {
+      const claimed = await tx.verificationToken.deleteMany({
+        where: { id: verificationToken.id, token, expiresAt: { gt: new Date() } },
+      });
+      if (claimed.count !== 1) return false;
+
+      await tx.user.update({
+        where: { id: verificationToken.userId },
+        data: { isVerfied: true },
+      });
+      return true;
     });
 
-    await prisma.verificationToken.delete({
-      where: {
-        id: verificationToken.id,
-      },
-    });
+    if (!consumed) {
+      return NextResponse.json({ message: "Verification link is invalid or has already been used." }, { status: 409 });
+    }
 
     return NextResponse.json(
       { message: "Email verified successfully." },
