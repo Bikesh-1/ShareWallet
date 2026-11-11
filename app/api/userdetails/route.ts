@@ -92,8 +92,8 @@ export async function PUT(req: Request) {
 
         if (
             name.length < 2 || name.length > 80 ||
-            !/^\\+?[0-9\\s-]{10,16}$/.test(mobileNumber) ||
-            !/^\\d{4}-\\d{2}-\\d{2}$/.test(dateOfbirth) ||
+            !/^\+?[0-9\s-]{10,16}$/.test(mobileNumber) ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(dateOfbirth) ||
             Number.isNaN(Date.parse(dateOfbirth)) ||
             new Date(dateOfbirth).toISOString().slice(0, 10) !== dateOfbirth ||
             new Date(dateOfbirth) > new Date()
