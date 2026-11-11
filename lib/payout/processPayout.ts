@@ -119,12 +119,12 @@ export async function processPayout(transactionId: string) {
       result?.transfer_id ||
       transferId;
 
-    await prisma.transaction.update({
+    await prisma.transaction.updateMany({
       where: {
         id: transaction.id,
+        status: "PENDING",
       },
       data: {
-        status: "PENDING",
         provider: "CASHFREE",
         providerReference,
       },
@@ -137,9 +137,11 @@ export async function processPayout(transactionId: string) {
       providerReference,
     };
   } catch (error) {
-    await prisma.transaction.update({
+    // Do not let a late API error overwrite a SUCCESS webhook already received.
+    await prisma.transaction.updateMany({
       where: {
         id: transaction.id,
+        status: "PENDING",
       },
       data: {
         status: "FAILED",
