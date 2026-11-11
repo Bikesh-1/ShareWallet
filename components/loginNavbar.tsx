@@ -37,7 +37,7 @@ export default function LoginNavbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-[76px] w-full shrink-0 items-center justify-between border-b border-[#dedede] bg-[#f4f4f5]/95 px-3 backdrop-blur-md sm:px-5 lg:px-7">
+      <header className="sticky top-0 z-40 flex h-[76px] w-full shrink-0 items-center justify-between border-b bg-white px-3 backdrop-blur-md sm:px-5 lg:px-7">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
@@ -54,8 +54,7 @@ export default function LoginNavbar() {
             className="hidden items-center gap-2 lg:flex"
             aria-label="ShareWallet dashboard"
           >
-            <Image src="/whitelogo.png" alt="ShareWallet" width={34} height={34} className="rounded-lg bg-black p-1" />
-            <span className="text-lg font-extrabold tracking-tight text-[#101014]">ShareWallet</span>
+            <Image src="/logo.png" alt="ShareWallet" width={44} height={44} className="rounded-lg  p-1 w-28" />
           </button>
           <span className="truncate text-base font-bold text-[#171717] lg:hidden">ShareWallet</span>
         </div>

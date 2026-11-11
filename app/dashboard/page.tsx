@@ -269,9 +269,7 @@ export default function Dashboard() {
       <div className="relative flex min-h-0 flex-1 overflow-hidden">
         <aside className="relative z-20 hidden h-full w-64 shrink-0 flex-col justify-between bg-black p-2 lg:flex">
           <div className="flex flex-col gap-2">
-            <div className="my-4 flex items-center justify-center">
-              <Image src="/whitelogo.png" alt="ShareWallet logo" width={150} height={150} />
-            </div>
+
             {menuItems.map((item) => {
               const Icon = item.icon;
               return (
