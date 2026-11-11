@@ -137,6 +137,17 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
                 await tx.contribution.createMany({
                     data: contributionData,
                 });
+
+                await tx.notification.createMany({
+                    data: approvers.map((member) => ({
+                        userId: member.id,
+                        groupId: group.id,
+                        requestId: request.id,
+                        type: "MONEY_REQUEST" as const,
+                        title: "New money request",
+                        message: `${user.userdetails?.name || "A group member"} requested ₹${amount} for: ${reason}`,
+                    })),
+                });
                 return request;
             }
         );
