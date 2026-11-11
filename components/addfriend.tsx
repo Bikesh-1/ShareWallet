@@ -1,7 +1,7 @@
 "use client";
 import { createFriend } from "@/services/friend.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowUpRight, UserPlus, Users } from "lucide-react";
+import { ArrowUpRight, UserPlus } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
