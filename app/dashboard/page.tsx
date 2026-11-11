@@ -150,7 +150,6 @@ export default function Dashboard() {
   const filteredGroups = groups.filter((group: any) => (group.groupName || "").toLowerCase().includes(groupSearch.toLowerCase()) || (group.groupCode || "").toLowerCase().includes(groupSearch.toLowerCase()));
   const filteredFriends = friends.filter((friend: any) => (friend.receiver?.userdetails?.name || "").toLowerCase().includes(friendSearch.toLowerCase()) || (friend.receiver?.coustumerId || "").toLowerCase().includes(friendSearch.toLowerCase()));
   const filteredTransactions = transactions.filter((item) => transactionFilter === "ALL" || item.type === transactionFilter || item.status === transactionFilter);
-  const pageTitle = menuItems.find((item) => item.id === page)?.label || "Dashboard";
 
   const refresh = () => {
     setRefreshKey((value) => value + 1);
@@ -228,9 +227,7 @@ export default function Dashboard() {
 
     if (page === "notification") return <div>
       <PanelHeader title="Notifications" description="Payment updates and pending transaction alerts from your account." action={
-        <button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> 
-        Check updates
-        </button>} />
+        <button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> Check updates</button>} />
       {transactionsLoading ? <p className="text-zinc-400">Checking for updates…</p> : transactionsError ? <p className="text-red-400">{transactionsError}</p> : pendingTransactions.length ? <div className="space-y-3">{pendingTransactions.map((item) => <div key={item.id} className="flex gap-3 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4"><Clock3 className="mt-1 shrink-0 text-amber-300" size={19} /><div><p className="font-medium text-black">Payment pending</p><p className="mt-1 text-sm text-zinc-400">{money(Number(item.amount || 0))} · {item.group?.groupName || "ShareWallet transaction"}</p><p className="mt-1 text-xs text-zinc-500">{new Date(item.createdAt).toLocaleString()}</p></div></div>)}</div> : <EmptyState title="You're all caught up" detail="There are no pending transaction alerts right now." />}
       <p className="mt-4 text-xs text-zinc-600">This view currently displays pending payment alerts available from your transaction history. Dedicated push/in-app notification records are not configured in the existing API.</p>
     </div>;
@@ -267,13 +264,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex h-screen min-h-screen flex-col overflow-hidden bg-white">
       <LoginNavbar />
-      <div className="flex">
-        <div className="bg-black w-64 h-dvh p-2 relative z-20 flex justify-between flex-col">
+      <div className="relative flex min-h-0 flex-1 overflow-hidden">
+        <aside className="relative z-20 hidden h-full w-64 shrink-0 flex-col justify-between bg-black p-2 lg:flex">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-center m-4">
-              <Image src="/whitelogo.png" alt="logo" width={150} height={150} />
+            <div className="my-4 flex items-center justify-center">
+              <Image src="/whitelogo.png" alt="ShareWallet logo" width={150} height={150} />
             </div>
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -281,10 +278,10 @@ export default function Dashboard() {
                 <button
                   key={item.id}
                   onClick={() => setPage(item.id)}
-                  className={`cursor-pointer flex items-center gap-3 px-4 py-3 rounded font-medium text-sm transition-all text-left ${page === item.id
-                      ? "bg-[#4f47ea81] text-white shadow-md"
-                      : "text-[#dadada] hover:bg-zinc-800"
-                    }`}
+                  className={`flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all ${page === item.id
+                    ? "bg-[#4f47ea81] text-white shadow-md"
+                    : "text-[#dadada] hover:bg-zinc-800"
+                  }`}
                 >
                   <Icon size={18} />
                   {item.label}
@@ -293,11 +290,29 @@ export default function Dashboard() {
             })}
           </div>
           <Sidebarmsg />
-        </div>
-        <div className="flex-1 p-8 overflow-y-auto">
+        </aside>
+
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 lg:p-8">
           {renderContent()}
-        </div>
+        </main>
+
+        <nav aria-label="Mobile dashboard navigation" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-zinc-800 bg-black/95 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 backdrop-blur lg:hidden">
+          {menuItems.slice(0, 4).map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setPage(item.id)}
+                className={`flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] font-medium transition ${page === item.id ? "text-white" : "text-zinc-400"}`}
+              >
+                <span className={`rounded-lg p-1.5 ${page === item.id ? "bg-[#4F47EA] text-white" : ""}`}><Icon size={18} /></span>
+                <span className="truncate">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
     </div>
-  )
+  );
 };
