@@ -176,171 +176,82 @@ export async function PATCH(
     }
 ) {
     try {
-        const {
-            groupCode,
-            requestId,
-        } = await params;
-
-        const body =
-            await req.json();
-
-        const status =
-            body?.status;
-
-        if (
-            status !== "ACCEPTED" &&
-            status !== "REJECTED"
-        ) {
-            return NextResponse.json(
-                {
-                    error:
-                        "Invalid status.",
-                },
-                { status: 400 }
-            );
-        }
-
-        const session =
-            await getServerSession(
-                authOptions
-            );
+        const { groupCode, requestId } = await params;
+        const session = await getServerSession(authOptions);
 
         if (!session?.user?.email) {
-            return NextResponse.json(
-                {
-                    error:
-                        "Unauthorized.",
-                },
-                { status: 401 }
-            );
+            return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
         }
 
-        const user =
-            await prisma.user.findUnique({
-                where: {
-                    email:
-                        session.user.email,
-                },
-            });
-
-        if (!user) {
+        // This endpoint is only for the request creator to cancel their own pending request.
+        // Approvals must go through the per-member approval endpoint.
+        const body = await req.json();
+        if (body?.status !== "REJECTED") {
             return NextResponse.json(
-                {
-                    error:
-                        "User not found.",
-                },
-                { status: 404 }
-            );
-        }
-
-        const group =
-            await prisma.group.findFirst({
-                where: {
-                    groupCode,
-                    OR: [
-                        {
-                            createdId:
-                                user.id,
-                        },
-                        {
-                            groupmember: {
-                                some: {
-                                    userId:
-                                        user.id,
-                                },
-                            },
-                        },
-                    ],
-                },
-            });
-
-        if (!group) {
-            return NextResponse.json(
-                {
-                    error:
-                        "Group not found.",
-                },
-                { status: 404 }
-            );
-        }
-
-        const request =
-            await prisma.sentrequest.findFirst({
-                where: {
-                    id: requestId,
-                    groupId: group.id,
-                },
-            });
-
-        if (!request) {
-            return NextResponse.json(
-                {
-                    error:
-                        "Request not found.",
-                },
-                { status: 404 }
-            );
-        }
-
-        if (
-            request.userId !==
-            user.id
-        ) {
-            return NextResponse.json(
-                {
-                    error:
-                        "You are not authorized to change this request.",
-                },
-                { status: 403 }
-            );
-        }
-
-        if (
-            request.status !==
-            "PENDING"
-        ) {
-            return NextResponse.json(
-                {
-                    error:
-                        "This request has already been processed.",
-                },
+                { error: "Only cancellation is allowed here. Member approvals use the approval endpoint." },
                 { status: 400 }
             );
         }
 
-        const updated =
-            await prisma.sentrequest.update({
-                where: {
-                    id: request.id,
-                },
-                data: {
-                    status,
-                    actionAt:
-                        new Date(),
-                },
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            select: { id: true },
+        });
+
+        if (!user) {
+            return NextResponse.json({ error: "User not found." }, { status: 404 });
+        }
+
+        const group = await prisma.group.findFirst({
+            where: {
+                groupCode,
+                OR: [
+                    { createdId: user.id },
+                    { groupmember: { some: { userId: user.id } } },
+                ],
+            },
+            select: { id: true },
+        });
+
+        if (!group) {
+            return NextResponse.json({ error: "Group not found." }, { status: 404 });
+        }
+
+        const cancelled = await prisma.sentrequest.updateMany({
+            where: {
+                id: requestId,
+                groupId: group.id,
+                userId: user.id,
+                status: "PENDING",
+            },
+            data: {
+                status: "REJECTED",
+                actionAt: new Date(),
+            },
+        });
+
+        if (cancelled.count !== 1) {
+            const request = await prisma.sentrequest.findFirst({
+                where: { id: requestId, groupId: group.id },
+                select: { userId: true, status: true },
             });
 
-        return NextResponse.json(
-            {
-                statusDecided:
-                    updated,
-                message:
-                    "Status changed successfully.",
-            },
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error(
-            "REQUEST PATCH ERROR:",
-            error
-        );
+            if (!request) {
+                return NextResponse.json({ error: "Request not found." }, { status: 404 });
+            }
+            if (request.userId !== user.id) {
+                return NextResponse.json({ error: "You are not authorized to cancel this request." }, { status: 403 });
+            }
+            return NextResponse.json({ error: "This request is no longer pending." }, { status: 409 });
+        }
 
-        return NextResponse.json(
-            {
-                error:
-                    "Unexpected error.",
-            },
-            { status: 500 }
-        );
+        return NextResponse.json({
+            success: true,
+            status: "REJECTED",
+            message: "Request cancelled successfully.",
+        }, { status: 200 });
+    } catch (error) {
+        console.error("REQUEST CANCELLATION ERROR:", error);
+        return NextResponse.json({ error: "Unexpected error." }, { status: 500 });
     }
 }
