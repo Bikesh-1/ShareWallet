@@ -183,6 +183,7 @@ export default function Dashboard() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not update notification");
       setNotifications((current) => current.map((item) => !id || item.id === id ? { ...item, read: true } : item));
+      window.dispatchEvent(new Event("sharewallet:notifications-updated"));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not update notification");
     }
