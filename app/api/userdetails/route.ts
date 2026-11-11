@@ -77,6 +77,64 @@ export async function POST(req: Request) {
 }
 
 
+
+export async function PUT(req: Request) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.email) {
+            return NextResponse.json({ error: "Unauthorized. Please sign in to continue." }, { status: 401 });
+        }
+
+        const body = await req.json();
+        const name = typeof body?.name === "string" ? body.name.trim() : "";
+        const mobileNumber = typeof body?.mobileNumber === "string" ? body.mobileNumber.trim() : "";
+        const dateOfbirth = typeof body?.dateOfbirth === "string" ? body.dateOfbirth : "";
+
+        if (
+            name.length < 2 || name.length > 80 ||
+            !/^\\+?[0-9\\s-]{10,16}$/.test(mobileNumber) ||
+            !/^\\d{4}-\\d{2}-\\d{2}$/.test(dateOfbirth) ||
+            Number.isNaN(Date.parse(dateOfbirth)) ||
+            new Date(dateOfbirth).toISOString().slice(0, 10) !== dateOfbirth ||
+            new Date(dateOfbirth) > new Date()
+        ) {
+            return NextResponse.json({ error: "Enter a valid name, mobile number and date of birth." }, { status: 400 });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            select: { id: true },
+        });
+        if (!user) return NextResponse.json({ error: "User account not found." }, { status: 404 });
+
+        const userDetails = await prisma.$transaction(async (tx) => {
+            const details = await tx.userdetails.upsert({
+                where: { user_id: user.id },
+                create: {
+                    user_id: user.id,
+                    name,
+                    mobileNumber,
+                    dateOfbirth,
+                    isprofileCompleted: true,
+                },
+                update: { name, mobileNumber, dateOfbirth, isprofileCompleted: true },
+                select: {
+                    id: true, user_id: true, name: true, mobileNumber: true,
+                    dateOfbirth: true, profilephoto: true, isprofileCompleted: true,
+                    createdAt: true, updatedAt: true,
+                },
+            });
+            await tx.user.update({ where: { id: user.id }, data: { isCompleteProfile: true } });
+            return details;
+        });
+
+        return NextResponse.json({ userDetails, message: "Profile updated successfully." });
+    } catch (error) {
+        console.error("PROFILE UPDATE ERROR:", error);
+        return NextResponse.json({ error: "Unable to update profile right now." }, { status: 500 });
+    }
+}
+
 export async function GET(req: Request) {
     try {
         const session = await getServerSession(authOptions);
