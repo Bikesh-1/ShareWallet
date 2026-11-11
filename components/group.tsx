@@ -50,9 +50,9 @@ export default function Group() {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-2">
         {groups.map((group: any) => (
-          <article key={group.id} className="group flex min-w-0 flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-200/50 transition duration-200 hover:-translate-y-1 hover:border-[#c9c5ff] hover:shadow-[0_16px_36px_rgba(79,71,234,0.10)]">
+          <article key={group.id} className="group flex w-full min-w-0 flex-col rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-sm shadow-zinc-200/50 transition duration-200 hover:-translate-y-1 hover:border-[#c9c5ff] hover:shadow-[0_16px_36px_rgba(79,71,234,0.10)]">
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4F47EA]/10 text-[#4F47EA]"><Users size={19} /></span>
@@ -60,18 +60,15 @@ export default function Group() {
               </div>
               <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Active</span>
             </div>
-
             <p className="mt-4 min-h-10 text-sm leading-5 text-zinc-500">{group.description || "A shared space to save, plan and achieve your goals."}</p>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="rounded-xl bg-[#f7f7fa] p-3"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Monthly target</p><p className="mt-1 text-base font-bold text-zinc-900">₹{Number(group.monthlyContribution || 0).toLocaleString("en-IN")}</p></div>
-              <div className="rounded-xl bg-[#f7f7fa] p-3"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Group target</p><p className="mt-1 text-base font-bold text-zinc-900">₹{Number(group.totalAmount || 0).toLocaleString("en-IN")}</p></div>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-[#f7f7fa] p-4"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Monthly target</p><p className="mt-1 text-lg font-bold text-zinc-900">₹{Number(group.monthlyContribution || 0).toLocaleString("en-IN")}</p></div>
+              <div className="rounded-xl bg-[#f7f7fa] p-4"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Group target</p><p className="mt-1 text-lg font-bold text-zinc-900">₹{Number(group.totalAmount || 0).toLocaleString("en-IN")}</p></div>
             </div>
-            <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500"><Users size={14} /><span>{group.groupmember?.length || 0} members</span><span className="mx-1 h-1 w-1 rounded-full bg-zinc-300" /><Wallet size={14} /><span>Shared savings</span></div>
-
-            <div className="mt-5 flex gap-2 border-t border-zinc-100 pt-4">
-              <button onClick={() => router.push(`/group/${group.groupCode}`)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#101014] px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-[#292638]">Open group <ArrowUpRight size={14} /></button>
-              <button onClick={() => { setSelectedGroup(group); setOpenPopup(true); }} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#dedbff] bg-[#f7f6ff] px-3 py-2.5 text-xs font-semibold text-[#4F47EA] transition hover:bg-[#eeecff]"><Plus size={14} /> Add member</button>
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-zinc-500"><span className="inline-flex items-center gap-1.5"><Users size={14} /> {group.groupmember?.length || 0} members</span><span className="h-1 w-1 rounded-full bg-zinc-300" /><span className="inline-flex items-center gap-1.5"><Wallet size={14} /> Shared savings</span></div>
+            <div className="mt-5 flex gap-3 border-t border-zinc-100 pt-4">
+              <button onClick={() => router.push(`/group/${group.groupCode}`)} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#101014] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-[#292638]">Open group <ArrowUpRight size={15} /></button>
+              <button onClick={() => { setSelectedGroup(group); setOpenPopup(true); }} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#dedbff] bg-[#f7f6ff] px-3 py-2.5 text-sm font-semibold text-[#4F47EA] transition hover:bg-[#eeecff]"><Plus size={15} /> Add member</button>
             </div>
           </article>
         ))}
