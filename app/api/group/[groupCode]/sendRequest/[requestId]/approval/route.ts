@@ -118,6 +118,16 @@ export async function PATCH(
             where: { id: requestId, status: "PENDING" },
             data: { status: "REJECTED", actionAt: new Date() },
           });
+          await tx.notification.create({
+            data: {
+              userId: request.userId,
+              groupId: request.groupId,
+              requestId: request.id,
+              type: "REQUEST_REJECTED",
+              title: "Money request rejected",
+              message: `Your request for ₹${request.amount} was rejected by a group member.`,
+            },
+          });
           return {
             success: true,
             requestStatus: "REJECTED" as const,
