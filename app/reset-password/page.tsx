@@ -1,10 +1,10 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
   const [password, setPassword] = useState("");
@@ -58,5 +58,13 @@ export default function ResetPasswordPage() {
         <Link href="/signin" className="mt-5 inline-block text-sm text-zinc-400 hover:text-white">Back to sign in</Link>
       </section>
     </main>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<main className="flex min-h-screen items-center justify-center bg-[#09090b] text-sm text-zinc-400">Loading reset form...</main>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
