@@ -250,7 +250,11 @@ export default function Dashboard() {
         <StatCard label="Pending Payments" value={String(pendingTransactions.length)} detail={money(pendingTransactions.reduce((s, t) => s + Number(t.amount || 0), 0)) + " awaiting status"} icon={Clock3} />
       </div>
       <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
-        <section className="rounded-2xl border border-zinc-800 bg-[#101014] p-5"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold text-white">Your Groups</h2><button onClick={() => setPage("group")} className="text-sm text-[#a49fff]">View all</button></div>
+        <section className="rounded-2xl border border-zinc-800 bg-[#101014] p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-white">Your Groups</h2>
+            <button onClick={() => setPage("group")} className="text-sm text-black">View all</button>
+            </div>
           {groupsLoading ? <p className="text-sm text-zinc-500">Loading groups…</p> : groupsError ? <p className="text-sm text-red-400">{groupError.message}</p> : groups.length ? <div className="space-y-3">{groups.slice(0, 4).map((group: any) => <div key={group.id} className="flex items-center justify-between rounded-xl border border-zinc-800 p-3"><div><p className="font-medium text-white">{group.groupName}</p><p className="mt-1 text-xs text-zinc-500">{group.groupmember?.length || 0} members · {money(Number(group.monthlyContribution || 0))}/month</p></div><button onClick={() => router.push(`/group/${group.groupCode}`)} className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-black">Open</button></div>)}</div> : <EmptyState title="No groups yet" detail="Create a savings group or join one with your friends." />}</section>
         <section className="rounded-2xl border border-zinc-800 bg-[#101014] p-5"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold text-white">Recent Activity</h2><button onClick={() => setPage("activity")} className="text-sm text-[#a49fff]">View all</button></div>{transactionsLoading ? <p className="text-sm text-zinc-500">Loading activity…</p> : transactionRows(transactions.slice(0, 3))}</section>
       </div>
