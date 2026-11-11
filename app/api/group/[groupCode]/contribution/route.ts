@@ -2,7 +2,6 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { Prisma } from "@/app/generated/prisma/client";
 
 export async function POST(req: Request, { params }: { params: Promise<{ groupCode: string }> }) {
     try {
@@ -72,7 +71,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
             }, { status: 201 });
         } catch (error) {
             // The database partial unique index is the final guard against concurrent duplicate requests.
-            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+            if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
                 const contribution = await prisma.contribution.findFirst({
                     where: { userId: user.id, groupId: group.id, month, requestId: null },
                 });
