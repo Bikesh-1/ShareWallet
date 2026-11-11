@@ -44,9 +44,11 @@ export default function LoginNavbar() {
       }
     };
     loadUnreadCount();
+    window.addEventListener("sharewallet:notifications-updated", loadUnreadCount);
     const interval = window.setInterval(loadUnreadCount, 30000);
     return () => {
       active = false;
+      window.removeEventListener("sharewallet:notifications-updated", loadUnreadCount);
       window.clearInterval(interval);
     };
   }, []);
