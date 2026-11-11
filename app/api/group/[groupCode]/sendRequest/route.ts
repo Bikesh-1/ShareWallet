@@ -82,9 +82,15 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
             },
         });
 
-        if (members.length === 0) {
-            return NextResponse.json({ error: "No group members found", }, { status: 400 });
+        if (members.length < 2) {
+            return NextResponse.json(
+                { error: "At least one other group member is required to approve a money request." },
+                { status: 400 }
+            );
         }
+
+        // The requester must never be able to approve their own money request.
+        const approvers = members.filter((member) => member.id !== user.id);
 
         const result = await prisma.$transaction(
             async (tx) => {
@@ -101,7 +107,7 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
 
                 const baseAmount = Math.floor(amount / members.length);
                 const remainder = amount % members.length;
-                const approvalData = members.map(
+                const approvalData = approvers.map(
                     (member) => ({
                         requestId: request.id,
                         userId: member.id,
