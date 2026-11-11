@@ -2,7 +2,7 @@
 
 import { signOut } from "next-auth/react";
 import { Bell, Plus, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useUserDetails } from "@/hooks/useUserDetails";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ export default function LoginNavbar() {
   const router = useRouter();
   const [popup, setPopup] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [name, setName] = useState("");
   const [dateOfbirth, setDateOfbirth] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -29,6 +30,31 @@ export default function LoginNavbar() {
     },
     onError: (error: Error) => toast.error(error.message),
   });
+
+  useEffect(() => {
+    let active = true;
+    const loadUnreadCount = async () => {
+      try {
+        const response = await fetch("/api/notifications", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (active) setUnreadCount(Number(data.unreadCount || 0));
+      } catch {
+        // Keep the navbar usable if notifications are temporarily unavailable.
+      }
+    };
+    loadUnreadCount();
+    const interval = window.setInterval(loadUnreadCount, 30000);
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  const openNotifications = () => {
+    window.dispatchEvent(new Event("sharewallet:notifications"));
+    setMobileMenuOpen(false);
+  };
 
   const handleUserdetails = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,11 +108,12 @@ export default function LoginNavbar() {
           </button>
           <button
             type="button"
-            onClick={() => router.push("/dashboard")}
-            aria-label="Notifications"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#dadada] bg-white text-[#171717] transition hover:bg-zinc-50"
+            onClick={openNotifications}
+            aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#dadada] bg-white text-[#171717] transition hover:bg-zinc-50"
           >
             <Bell size={18} />
+            {unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{unreadCount > 99 ? "99+" : unreadCount}</span>}
           </button>
           <button
             type="button"
@@ -110,7 +137,7 @@ export default function LoginNavbar() {
             </button>
             <button
               type="button"
-              onClick={() => { router.push("/dashboard"); setMobileMenuOpen(false); }}
+              onClick={openNotifications}
               className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100"
             >
               <Bell size={17} /> Notifications
