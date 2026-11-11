@@ -82,6 +82,7 @@ export default function Signin() {
                         <div className="w-80 flex justify-end mt-2">
                             <button
                                 type="button"
+                                onClick={() => router.push("/forgot-password")}
                                 className="text-sm text-stone-400 hover:text-white cursor-pointer">
                                 Forgot password?
                             </button>
