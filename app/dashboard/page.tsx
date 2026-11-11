@@ -49,6 +49,17 @@ type Transaction = {
   request?: { reason?: string; month?: string } | null;
 };
 
+type NotificationItem = {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+  group?: { id: string; groupName: string; groupCode: string } | null;
+  request?: { id: string; reason: string; amount: string; status: string } | null;
+};
+
 const money = (value: number) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value || 0);
 
@@ -92,6 +103,9 @@ export default function Dashboard() {
   const [groupSearch, setGroupSearch] = useState("");
   const [transactionFilter, setTransactionFilter] = useState("ALL");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const [notificationsError, setNotificationsError] = useState("");
   const [transactionsLoading, setTransactionsLoading] = useState(false);
   const [transactionsError, setTransactionsError] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
@@ -132,6 +146,47 @@ export default function Dashboard() {
     loadTransactions();
     return () => { active = false; };
   }, [refreshKey]);
+
+  useEffect(() => {
+    const openNotifications = () => setPage("notification");
+    window.addEventListener("sharewallet:notifications", openNotifications);
+    return () => window.removeEventListener("sharewallet:notifications", openNotifications);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    async function loadNotifications() {
+      setNotificationsLoading(true);
+      setNotificationsError("");
+      try {
+        const response = await fetch("/api/notifications", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not load notifications");
+        if (active) setNotifications(data.notifications || []);
+      } catch (error) {
+        if (active) setNotificationsError(error instanceof Error ? error.message : "Could not load notifications");
+      } finally {
+        if (active) setNotificationsLoading(false);
+      }
+    }
+    loadNotifications();
+    return () => { active = false; };
+  }, [refreshKey]);
+
+  async function markNotificationRead(id?: string) {
+    try {
+      const response = await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(id ? { id } : { markAllRead: true }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not update notification");
+      setNotifications((current) => current.map((item) => !id || item.id === id ? { ...item, read: true } : item));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not update notification");
+    }
+  }
 
   const addFriendMutation = useMutation({
     mutationFn: createFriend,
@@ -226,10 +281,23 @@ export default function Dashboard() {
     </div>;
 
     if (page === "notification") return <div>
-      <PanelHeader title="Notifications" description="Payment updates and pending transaction alerts from your account." action={
-        <button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> Check updates</button>} />
-      {transactionsLoading ? <p className="text-zinc-400">Checking for updates…</p> : transactionsError ? <p className="text-red-400">{transactionsError}</p> : pendingTransactions.length ? <div className="space-y-3">{pendingTransactions.map((item) => <div key={item.id} className="flex gap-3 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4"><Clock3 className="mt-1 shrink-0 text-amber-300" size={19} /><div><p className="font-medium text-black">Payment pending</p><p className="mt-1 text-sm text-zinc-400">{money(Number(item.amount || 0))} · {item.group?.groupName || "ShareWallet transaction"}</p><p className="mt-1 text-xs text-zinc-500">{new Date(item.createdAt).toLocaleString()}</p></div></div>)}</div> : <EmptyState title="You're all caught up" detail="There are no pending transaction alerts right now." />}
-      <p className="mt-4 text-xs text-zinc-600">This view currently displays pending payment alerts available from your transaction history. Dedicated push/in-app notification records are not configured in the existing API.</p>
+      <PanelHeader title="Notifications" description="Payment updates and important activity from your ShareWallet account." action={
+        <div className="flex flex-wrap gap-2">
+          {notifications.some((item) => !item.read) && <button onClick={() => markNotificationRead()} className="rounded-xl bg-[#4F47EA] px-3 py-2.5 text-sm font-semibold text-white">Mark all as read</button>}
+          <button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-300 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> Refresh</button>
+        </div>} />
+      {notificationsLoading ? <p className="text-sm text-zinc-500">Loading notifications…</p> : notificationsError ? <p className="text-sm text-red-500">{notificationsError}</p> : notifications.length ? <div className="space-y-3">
+        {notifications.map((item) => <article key={item.id} className={`flex gap-3 rounded-2xl border p-4 ${item.read ? "border-zinc-200 bg-white" : "border-[#4F47EA]/30 bg-[#4F47EA]/5"}`}>
+          <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${item.read ? "bg-zinc-300" : "bg-[#4F47EA]"}`} />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-start justify-between gap-2"><p className="font-semibold text-[#171717]">{item.title}</p>{!item.read && <span className="rounded-full bg-[#4F47EA]/10 px-2 py-1 text-[10px] font-semibold text-[#4F47EA]">NEW</span>}</div>
+            <p className="mt-1 text-sm text-zinc-600">{item.message}</p>
+            {item.group?.groupName && <p className="mt-1 text-xs text-zinc-500">Group: {item.group.groupName}</p>}
+            <p className="mt-2 text-xs text-zinc-400">{new Date(item.createdAt).toLocaleString()}</p>
+          </div>
+          {!item.read && <button onClick={() => markNotificationRead(item.id)} className="shrink-0 self-center rounded-lg border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 hover:bg-zinc-100">Mark read</button>}
+        </article>)}
+      </div> : <EmptyState title="You're all caught up" detail="New payment and account updates will appear here." />}
     </div>;
 
     if (page === "profile") return <div>
