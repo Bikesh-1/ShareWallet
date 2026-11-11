@@ -77,17 +77,15 @@ export async function GET(
           sender: {
             select: {
               id: true,
-              userdetails: true,
-              email: true,
-            },
+              userdetails: { select: { name: true, profilephoto: true } },
+              },
           },
 
           receiver: {
             select: {
               id: true,
-              userdetails: true,
-              email: true,
-            },
+              userdetails: { select: { name: true, profilephoto: true } },
+              },
           },
 
           request: {

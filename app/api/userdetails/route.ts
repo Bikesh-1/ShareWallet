@@ -6,6 +6,14 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const { name, mobileNumber, dateOfbirth } = await req.json()
+        if (
+            typeof name !== "string" || name.trim().length < 2 || name.trim().length > 80 ||
+            typeof mobileNumber !== "string" || !/^\+?[0-9\s-]{10,16}$/.test(mobileNumber) ||
+            typeof dateOfbirth !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dateOfbirth) ||
+            Number.isNaN(Date.parse(dateOfbirth))
+        ) {
+            return NextResponse.json({ error: "Please provide a valid name, mobile number and date of birth." }, { status: 400 })
+        }
         const session = await getServerSession(authOptions);
         if (!session?.user?.email) {
             return NextResponse.json(
@@ -108,8 +116,25 @@ export async function GET(req: Request) {
             where: {
                 user_id: userExist.id,
             },
-            include: {
-                user: true,
+            select: {
+                id: true,
+                user_id: true,
+                name: true,
+                mobileNumber: true,
+                isprofileCompleted: true,
+                profilephoto: true,
+                dateOfbirth: true,
+                createdAt: true,
+                updatedAt: true,
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                        coustumerId: true,
+                        isVerfied: true,
+                        isCompleteProfile: true,
+                    },
+                },
             },
         });
 

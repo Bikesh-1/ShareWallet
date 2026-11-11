@@ -7,7 +7,14 @@ import { sendVerificationEmail } from "@/lib/sendEmail";
 
 export async function POST(req: Request) {
     try {
-        const { email, password } = await req.json();
+        const { email: rawEmail, password } = await req.json();
+        const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
+        if (
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+            typeof password !== "string" || password.length < 8 || password.length > 128
+        ) {
+            return NextResponse.json({ error: "Enter a valid email and a password between 8 and 128 characters." }, { status: 400 });
+        }
         const userExist = await prisma.user.findUnique({
             where: {
                 email,

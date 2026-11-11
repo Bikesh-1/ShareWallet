@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import { settleInternalWalletRequest } from "@/lib/payout/settleInternalWalletRequest";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
@@ -117,7 +118,6 @@ export async function PATCH(
             where: { id: requestId, status: "PENDING" },
             data: { status: "REJECTED", actionAt: new Date() },
           });
-
           return {
             success: true,
             requestStatus: "REJECTED" as const,
@@ -126,79 +126,14 @@ export async function PATCH(
           };
         }
 
-        if (!allApproved) {
-          return {
-            success: true,
-            requestStatus: "PENDING" as const,
-            walletCredited: false,
-            message: "Approval recorded. Waiting for other group members.",
-          };
-        }
-
-        // Claim finalization once. This prevents duplicate wallet credits on retries.
-        const claimedRequest = await tx.sentrequest.updateMany({
-          where: { id: requestId, status: "PENDING" },
-          data: { status: "ACCEPTED", actionAt: new Date() },
-        });
-
-        if (claimedRequest.count !== 1) {
-          return {
-            error: "This request has already been finalized.",
-            statusCode: 409 as const,
-          };
-        }
-
-        const amount = Number(request.amount);
-        if (!Number.isSafeInteger(amount) || amount <= 0) {
-          throw new Error("Invalid request amount");
-        }
-
-        // Deduct from the group's pooled savings before crediting the requester.
-        const deducted = await tx.group.updateMany({
-          where: { id: group.id, totalAmount: { gte: amount } },
-          data: { totalAmount: { decrement: amount } },
-        });
-
-        if (deducted.count !== 1) {
-          throw new Error("Insufficient group balance to approve this request");
-        }
-
-        await tx.user.update({
-          where: { id: request.userId },
-          data: { walletBalance: { increment: amount } },
-        });
-
-        await tx.transaction.create({
-          data: {
-            groupId: group.id,
-            receiverId: request.userId,
-            amount,
-            type: "PAYOUT",
-            status: "SUCCESS",
-            requestId: request.id,
-            provider: "SHAREWALLET",
-            providerReference: `INTERNAL_WALLET_${request.id}`,
-            payoutKey: `GROUP_REQUEST_${request.id}`,
-          },
-        });
-
-        await tx.notification.create({
-          data: {
-            userId: request.userId,
-            groupId: group.id,
-            requestId: request.id,
-            type: "PAYOUT_SUCCESS",
-            title: "Money request approved",
-            message: `Your group approved ₹${amount}. The amount has been credited to your ShareWallet balance.`,
-          },
-        });
-
         return {
           success: true,
-          requestStatus: "ACCEPTED" as const,
-          walletCredited: true,
-          amountCredited: amount,
-          message: "All members approved. Amount credited to the requester's ShareWallet.",
+          requestStatus: "PENDING" as const,
+          walletCredited: false,
+          allApproved,
+          message: allApproved
+            ? "All members approved. Waiting for the requested contributions to be collected."
+            : "Approval recorded. Waiting for other group members.",
         };
       },
       { isolationLevel: "Serializable" }
@@ -206,6 +141,23 @@ export async function PATCH(
 
     if ("error" in result) {
       return NextResponse.json({ error: result.error }, { status: result.statusCode });
+    }
+
+    if ("allApproved" in result && result.allApproved) {
+      const settlement = await settleInternalWalletRequest(requestId);
+      if (settlement.settled) {
+        return NextResponse.json({
+          success: true,
+          requestStatus: "ACCEPTED",
+          walletCredited: true,
+          amountCredited: settlement.amountCredited,
+          message: "All members approved and the amount has been credited to the requester's ShareWallet.",
+        }, { status: 200 });
+      }
+      return NextResponse.json({
+        ...result,
+        message: "All members approved. The request will be credited automatically once enough contributions are collected.",
+      }, { status: 200 });
     }
 
     return NextResponse.json(result, { status: 200 });

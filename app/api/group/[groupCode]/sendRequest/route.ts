@@ -18,12 +18,16 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
         }
 
         const body = await req.json();
-        const reason = body?.reason?.trim();
+        const reason = typeof body?.reason === "string" ? body.reason.trim() : "";
         const amount = Number(body?.amount);
         const month = body?.month || new Date().toISOString().slice(0, 7);
 
-        if (!reason) {
-            return NextResponse.json({ error: "Reason is required", }, { status: 400 });
+        if (typeof reason !== "string" || reason.length < 5 || reason.length > 500) {
+            return NextResponse.json({ error: "Reason must be between 5 and 500 characters." }, { status: 400 });
+        }
+
+        if (typeof month !== "string" || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+            return NextResponse.json({ error: "Month must use YYYY-MM format." }, { status: 400 });
         }
 
         if (!Number.isSafeInteger(amount) || amount <= 0) {

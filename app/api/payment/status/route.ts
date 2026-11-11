@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { cashfreeConfig } from "@/lib/cashfree/config";
 import { getServerSession } from "next-auth";
+import { settleInternalWalletRequest } from "@/lib/payout/settleInternalWalletRequest";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -84,7 +85,12 @@ export async function GET(req: Request) {
             where: { id: contributionId },
           });
 
-          if (!contribution || contribution.userId !== user.id) {
+          if (
+            !contribution ||
+            contribution.userId !== user.id ||
+            contribution.amount !== transaction.amount ||
+            contribution.groupId !== transaction.groupId
+          ) {
             throw new Error("Matching contribution not found for verified Cashfree order");
           }
 
@@ -93,22 +99,31 @@ export async function GET(req: Request) {
             data: { status: "PAID", paidAt: new Date() },
           });
 
-          if (updatedContribution.count === 1) {
-            await tx.group.update({
-              where: { id: contribution.groupId },
-              data: { totalAmount: { increment: contribution.amount } },
-            });
-            await tx.notification.create({
-              data: {
-                userId: user.id,
-                groupId: contribution.groupId,
-                type: "PAYMENT_SUCCESS",
-                title: "Contribution successful",
-                message: `Your contribution of ₹${contribution.amount} has been received.`,
-              },
-            });
+          if (updatedContribution.count !== 1) {
+            throw new Error("Contribution has already been processed by another payment");
           }
+
+          await tx.group.update({
+            where: { id: contribution.groupId },
+            data: { totalAmount: { increment: contribution.amount } },
+          });
+          await tx.notification.create({
+            data: {
+              userId: user.id,
+              groupId: contribution.groupId,
+              type: "PAYMENT_SUCCESS",
+              title: "Contribution successful",
+              message: `Your contribution of ₹${contribution.amount} has been received.`,
+            },
+          });
         });
+        const contributionForSettlement = await prisma.contribution.findUnique({
+          where: { id: orderId.slice("SW_CONTRIBUTION_".length).replace(/_\d+$/, "") },
+          select: { requestId: true },
+        });
+        if (contributionForSettlement?.requestId) {
+          await settleInternalWalletRequest(contributionForSettlement.requestId);
+        }
       } else if (order.order_status === "EXPIRED" || order.order_status === "TERMINATED") {
         await prisma.transaction.updateMany({
           where: { id: transaction.id, status: "PENDING" },

@@ -124,7 +124,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
         const contributionDetails = await prisma.contribution.findMany({
             where: { groupId: group.id },
             include: {
-                user: { include: { userdetails: true } },
+                user: {
+                            select: {
+                                id: true,
+                                email: true,
+                                coustumerId: true,
+                                userdetails: { select: { name: true, profilephoto: true } },
+                            },
+                        },
             },
             orderBy: { month: "desc" },
         });

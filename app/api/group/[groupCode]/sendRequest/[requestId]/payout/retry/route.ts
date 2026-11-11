@@ -1,6 +1,5 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { processPayout } from "@/lib/payout/processPayout";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -97,9 +96,7 @@ export async function POST(
       );
     }
 
-    const result = await processPayout(
-      transaction.id
-    );
+    return NextResponse.json({ error: "Emergency-fund payouts are credited to the ShareWallet internal wallet during approval. External Cashfree payouts are disabled." }, { status: 410 });
 
     return NextResponse.json(result, {
       status: 200,

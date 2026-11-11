@@ -90,31 +90,37 @@ export async function GET(
                 },
                 include: {
                     user: {
-                        include: {
-                            userdetails:
-                                true,
+                            select: {
+                                id: true,
+                                email: true,
+                                coustumerId: true,
+                                userdetails: { select: { name: true, profilephoto: true } },
+                            },
                         },
-                    },
 
                     approvals: {
                         include: {
                             user: {
-                                include: {
-                                    userdetails:
-                                        true,
-                                },
+                            select: {
+                                id: true,
+                                email: true,
+                                coustumerId: true,
+                                userdetails: { select: { name: true, profilephoto: true } },
                             },
+                        },
                         },
                     },
 
                     contributions: {
                         include: {
                             user: {
-                                include: {
-                                    userdetails:
-                                        true,
-                                },
+                            select: {
+                                id: true,
+                                email: true,
+                                coustumerId: true,
+                                userdetails: { select: { name: true, profilephoto: true } },
                             },
+                        },
                         },
                     },
                 },
