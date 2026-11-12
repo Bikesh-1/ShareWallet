@@ -3,6 +3,7 @@
 import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import Navbar from "@/components/navbar";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -39,23 +40,37 @@ function ResetPasswordForm() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-white px-4 py-10 text-black">
-      <section className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-7 shadow-xl shadow-black/5">
-        <p className="text-sm font-semibold text-[#6D4DFE]">ShareWallet</p>
-        <h1 className="mt-4 text-2xl font-bold">Set a new password</h1>
-        <p className="mt-2 text-sm text-gray-500">Choose a strong password with at least 8 characters.</p>
+    <main className="flex min-h-screen items-center justify-center  px-4 py-10 text-black">
+      <Navbar/>
+            <div
+                className="absolute inset-0 -z-1"
+                style={{
+                    backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
+                    backgroundSize: "20px 20px",
+                    backgroundPosition: "0 0, 0 0",
+                    maskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),
+                    repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),
+                    radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)`,
+                    WebkitMaskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)`,
+                    maskComposite: "intersect",
+                    WebkitMaskComposite: "source-in",
+                }}
+            />
+      <section className="w-full max-w-md rounded-2xl border border-black/10 bg-black p-7 shadow-xl shadow-black/5">
+        <h1 className="mt-4 text-2xl font-bold text-white">Set a new password</h1>
+        <p className="mt-2 text-sm text-white">Choose a strong password with at least 8 characters.</p>
         <form onSubmit={submit} className="mt-6 space-y-4">
-          <label className="block text-sm font-medium text-gray-700">New password
-            <input required minLength={8} maxLength={128} type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-black outline-none focus:border-[#6D4DFE] focus:ring-2 focus:ring-[#6D4DFE]/15" />
+          <label className="block text-sm font-medium text-white">New password
+            <input required minLength={8} maxLength={128} type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-lg border border-gray-300 bg-black px-3 py-3 text-white outline-none " />
           </label>
-          <label className="block text-sm font-medium text-gray-700">Confirm password
-            <input required minLength={8} maxLength={128} type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-black outline-none focus:border-[#6D4DFE] focus:ring-2 focus:ring-[#6D4DFE]/15" />
+          <label className="block text-sm font-medium text-white">Confirm password
+            <input required minLength={8} maxLength={128} type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-2 w-full rounded-lg border border-gray-300 bg-black px-3 py-3 text-white outline-none " />
           </label>
           {message && <p role="status" className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">{message}</p>}
           {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>}
-          <button disabled={loading || !token} className="w-full rounded-lg bg-[#6D4DFE] px-4 py-3 font-semibold text-white transition hover:bg-[#5940df] disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Updating..." : "Reset password"}</button>
+          <button disabled={loading || !token} className="w-full rounded-lg bg-white px-4 py-3 font-semibold text-black transition hover:bg-[#5940df] disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Updating..." : "Reset password"}</button>
         </form>
-        <Link href="/signin" className="mt-5 inline-block text-sm text-gray-500 hover:text-[#6D4DFE]">Back to sign in</Link>
+        <Link href="/signin" className="mt-5 inline-block text-sm text-white">Back to sign in</Link>
       </section>
     </main>
   );
