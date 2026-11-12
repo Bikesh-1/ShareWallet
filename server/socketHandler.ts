@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { getToken } from "next-auth/jwt";
+import { decode } from "next-auth/jwt";
 import prisma from "@/lib/prisma";
 
 interface GroupPayload { groupCode: string }
@@ -8,27 +8,36 @@ interface MessagePayload { message: string }
 const onlineUsers = new Map<string, Map<string, number>>();
 
 export function registerSocketHandlers(io: Server) {
-  // Authenticate every socket using the same NextAuth session cookie as the web app.
+  // Render is a separate domain, so it cannot receive the browser's Vercel
+  // NextAuth cookie. Authenticate with a short-lived token issued by the app.
   io.use(async (socket, next) => {
     try {
-      const token = await getToken({
-        req: socket.request as any,
-        secret: process.env.NEXTAUTH_SECRET,
-      });
+      const secret = process.env.NEXTAUTH_SECRET;
+      const authToken = socket.handshake.auth?.token;
+
+      if (!secret || typeof authToken !== "string") {
+        return next(new Error("Unauthorized"));
+      }
+
+      const token = await decode({ token: authToken, secret });
       const userId = token?.id ?? token?.sub;
+
       if (!userId || typeof userId !== "string") {
         return next(new Error("Unauthorized"));
       }
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { id: true, userdetails: { select: { name: true, profilephoto: true } } },
       });
       if (!user) return next(new Error("Unauthorized"));
+
       socket.data.userId = user.id;
       socket.data.userName = user.userdetails?.name ?? "ShareWallet member";
       socket.data.profilePhoto = user.userdetails?.profilephoto ?? null;
       next();
-    } catch {
+    } catch (error) {
+      console.error("SOCKET AUTH ERROR:", error);
       next(new Error("Authentication failed"));
     }
   });
@@ -51,7 +60,6 @@ export function registerSocketHandlers(io: Server) {
         });
         if (!group) return socket.emit("group-error", { message: "You are not a member of this group." });
 
-        // Keep one active group per socket to make presence accounting deterministic.
         const previousGroup = socket.data.groupCode as string | undefined;
         if (previousGroup && previousGroup !== group.groupCode) {
           socket.leave(previousGroup);
@@ -115,7 +123,6 @@ export function registerSocketHandlers(io: Server) {
       if (!message || message.length > 4000) return socket.emit("message-error", { message: "Message must contain 1–4000 characters." });
 
       try {
-        // Persist first; never broadcast a message that failed to save.
         const saved = await prisma.message.create({
           data: { groupId, userId: socket.data.userId, message },
           include: { user: { include: { userdetails: true } } },
