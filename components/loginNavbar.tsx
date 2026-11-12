@@ -18,8 +18,14 @@ export default function LoginNavbar() {
   const [name, setName] = useState("");
   const [dateOfbirth, setDateOfbirth] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails, isPending: isUserDetailsPending, isError: isUserDetailsError } = useUserDetails();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!isUserDetailsPending && !isUserDetailsError && (!userDetails || !userDetails.isprofileCompleted)) {
+      setPopup(true);
+    }
+  }, [isUserDetailsPending, isUserDetailsError, userDetails]);
 
   const mutation = useMutation({
     mutationFn: createUserDetails,
@@ -91,13 +97,13 @@ export default function LoginNavbar() {
           <button
             type="button"
             onClick={() => setPopup(true)}
-            disabled={!!userDetails}
-            className={`hidden rounded-xl border px-3 py-2 text-sm font-medium transition sm:inline-flex ${userDetails
+            disabled={!!userDetails?.isprofileCompleted}
+            className={`hidden rounded-xl border px-3 py-2 text-sm font-medium transition sm:inline-flex ${userDetails?.isprofileCompleted
               ? "cursor-not-allowed border-[#dadada] bg-white text-zinc-500"
               : "border-[#dadada] bg-white text-[#171717] hover:bg-zinc-50"
             }`}
           >
-            {userDetails ? "Details Added" : "Add Details"}
+            {userDetails?.isprofileCompleted ? "Details Added" : "Add Details"}
           </button>
           <button
             type="button"
@@ -131,11 +137,11 @@ export default function LoginNavbar() {
             <button
               type="button"
               onClick={() => { setPopup(true); setMobileMenuOpen(false); }}
-              disabled={!!userDetails}
+              disabled={!!userDetails?.isprofileCompleted}
               className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100 disabled:text-zinc-400"
             >
-              {userDetails ? "Profile details added" : "Add your profile details"}
-              <span className="text-xs text-zinc-400">{userDetails ? "Complete" : "Required"}</span>
+              {userDetails?.isprofileCompleted ? "Profile details added" : "Add your profile details"}
+              <span className="text-xs text-zinc-400">{userDetails?.isprofileCompleted ? "Complete" : "Required"}</span>
             </button>
             <button
               type="button"
@@ -150,25 +156,25 @@ export default function LoginNavbar() {
 
       {popup && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-[#101014] p-6 shadow-2xl sm:p-8">
-            <h2 className="text-center text-2xl font-bold text-white">Complete Your Profile</h2>
-            <p className="mt-2 text-center text-sm text-zinc-400">Fill in your details to continue.</p>
+          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 text-black shadow-2xl sm:p-8">
+            <h2 className="text-center text-2xl font-bold text-black">Complete Your Profile</h2>
+            <p className="mt-2 text-center text-sm text-zinc-600">Fill in your details to continue.</p>
             <form onSubmit={handleUserdetails} className="mt-6 flex flex-col gap-5">
               <div>
-                <label className="mb-2 block text-sm text-zinc-200">Full Name</label>
-                <input required type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#6d63ef]" />
+                <label className="mb-2 block text-sm text-zinc-800">Full Name</label>
+                <input required type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm text-black outline-none transition focus:border-[#6d63ef]" />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-zinc-200">Date of Birth</label>
+                <label className="mb-2 block text-sm text-zinc-800">Date of Birth</label>
                 <input required type="date" value={dateOfbirth} onChange={(e) => setDateOfbirth(e.target.value)} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#6d63ef]" />
               </div>
               <div>
-                <label className="mb-2 block text-sm text-zinc-200">Mobile Number</label>
+                <label className="mb-2 block text-sm text-zinc-800">Mobile Number</label>
                 <input required type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} placeholder="9876543210" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value.replace(/\\D/g, "").slice(0, 10))} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#6d63ef]" />
               </div>
               <div className="mt-1 flex gap-3">
                 <button disabled={mutation.isPending} type="submit" className="flex-1 rounded-xl bg-[#4F47EA] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4038d5] disabled:opacity-60">{mutation.isPending ? "Saving..." : "Save Details"}</button>
-                <button type="button" onClick={() => setPopup(false)} className="flex-1 rounded-xl border border-zinc-700 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800">Cancel</button>
+                <button type="button" onClick={() => setPopup(false)} className="flex-1 rounded-xl border border-zinc-300 px-3 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-100">Cancel</button>
               </div>
             </form>
           </div>
