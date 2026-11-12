@@ -108,7 +108,7 @@ export default function LoginNavbar() {
           <button
             type="button"
             onClick={() => router.push("/creategroup")}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F47EA] px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#4038d5] sm:px-4"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-black px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition  sm:px-4"
           >
             <Plus size={16} />
             <span className="hidden xs:inline sm:inline">Create Group</span>
