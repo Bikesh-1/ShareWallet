@@ -259,335 +259,149 @@ export default function GroupPage() {
 
 
   return (
-    <div className="relative flex h-screen w-full flex-col overflow-hidden  text-[#111111]">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.045) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.045) 1px, transparent 1px)`,
-          backgroundSize: "28px 28px",
-          backgroundPosition: "0 0, 0 0",
-          maskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 100% 100%, #000 50%, transparent 90%)`,
-          WebkitMaskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 100% 100%, #000 50%, transparent 90%)`,
-          maskComposite: "intersect",
-          WebkitMaskComposite: "source-in",
-        }}
-      />
-      <div className="relative z-10">
-        <LoginNavbar />
-      </div>
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#080808] text-white">
+      <div className="pointer-events-none fixed inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(circle at 12% 0%, rgba(34,197,94,0.10), transparent 28%), radial-gradient(circle at 90% 12%, rgba(34,197,94,0.06), transparent 24%)" }} />
+      <div className="relative z-20"><LoginNavbar /></div>
 
-
-      <div className="relative z-10 mx-auto grid h-[calc(100vh-5rem)] min-h-0 w-full max-w-[1600px] flex-1 grid-rows-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-4 overflow-hidden px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,1.9fr)_minmax(320px,0.9fr)] lg:grid-rows-1 lg:gap-6 lg:px-8 lg:py-5">
-        <div className="min-h-0 min-w-0 h-full w-full overflow-y-auto overscroll-contain rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-7 lg:p-8">
-
-          <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-green-400">SHAREWALLET · SAVINGS GROUP</p>
-              <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl">
-                {groupDetails.groupName}
-              </h1>
-              <p className="mt-2 text-sm text-gray-400 sm:text-base">
-                Manage your monthly savings group.
-              </p>
+      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pt-9">
+        <div className="mb-7 flex flex-col gap-5 border-b border-white/10 pb-7 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-green-400">
+              <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px_rgba(74,222,128,.8)]" />
+              ShareWallet <span className="text-white/30">/</span> Savings group
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-[#245a3b] bg-[#10291b] px-3 py-2 text-xs font-semibold text-green-400">
-              <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.7)]" />
-              Group active
-            </div>
+            <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{groupDetails.groupName}</h1>
+            <p className="mt-2 max-w-2xl text-sm text-zinc-400 sm:text-base">A shared space to save together, stay on track and manage your group money.</p>
           </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-3.5 py-2 text-xs font-semibold text-green-400">
+              <span className="h-2 w-2 rounded-full bg-green-400" /> Group active
+            </span>
+            <button type="button" onClick={async () => {
+              try { await navigator.clipboard.writeText(groupDetails.groupCode); toast.success("Group code copied"); }
+              catch { toast.error("Unable to copy group code"); }
+            }} className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-green-500/40 hover:bg-green-500/5">
+              Invite code · {groupDetails.groupCode} <span className="ml-2 text-green-400">Copy ↗</span>
+            </button>
+          </div>
+        </div>
 
-          <div className="mt-8 space-y-0 rounded-2xl border border-[#242424] bg-[#101010] px-4 sm:px-5">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+          <section className="min-w-0 space-y-6">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-[#111] p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-zinc-500">Monthly contribution</p>
+                <p className="mt-3 text-2xl font-bold tracking-tight">₹{money(groupDetails.monthlyContribution)}</p>
+                <p className="mt-1 text-xs text-zinc-500">Per member · every month</p>
+              </div>
+              <div className="rounded-2xl border border-green-500/20 bg-gradient-to-br from-green-500/[0.10] to-[#111] p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-green-300/70">Total group amount</p>
+                <p className="mt-3 text-2xl font-bold tracking-tight text-green-400">₹{money(groupDetails.totalAmount)}</p>
+                <p className="mt-1 text-xs text-zinc-500">Current group total</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-[#111] p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-zinc-500">Group members</p>
+                <p className="mt-3 text-2xl font-bold tracking-tight">{groupDetails.groupmember.length}</p>
+                <p className="mt-1 text-xs text-zinc-500">Saving together</p>
+              </div>
+            </div>
 
-            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
-              <span className="text-gray-400">Group Code</span>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold tracking-wide">{groupDetails.groupCode}</span>
-                <button
-                  type="button"
-                  aria-label="Copy group code"
-                  title="Copy group code"
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(groupDetails.groupCode);
-                      toast.success("Group code copied");
-                    } catch {
-                      toast.error("Unable to copy group code");
-                    }
-                  }}
-                  className="rounded-lg border border-[#383838] bg-[#1b1b1b] px-3 py-1.5 text-xs font-medium text-gray-300 transition hover:border-green-500/60 hover:text-green-400"
-                >
-                  Copy
+            <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6">
+              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">Group workspace</p>
+                  <h2 className="mt-1 text-xl font-bold tracking-tight">What would you like to do?</h2>
+                  <p className="mt-1 text-sm text-zinc-500">Make a contribution, coordinate with members or request funds.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <button type="button" onClick={() => setOpenContri(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-green-500/30 bg-green-500/[0.09] p-4 text-left transition hover:-translate-y-0.5 hover:border-green-400/60 hover:bg-green-500/[0.14]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-400/15 text-lg text-green-400">＋</span>
+                  <span><span className="block font-semibold text-white">Contribute</span><span className="mt-1 block text-xs text-zinc-400">Add this month’s savings</span></span>
+                </button>
+                <button type="button" onClick={() => router.push(`/group/${groupCode}/message`)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-lg text-zinc-200">↗</span>
+                  <span><span className="block font-semibold text-white">Group chat</span><span className="mt-1 block text-xs text-zinc-400">Talk with your members</span></span>
+                </button>
+                <button type="button" onClick={() => setOpenRequest(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-rose-500/20 bg-rose-500/[0.06] p-4 text-left transition hover:-translate-y-0.5 hover:border-rose-400/40 hover:bg-rose-500/[0.10]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-500/15 text-lg text-rose-300">₹</span>
+                  <span><span className="block font-semibold text-white">Request money</span><span className="mt-1 block text-xs text-zinc-400">Ask the group for support</span></span>
                 </button>
               </div>
             </div>
 
-            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
-              <span className="text-gray-400">Monthly Contribution</span>
-              <span className="font-semibold">
-                ₹ {groupDetails.monthlyContribution}
-              </span>
-            </div>
-
-            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#252525] py-4 last:border-0">
-              <span className="text-gray-400">Total Amount</span>
-              <span className="font-semibold text-green-400">
-                ₹ {groupDetails.totalAmount}
-              </span>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Description</p>
-              <p className="leading-7 text-gray-300">
-                {groupDetails.description}
-              </p>
-            </div>
-
-          </div>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setOpenContri(true)}
-              className="w-full rounded-xl border border-white bg-white px-5 py-3 text-sm font-semibold text-black shadow-lg shadow-white/5 transition hover:-translate-y-0.5 hover:bg-gray-100 sm:w-auto"
-            >
-              Contribute
-            </button>
-
-
-            <button onClick={() => router.push(`/group/${groupCode}/message`)} className="w-full rounded-xl border border-[#3a3a3a] bg-[#151515] px-5 py-3 text-sm font-semibold text-white transition hover:border-gray-500 hover:bg-[#202020] sm:w-auto">
-              Message
-            </button>
-
-            <button onClick={() => setOpenRequest(true)} className="w-full rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-red-950/30 transition hover:-translate-y-0.5 hover:bg-red-500 sm:w-auto">
-              Request Money
-            </button>
-
-          </div>
-          <div className="mt-8 rounded-2xl border border-[#292929] bg-gradient-to-br from-[#151515] to-[#090909] p-4 shadow-inner sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-              <div>
-                <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">Group Financial Overview</h2>
-                <p className="text-xs text-gray-500 mt-1">Only confirmed payments are counted in received and wallet totals.</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => router.push(`/group/${groupCode}/transactions`)}
-                className="rounded-xl border border-[#414141] bg-[#171717] px-4 py-2.5 text-sm font-medium text-white transition hover:border-[#666] hover:bg-[#242424]"
-              >
-                View transactions
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
-              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
-                <p className="break-words text-xs tracking-wide text-gray-400">TOTAL CONTRIBUTION RECEIVED</p>
-                <p className="text-2xl font-semibold text-green-400 mt-2">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p>
-                <p className="text-xs text-gray-500 mt-1">{financialSummary?.contributionCount ?? 0} successful contributions</p>
-              </div>
-              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
-                <p className="break-words text-xs tracking-wide text-gray-400">CURRENT WALLET BALANCE</p>
-                <p className="text-2xl font-semibold text-white mt-2">₹{money(financialSummary?.netFlow ?? groupDetails.totalAmount)}</p>
-                <p className="text-xs text-gray-500 mt-1">Received − payouts − refunds</p>
-              </div>
-              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
-                <p className="break-words text-xs tracking-wide text-gray-400">TOTAL PAYOUTS</p>
-                <p className="text-2xl font-semibold text-blue-400 mt-2">₹{money(financialSummary?.totalPayouts ?? 0)}</p>
-                <p className="text-xs text-gray-500 mt-1">Successfully paid out</p>
-              </div>
-              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
-                <p className="break-words text-xs tracking-wide text-gray-400">TOTAL REFUNDS</p>
-                <p className="text-2xl font-semibold text-orange-400 mt-2">₹{money(financialSummary?.totalRefunds ?? 0)}</p>
-                <p className="text-xs text-gray-500 mt-1">Successfully refunded</p>
-              </div>
-              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
-                <p className="break-words text-xs tracking-wide text-gray-400">PENDING CONTRIBUTIONS</p>
-                <p className="text-2xl font-semibold text-yellow-400 mt-2">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p>
-                <p className="text-xs text-gray-500 mt-1">{financialSummary?.pendingContributionCount ?? 0} payments awaiting confirmation</p>
-              </div>
-              <div className="rounded-2xl border border-[#2b2b2b] bg-[#191919] p-5 transition hover:border-[#414141] hover:bg-[#1d1d1d]">
-                <p className="break-words text-xs tracking-wide text-gray-400">MONEY REQUESTS</p>
-                <p className="text-2xl font-semibold text-white mt-2">{financialSummary?.totalRequests ?? groupRequests?.sentrequestDetails.length ?? 0}</p>
-                <p className="text-xs text-gray-500 mt-1">Total requests created</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-9">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-green-400">YOUR COMMUNITY</p>
-                <h2 className="mt-1 text-xl font-bold tracking-tight">Group members</h2>
-              </div>
-              <span className="rounded-full border border-[#333] bg-[#171717] px-3 py-1 text-xs text-gray-300">
-                {groupDetails.groupmember.length} {groupDetails.groupmember.length === 1 ? "member" : "members"}
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {groupDetails.groupmember.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#292929] bg-[#121212] px-4 py-4 text-white transition hover:border-[#454545]"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gray-700"></div>
-
-                    <div>
-                      <p className="font-medium">
-                        {member.user.userdetails.name}
-                      </p>
-
-                      <p className="text-xs text-gray-500">
-                        {member.user.coustumerId}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-green-400 text-sm">
-                    Member
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="min-h-0 min-w-0 h-full w-full overflow-y-auto overscroll-contain self-start rounded-3xl border border-[#252525] bg-[#080808] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.12)] sm:p-6 lg:p-7">
-          <div className="mb-6 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-white">Activity</h2>
-              <p className="mt-1 text-xs text-gray-500">Recent group activity</p>
-            </div>
-            <span className="rounded-full border border-[#245a3b] bg-[#10291b] px-3 py-1 text-xs font-semibold text-green-400">LIVE</span>
-          </div>
-          {contributionDetails.length === 0 && (!groupRequests?.sentrequestDetails || groupRequests.sentrequestDetails.length === 0) && (
-            <div className="mt-8 rounded-2xl border border-dashed border-[#383838] bg-[#111111] px-5 py-8 text-center">
-              <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#333] bg-[#1b1b1b] text-xl text-green-400">↗</div>
-              <p className="font-semibold text-white">Your group journey starts here</p>
-              <p className="mt-1 text-sm text-gray-500">Contributions and money requests will appear here.</p>
-            </div>
-          )}
-          {contributionDetails.map((item) => (
-            <div key={item.id} className="mt-4">
-              <div className="flex items-start rounded-2xl border border-[#242424] bg-[#111111] px-4 py-4 transition hover:border-[#3a3a3a]">
+            <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6">
+              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[#dadada]">
-                    <span className="font-semibold">
-                      {item.user.userdetails.name}
-                    </span>{" "}
-                    contributed
-                    <span className="text-green-400">
-                      {" "}₹{item.amount}
-                    </span>
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {item.month}
-                  </p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">Financial health</p>
+                  <h2 className="mt-1 text-xl font-bold tracking-tight">Group financial overview</h2>
+                  <p className="mt-1 text-xs text-zinc-500">Only confirmed payments are included in received and wallet totals.</p>
                 </div>
+                <button type="button" onClick={() => router.push(`/group/${groupCode}/transactions`)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-green-500/40 hover:text-green-400 sm:w-auto">View transactions ↗</button>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">CONTRIBUTIONS RECEIVED</p><p className="mt-2 text-2xl font-bold text-green-400">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p><p className="mt-1 text-xs text-zinc-500">{financialSummary?.contributionCount ?? 0} successful payments</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">WALLET BALANCE</p><p className="mt-2 text-2xl font-bold">₹{money(financialSummary?.netFlow ?? groupDetails.totalAmount)}</p><p className="mt-1 text-xs text-zinc-500">Received less payouts and refunds</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">TOTAL PAYOUTS</p><p className="mt-2 text-2xl font-bold text-sky-400">₹{money(financialSummary?.totalPayouts ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">Successfully paid out</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">TOTAL REFUNDS</p><p className="mt-2 text-2xl font-bold text-orange-300">₹{money(financialSummary?.totalRefunds ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">Successfully refunded</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">PENDING CONTRIBUTIONS</p><p className="mt-2 text-2xl font-bold text-amber-300">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">{financialSummary?.pendingContributionCount ?? 0} awaiting confirmation</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">MONEY REQUESTS</p><p className="mt-2 text-2xl font-bold">{financialSummary?.totalRequests ?? groupRequests?.sentrequestDetails.length ?? 0}</p><p className="mt-1 text-xs text-zinc-500">Total requests created</p></div>
               </div>
             </div>
-          ))}
-          {contributionDetails.length > 0 && groupRequests?.sentrequestDetails.length === 0 && (
-            <p className="mt-4 rounded-xl border border-dashed border-[#333] px-4 py-4 text-center text-sm text-gray-500">
-              No money requests yet.
-            </p>
-          )}
-          {groupRequests?.sentrequestDetails.map((item) => (
-            <div
-              key={item.id}
-              className="mt-4"
-            >
-              <div className="flex items-start rounded-2xl border border-[#242424] bg-[#111111] px-4 py-4 transition hover:border-[#3a3a3a]">
 
-                <div className="w-full">
-
-                  {/* Request Information */}
-                  <p className="text-[#dadada]">
-                    <span className="font-semibold">
-                      {item.user.userdetails.name}
-                    </span>{" "}
-                    Requested{" "}
-                    <span className="text-green-400">
-                      ₹{item.amount}
-                    </span>
-                  </p>
-
-                  <p className="text-sm text-gray-500">
-                    {item.month}
-                  </p>
-
-                  <p className="text-sm text-gray-400 mt-1">
-                    Reason: {item.reason}
-                  </p>
-
-                  <p
-                    className={`text-sm mt-1 ${item.status === "PENDING"
-                      ? "text-yellow-400"
-                      : item.status === "ACCEPTED"
-                        ? "text-green-400"
-                        : "text-red-400"
-                      }`}
-                  >
-                    Status: {item.status}
-                  </p>
-
-                  {item.status === "PENDING" &&
-                    item.approvals?.[0]?.status === "PENDING" && (
-                      <div className="flex gap-3 mt-4">
-
-                        <button
-                          type="button"
-                          disabled={updateRequestMutation.isPending}
-                          onClick={() => {
-                            setProcessingRequest({
-                              id: item.id,
-                              status: "ACCEPTED",
-                            });
-
-                            updateRequestMutation.mutate({
-                              groupCode,
-                              requestId: item.id,
-                              status: "ACCEPTED",
-                            });
-                          }}
-                          className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 disabled:opacity-50"
-                        >
-                          {processingRequest?.id === item.id &&
-                            processingRequest.status === "ACCEPTED"
-                            ? "Processing..."
-                            : "Accept"}
-                        </button>
-
-                        <button
-                          type="button"
-                          disabled={updateRequestMutation.isPending}
-                          onClick={() => {
-                            setProcessingRequest({
-                              id: item.id,
-                              status: "REJECTED",
-                            });
-
-                            updateRequestMutation.mutate({
-                              groupCode,
-                              requestId: item.id,
-                              status: "REJECTED",
-                            });
-                          }}
-                          className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-50"
-                        >
-                          {processingRequest?.id === item.id &&
-                            processingRequest.status === "REJECTED"
-                            ? "Processing..."
-                            : "Reject"}
-                        </button>
-
-                      </div>
-                    )}
-
-                </div>
-
+            <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6">
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">The people behind the goal</p><h2 className="mt-1 text-xl font-bold tracking-tight">Group members</h2></div>
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300">{groupDetails.groupmember.length} {groupDetails.groupmember.length === 1 ? "member" : "members"}</span>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {groupDetails.groupmember.map((member) => (
+                  <div key={member.id} className="flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-black/25 p-4 transition hover:border-white/15">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-green-500/20 bg-green-500/10 text-sm font-bold text-green-400">{(member.user.userdetails.name || "M").charAt(0).toUpperCase()}</div>
+                    <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-zinc-100">{member.user.userdetails.name}</p><p className="mt-0.5 truncate text-xs text-zinc-500">{member.user.coustumerId}</p></div>
+                    <span className="rounded-full bg-green-500/10 px-2.5 py-1 text-[10px] font-semibold text-green-400">Member</span>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          </section>
+
+          <aside className="min-w-0">
+            <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6 xl:sticky xl:top-24">
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">Stay in the loop</p><h2 className="mt-1 text-xl font-bold tracking-tight">Recent activity</h2><p className="mt-1 text-xs text-zinc-500">Contributions and group requests</p></div>
+                <span className="rounded-full border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-green-400">ACTIVITY</span>
+              </div>
+              {contributionDetails.length === 0 && (!groupRequests?.sentrequestDetails || groupRequests.sentrequestDetails.length === 0) && (
+                <div className="rounded-xl border border-dashed border-white/15 bg-black/20 px-5 py-8 text-center"><div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10 text-lg text-green-400">↗</div><p className="text-sm font-semibold text-white">Your group journey starts here</p><p className="mt-1 text-xs leading-5 text-zinc-500">Contributions and money requests will show up here.</p></div>
+              )}
+              <div className="space-y-3">
+                {contributionDetails.map((item) => (
+                  <div key={item.id} className="flex gap-3 rounded-xl border border-white/[0.07] bg-black/25 p-4 transition hover:border-green-500/20">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-sm font-bold text-green-400">₹</div>
+                    <div className="min-w-0"><p className="text-sm leading-6 text-zinc-300"><span className="font-semibold text-white">{item.user.userdetails.name}</span> contributed <span className="font-semibold text-green-400">₹{money(Number(item.amount))}</span></p><p className="mt-1 text-xs text-zinc-500">{item.month}</p></div>
+                  </div>
+                ))}
+                {groupRequests?.sentrequestDetails.map((item) => (
+                  <div key={item.id} className="rounded-xl border border-white/[0.07] bg-black/25 p-4">
+                    <div className="flex items-start gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-sm font-bold text-amber-300">↗</div><div className="min-w-0 flex-1">
+                      <p className="text-sm leading-6 text-zinc-300"><span className="font-semibold text-white">{item.user.userdetails.name}</span> requested <span className="font-semibold text-green-400">₹{money(Number(item.amount))}</span></p>
+                      <p className="mt-1 text-xs text-zinc-500">{item.month} · {item.reason}</p>
+                      <span className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold ${item.status === "PENDING" ? "bg-amber-500/10 text-amber-300" : item.status === "ACCEPTED" ? "bg-green-500/10 text-green-400" : "bg-rose-500/10 text-rose-300"}`}>{item.status}</span>
+                      {item.status === "PENDING" && item.approvals?.[0]?.status === "PENDING" && (
+                        <div className="mt-3 flex gap-2">
+                          <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "ACCEPTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "ACCEPTED" }); }} className="rounded-lg bg-green-500 px-3 py-2 text-xs font-semibold text-black transition hover:bg-green-400 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "ACCEPTED" ? "Processing..." : "Approve"}</button>
+                          <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "REJECTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "REJECTED" }); }} className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/15 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "REJECTED" ? "Processing..." : "Reject"}</button>
+                        </div>
+                      )}
+                    </div></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
-
-      </div>
+      </main>
 
       {openContri && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
