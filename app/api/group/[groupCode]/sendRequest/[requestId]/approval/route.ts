@@ -166,7 +166,9 @@ export async function PATCH(
       }
       return NextResponse.json({
         ...result,
-        message: "All members approved. The request will be credited automatically once enough contributions are collected.",
+        message: settlement.waitingForGroupBalance
+          ? `All members approved, but the group has only ₹${settlement.availableAmount} available. ₹${settlement.requestedAmount} is required. The wallet will be credited once the group has enough balance.`
+          : "All members approved. The request is awaiting settlement.",
       }, { status: 200 });
     }
 
