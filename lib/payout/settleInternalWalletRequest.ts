@@ -25,12 +25,18 @@ export async function settleInternalWalletRequest(requestId: string) {
       throw new Error("Invalid emergency-fund request amount");
     }
 
-    const collectedAmount = request.contributions
-      .filter((contribution) => contribution.status === "PAID")
-      .reduce((total, contribution) => total + contribution.amount, 0);
+    const groupBalance = await tx.group.findUnique({
+      where: { id: request.groupId },
+      select: { totalAmount: true },
+    });
 
-    if (collectedAmount < amount) {
-      return { settled: false, waitingForContributions: true, collectedAmount, requestedAmount: amount };
+    if (!groupBalance || groupBalance.totalAmount < amount) {
+      return {
+        settled: false,
+        waitingForGroupBalance: true,
+        availableAmount: groupBalance?.totalAmount ?? 0,
+        requestedAmount: amount,
+      };
     }
 
     const existing = await tx.transaction.findUnique({
