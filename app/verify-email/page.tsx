@@ -48,7 +48,7 @@ function VerifyEmailContent() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-white text-black">
-
+<Navbar />
             {/* Dashed Top Left Fade Grid */}
             <div
                 className="absolute inset-0 z-0"
@@ -110,7 +110,7 @@ function VerifyEmailContent() {
             />
 
             <div className="relative z-20">
-                <Navbar />
+                
 
                 <div className="w-105 rounded-lg p-8 bg-black text-white">
 

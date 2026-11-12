@@ -297,10 +297,10 @@ export default function GroupPage() {
                 <p className="mt-3 text-2xl font-bold tracking-tight">₹{money(groupDetails.monthlyContribution)}</p>
                 <p className="mt-1 text-xs text-zinc-500">Per member · every month</p>
               </div>
-              <div className="rounded-2xl border border-zinc-200 bg-gradient-to-br from-white/[0.04] to-[#111] p-5">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-zinc-600">Total group amount</p>
-                <p className="mt-3 text-2xl font-bold tracking-tight text-black">₹{money(groupDetails.totalAmount)}</p>
-                <p className="mt-1 text-xs text-zinc-500">Current group total</p>
+              <div className="rounded-2xl border border-zinc-200 bg-black p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-white">Total group amount</p>
+                <p className="mt-3 text-2xl font-bold tracking-tight text-white">₹{money(groupDetails.totalAmount)}</p>
+                <p className="mt-1 text-xs text-white">Current group total</p>
               </div>
               <div className="rounded-2xl border border-zinc-200 bg-white p-5">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-zinc-500">Group members</p>
