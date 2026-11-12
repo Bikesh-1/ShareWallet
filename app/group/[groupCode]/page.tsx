@@ -260,13 +260,13 @@ export default function GroupPage() {
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#080808] text-white">
-      <div className="pointer-events-none fixed inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(circle at 12% 0%, rgba(34,197,94,0.10), transparent 28%), radial-gradient(circle at 90% 12%, rgba(34,197,94,0.06), transparent 24%)" }} />
+      <div className="pointer-events-none fixed inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(circle at 12% 0%, rgba(255,255,255,0.035), transparent 28%), radial-gradient(circle at 90% 12%, rgba(255,255,255,0.025), transparent 24%)" }} />
       <div className="relative z-20"><LoginNavbar /></div>
 
       <main className="relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pt-9">
         <div className="mb-7 flex flex-col gap-5 border-b border-white/10 pb-7 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
-            <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-green-400">
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white">
               <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px_rgba(74,222,128,.8)]" />
               ShareWallet <span className="text-white/30">/</span> Savings group
             </div>
@@ -274,14 +274,14 @@ export default function GroupPage() {
             <p className="mt-2 max-w-2xl text-sm text-zinc-400 sm:text-base">A shared space to save together, stay on track and manage your group money.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-3.5 py-2 text-xs font-semibold text-green-400">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white">
               <span className="h-2 w-2 rounded-full bg-green-400" /> Group active
             </span>
             <button type="button" onClick={async () => {
               try { await navigator.clipboard.writeText(groupDetails.groupCode); toast.success("Group code copied"); }
               catch { toast.error("Unable to copy group code"); }
-            }} className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-green-500/40 hover:bg-green-500/5">
-              Invite code · {groupDetails.groupCode} <span className="ml-2 text-green-400">Copy ↗</span>
+            }} className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-white/30 hover:bg-white/5">
+              Invite code · {groupDetails.groupCode} <span className="ml-2 text-white">Copy ↗</span>
             </button>
           </div>
         </div>
@@ -294,9 +294,9 @@ export default function GroupPage() {
                 <p className="mt-3 text-2xl font-bold tracking-tight">₹{money(groupDetails.monthlyContribution)}</p>
                 <p className="mt-1 text-xs text-zinc-500">Per member · every month</p>
               </div>
-              <div className="rounded-2xl border border-green-500/20 bg-gradient-to-br from-green-500/[0.10] to-[#111] p-5">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-green-300/70">Total group amount</p>
-                <p className="mt-3 text-2xl font-bold tracking-tight text-green-400">₹{money(groupDetails.totalAmount)}</p>
+              <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-green-500/[0.10] to-[#111] p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-zinc-400">Total group amount</p>
+                <p className="mt-3 text-2xl font-bold tracking-tight text-white">₹{money(groupDetails.totalAmount)}</p>
                 <p className="mt-1 text-xs text-zinc-500">Current group total</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#111] p-5">
@@ -309,13 +309,13 @@ export default function GroupPage() {
             <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6">
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">Group workspace</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white">Group workspace</p>
                   <h2 className="mt-1 text-xl font-bold tracking-tight">What would you like to do?</h2>
                   <p className="mt-1 text-sm text-zinc-500">Make a contribution, coordinate with members or request funds.</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <button type="button" onClick={() => setOpenContri(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-green-500/30 bg-white p-4 text-left text-black transition hover:-translate-y-0.5 hover:bg-zinc-100">
+                <button type="button" onClick={() => setOpenContri(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-white/20 bg-white p-4 text-left text-black transition hover:-translate-y-0.5 hover:bg-zinc-100">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-black/5 text-lg text-black">＋</span>
                   <span><span className="block font-semibold text-black">Contribute</span><span className="mt-1 block text-xs text-zinc-500">Add this month’s savings</span></span>
                 </button>
@@ -333,33 +333,33 @@ export default function GroupPage() {
             <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6">
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">Financial health</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white">Financial health</p>
                   <h2 className="mt-1 text-xl font-bold tracking-tight">Group financial overview</h2>
                   <p className="mt-1 text-xs text-zinc-500">Only confirmed payments are included in received and wallet totals.</p>
                 </div>
-                <button type="button" onClick={() => router.push(`/group/${groupCode}/transactions`)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-green-500/40 hover:text-green-400 sm:w-auto">View transactions ↗</button>
+                <button type="button" onClick={() => router.push(`/group/${groupCode}/transactions`)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:border-white/30 hover:text-white sm:w-auto">View transactions ↗</button>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
-                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">CONTRIBUTIONS RECEIVED</p><p className="mt-2 text-2xl font-bold text-green-400">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p><p className="mt-1 text-xs text-zinc-500">{financialSummary?.contributionCount ?? 0} successful payments</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">CONTRIBUTIONS RECEIVED</p><p className="mt-2 text-2xl font-bold text-white">₹{money(financialSummary?.totalContributions ?? groupDetails.totalAmount)}</p><p className="mt-1 text-xs text-zinc-500">{financialSummary?.contributionCount ?? 0} successful payments</p></div>
                 <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">WALLET BALANCE</p><p className="mt-2 text-2xl font-bold">₹{money(financialSummary?.netFlow ?? groupDetails.totalAmount)}</p><p className="mt-1 text-xs text-zinc-500">Received less payouts and refunds</p></div>
-                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">TOTAL PAYOUTS</p><p className="mt-2 text-2xl font-bold text-sky-400">₹{money(financialSummary?.totalPayouts ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">Successfully paid out</p></div>
-                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">TOTAL REFUNDS</p><p className="mt-2 text-2xl font-bold text-orange-300">₹{money(financialSummary?.totalRefunds ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">Successfully refunded</p></div>
-                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">PENDING CONTRIBUTIONS</p><p className="mt-2 text-2xl font-bold text-amber-300">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">{financialSummary?.pendingContributionCount ?? 0} awaiting confirmation</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">TOTAL PAYOUTS</p><p className="mt-2 text-2xl font-bold text-zinc-200">₹{money(financialSummary?.totalPayouts ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">Successfully paid out</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">TOTAL REFUNDS</p><p className="mt-2 text-2xl font-bold text-zinc-200">₹{money(financialSummary?.totalRefunds ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">Successfully refunded</p></div>
+                <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">PENDING CONTRIBUTIONS</p><p className="mt-2 text-2xl font-bold text-zinc-200">₹{money(financialSummary?.pendingContributionAmount ?? 0)}</p><p className="mt-1 text-xs text-zinc-500">{financialSummary?.pendingContributionCount ?? 0} awaiting confirmation</p></div>
                 <div className="rounded-xl border border-white/[0.07] bg-black/30 p-4"><p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-500">MONEY REQUESTS</p><p className="mt-2 text-2xl font-bold">{financialSummary?.totalRequests ?? groupRequests?.sentrequestDetails.length ?? 0}</p><p className="mt-1 text-xs text-zinc-500">Total requests created</p></div>
               </div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6">
               <div className="mb-5 flex items-center justify-between gap-3">
-                <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">The people behind the goal</p><h2 className="mt-1 text-xl font-bold tracking-tight">Group members</h2></div>
+                <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white">The people behind the goal</p><h2 className="mt-1 text-xl font-bold tracking-tight">Group members</h2></div>
                 <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300">{groupDetails.groupmember.length} {groupDetails.groupmember.length === 1 ? "member" : "members"}</span>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {groupDetails.groupmember.map((member) => (
                   <div key={member.id} className="flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.07] bg-black/25 p-4 transition hover:border-white/15">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-green-500/20 bg-green-500/10 text-sm font-bold text-green-400">{(member.user.userdetails.name || "M").charAt(0).toUpperCase()}</div>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-bold text-white">{(member.user.userdetails.name || "M").charAt(0).toUpperCase()}</div>
                     <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-zinc-100">{member.user.userdetails.name}</p><p className="mt-0.5 truncate text-xs text-zinc-500">{member.user.coustumerId}</p></div>
-                    <span className="rounded-full bg-green-500/10 px-2.5 py-1 text-[10px] font-semibold text-green-400">Member</span>
+                    <span className="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-semibold text-white">Member</span>
                   </div>
                 ))}
               </div>
@@ -369,34 +369,64 @@ export default function GroupPage() {
           <aside className="min-w-0">
             <div className="rounded-2xl border border-white/10 bg-[#101010] p-5 sm:p-6 xl:sticky xl:top-24">
               <div className="mb-5 flex items-center justify-between gap-3">
-                <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green-400">Stay in the loop</p><h2 className="mt-1 text-xl font-bold tracking-tight">Recent activity</h2><p className="mt-1 text-xs text-zinc-500">Contributions and group requests</p></div>
-                <span className="rounded-full border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-green-400">ACTIVITY</span>
+                <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white">Stay in the loop</p><h2 className="mt-1 text-xl font-bold tracking-tight">Recent activity</h2><p className="mt-1 text-xs text-zinc-500">Contributions and group requests</p></div>
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white">ACTIVITY</span>
               </div>
               {contributionDetails.length === 0 && (!groupRequests?.sentrequestDetails || groupRequests.sentrequestDetails.length === 0) && (
-                <div className="rounded-xl border border-dashed border-white/15 bg-black/20 px-5 py-8 text-center"><div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10 text-lg text-green-400">↗</div><p className="text-sm font-semibold text-white">Your group journey starts here</p><p className="mt-1 text-xs leading-5 text-zinc-500">Contributions and money requests will show up here.</p></div>
+                <div className="rounded-xl border border-dashed border-white/15 bg-black/20 px-5 py-8 text-center">
+                  <p className="text-sm font-semibold text-white">No activity yet</p>
+                  <p className="mt-1 text-xs leading-5 text-zinc-500">Contributions and money requests will appear here.</p>
+                </div>
               )}
-              <div className="space-y-3">
-                {contributionDetails.map((item) => (
-                  <div key={item.id} className="flex gap-3 rounded-xl border border-white/[0.07] bg-black/25 p-4 transition hover:border-green-500/20">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-sm font-bold text-green-400">₹</div>
-                    <div className="min-w-0"><p className="text-sm leading-6 text-zinc-300"><span className="font-semibold text-white">{item.user.userdetails.name}</span> contributed <span className="font-semibold text-green-400">₹{money(Number(item.amount))}</span></p><p className="mt-1 text-xs text-zinc-500">{item.month}</p></div>
+
+              {contributionDetails.length > 0 && (
+                <section>
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">Contributions</h3>
+                    <span className="text-xs text-zinc-500">{contributionDetails.length}</span>
                   </div>
-                ))}
-                {groupRequests?.sentrequestDetails.map((item) => (
-                  <div key={item.id} className="rounded-xl border border-white/[0.07] bg-black/25 p-4">
-                    <div className="flex items-start gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-sm font-bold text-amber-300">↗</div><div className="min-w-0 flex-1">
-                      <p className="text-sm leading-6 text-zinc-300"><span className="font-semibold text-white">{item.user.userdetails.name}</span> requested <span className="font-semibold text-green-400">₹{money(Number(item.amount))}</span></p>
-                      <p className="mt-1 text-xs text-zinc-500">{item.month} · {item.reason}</p>
-                      <span className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold ${item.status === "PENDING" ? "bg-amber-500/10 text-amber-300" : item.status === "ACCEPTED" ? "bg-green-500/10 text-green-400" : "bg-rose-500/10 text-rose-300"}`}>{item.status}</span>
-                      {item.status === "PENDING" && item.approvals?.[0]?.status === "PENDING" && (
-                        <div className="mt-3 flex gap-2">
-                          <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "ACCEPTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "ACCEPTED" }); }} className="rounded-lg bg-green-500 px-3 py-2 text-xs font-semibold text-black transition hover:bg-green-400 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "ACCEPTED" ? "Processing..." : "Approve"}</button>
-                          <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "REJECTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "REJECTED" }); }} className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/15 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "REJECTED" ? "Processing..." : "Reject"}</button>
+                  <div className="divide-y divide-white/10 border-y border-white/10">
+                    {contributionDetails.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between gap-3 py-4">
+                        <div className="min-w-0">
+                          <p className="text-sm leading-6 text-zinc-300"><span className="font-semibold text-white">{item.user.userdetails.name}</span> contributed</p>
+                          <p className="mt-1 text-xs text-zinc-500">{item.month}</p>
                         </div>
-                      )}
-                    </div></div>
+                        <p className="shrink-0 text-sm font-semibold tabular-nums text-white">₹{money(Number(item.amount))}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </section>
+              )}
+
+              {(groupRequests?.sentrequestDetails?.length ?? 0) > 0 && (
+                <section className="mt-6">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">Money requests</h3>
+                    <span className="text-xs text-zinc-500">{groupRequests?.sentrequestDetails.length}</span>
+                  </div>
+                  <div className="divide-y divide-white/10 border-y border-white/10">
+                    {groupRequests?.sentrequestDetails.map((item) => (
+                      <div key={item.id} className="py-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm leading-6 text-zinc-300"><span className="font-semibold text-white">{item.user.userdetails.name}</span> requested</p>
+                            <p className="mt-1 text-xs text-zinc-500">{item.month} · {item.reason}</p>
+                          </div>
+                          <p className="shrink-0 text-sm font-semibold tabular-nums text-white">₹{money(Number(item.amount))}</p>
+                        </div>
+                        <span className={`mt-2 inline-flex rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold text-zinc-300`}>{item.status}</span>
+                        {item.status === "PENDING" && item.approvals?.[0]?.status === "PENDING" && (
+                          <div className="mt-3 flex gap-2">
+                            <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "ACCEPTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "ACCEPTED" }); }} className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-black transition hover:bg-zinc-200 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "ACCEPTED" ? "Processing..." : "Approve"}</button>
+                            <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "REJECTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "REJECTED" }); }} className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-zinc-200 transition hover:bg-white/10 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "REJECTED" ? "Processing..." : "Reject"}</button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
               </div>
             </div>
           </aside>
