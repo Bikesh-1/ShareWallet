@@ -97,10 +97,6 @@ export async function POST(
     }
 
     return NextResponse.json({ error: "Emergency-fund payouts are credited to the ShareWallet internal wallet during approval. External Cashfree payouts are disabled." }, { status: 410 });
-
-    return NextResponse.json(result, {
-      status: 200,
-    });
   } catch (error) {
     console.error("PAYOUT RETRY ERROR:", error);
 
