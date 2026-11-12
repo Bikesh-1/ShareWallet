@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(genericResponse);
     }
 
