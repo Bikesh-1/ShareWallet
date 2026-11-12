@@ -429,7 +429,6 @@ export default function GroupPage() {
                   </div>
                 </section>
               )}
-              </div>
             </div>
           </aside>
         </div>
