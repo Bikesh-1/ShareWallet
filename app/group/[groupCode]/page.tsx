@@ -21,6 +21,7 @@ export default function GroupPage() {
   const [amount, setAmount] = useState("");
   const [openContri, setOpenContri] = useState(false);
   const [openRequest, setOpenRequest] = useState(false);
+  const [activityFilter, setActivityFilter] = useState<"ALL" | "CONTRIBUTIONS" | "REQUESTS">("ALL");
   const params = useParams();
   const currentMonth = new Date().toISOString().slice(0, 7);
   const [processingRequest, setProcessingRequest] = useState<{
@@ -374,14 +375,31 @@ export default function GroupPage() {
                 <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white">Stay in the loop</p><h2 className="mt-1 text-xl font-bold tracking-tight">Recent activity</h2><p className="mt-1 text-xs text-zinc-500">Contributions and group requests</p></div>
                 <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white">ACTIVITY</span>
               </div>
-              {contributionDetails.length === 0 && (!groupRequests?.sentrequestDetails || groupRequests.sentrequestDetails.length === 0) && (
+              <div className="mb-5 grid grid-cols-3 rounded-xl border border-white/10 bg-black/30 p-1">
+                {([
+                  { key: "ALL", label: "All" },
+                  { key: "CONTRIBUTIONS", label: "Contributions" },
+                  { key: "REQUESTS", label: "Requests" },
+                ] as const).map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setActivityFilter(tab.key)}
+                    className={`rounded-lg px-2 py-2 text-xs font-semibold transition ${activityFilter === tab.key ? "bg-white text-black" : "text-zinc-400 hover:bg-white/5 hover:text-white"}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              {activityFilter === "ALL" && contributionDetails.length === 0 && (!groupRequests?.sentrequestDetails || groupRequests.sentrequestDetails.length === 0) && (
+
                 <div className="rounded-xl border border-dashed border-white/15 bg-black/20 px-5 py-8 text-center">
                   <p className="text-sm font-semibold text-white">No activity yet</p>
                   <p className="mt-1 text-xs leading-5 text-zinc-500">Contributions and money requests will appear here.</p>
                 </div>
               )}
 
-              {contributionDetails.length > 0 && (
+              {activityFilter !== "REQUESTS" && contributionDetails.length > 0 && (
                 <section>
                   <div className="mb-2 flex items-center justify-between">
                     <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">Contributions</h3>
@@ -401,7 +419,7 @@ export default function GroupPage() {
                 </section>
               )}
 
-              {(groupRequests?.sentrequestDetails?.length ?? 0) > 0 && (
+              {activityFilter !== "CONTRIBUTIONS" && (groupRequests?.sentrequestDetails?.length ?? 0) > 0 && (
                 <section className="mt-6">
                   <div className="mb-2 flex items-center justify-between">
                     <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">Money requests</h3>
