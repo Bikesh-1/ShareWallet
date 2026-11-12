@@ -27,14 +27,14 @@ export async function getContribution(groupCode: string): Promise<Activity[]> {
     return data.contributionDetails;
 }
 
-export async function contribution(body: { groupCode: string; amount: number; month: string }) {
+export async function contribution(body: { groupCode: string; amount: number; month: string }): Promise<{ error?: string; message?: string; contribution?: { id: string } }> {
     const { groupCode, amount, month } = body;
     const res = await fetch(`/api/group/${encodeURIComponent(groupCode)}/contribution`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, month }),
     });
-    const data = await readJsonResponse<{ error?: string; message?: string }>(res);
+    const data = await readJsonResponse<{ error?: string; message?: string; contribution?: { id: string } }>(res);
     if (!res.ok) throw new Error(data.error || data.message || "Failed to submit contribution");
     return data;
 }
