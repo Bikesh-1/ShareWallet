@@ -258,6 +258,131 @@ export default function GroupPage() {
 
 
 
+      {openContri && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
+          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
+
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-black">
+                Monthly Contribution
+              </h2>
+              <p className="mt-2 text-sm text-black">
+                Enter your contribution details for this month.
+              </p>
+            </div>
+
+            <form onSubmit={handleContribution} className="space-y-5">
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Contribution Amount
+                </label>
+
+                <div className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-white">
+                  ₹ {groupDetails.monthlyContribution}
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Month
+                </label>
+                <input
+                  type="month"
+                  readOnly
+                  defaultValue={currentMonth}
+                  placeholder="July"
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  disabled={mutation.isPending}
+                  type="submit"
+                  className="flex-1 text-white border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                >
+                  {mutation.isPending ? "Contributing..." : "Contribute"}
+                </button>
+                <button
+                  className="flex-1 text-black border border-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                  onClick={() => setOpenContri(false)}>Close</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {openRequest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
+          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
+
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-black">
+                Send Request
+              </h2>
+              <p className="mt-2 text-sm text-black">
+                Enter your amount and reason in details.
+              </p>
+            </div>
+
+            <form onSubmit={handleSendRequest} className="space-y-5">
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Withdraw Amount
+                </label>
+                <input
+                  placeholder="Enter the amount"
+                  type="text"
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-white" />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Month
+                </label>
+                <input
+                  type="month"
+                  readOnly
+                  defaultValue={currentMonth}
+                  placeholder="July"
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Reason
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Reason"
+                  onChange={(e) => setReason(e.target.value)}
+                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-white placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  disabled={requestMutation.isPending}
+                  type="submit"
+                  className="flex-1 text-white border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                >
+                  {requestMutation.isPending ? "Sending..." : "Send Request"}
+                </button>
+                <button
+                  className="flex-1 text-black border border-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                  onClick={() => setOpenRequest(false)}>Close</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#080808] text-white">
       <div className="pointer-events-none fixed inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(circle at 12% 0%, rgba(255,255,255,0.035), transparent 28%), radial-gradient(circle at 90% 12%, rgba(255,255,255,0.025), transparent 24%)" }} />
@@ -267,7 +392,7 @@ export default function GroupPage() {
         <div className="mb-7 flex flex-col gap-5 border-b border-white/10 pb-7 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white">
-              <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_12px_rgba(74,222,128,.8)]" />
+              <span className="h-2 w-2 rounded-full bg-green-400 " />
               ShareWallet <span className="text-white/30">/</span> Savings group
             </div>
             <h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{groupDetails.groupName}</h1>
@@ -294,7 +419,7 @@ export default function GroupPage() {
                 <p className="mt-3 text-2xl font-bold tracking-tight">₹{money(groupDetails.monthlyContribution)}</p>
                 <p className="mt-1 text-xs text-zinc-500">Per member · every month</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-green-500/[0.10] to-[#111] p-5">
+              <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-[#111] p-5">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-zinc-400">Total group amount</p>
                 <p className="mt-3 text-2xl font-bold tracking-tight text-white">₹{money(groupDetails.totalAmount)}</p>
                 <p className="mt-1 text-xs text-zinc-500">Current group total</p>
