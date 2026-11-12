@@ -472,7 +472,7 @@ export default function GroupPage() {
                   Contribution Amount
                 </label>
 
-                <div className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-black">
+                <div className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black">
                   ₹ {groupDetails.monthlyContribution}
                 </div>
               </div>
@@ -487,7 +487,7 @@ export default function GroupPage() {
                   defaultValue={currentMonth}
                   placeholder="July"
                   onChange={(e) => setMonth(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
                 />
               </div>
 
@@ -495,7 +495,7 @@ export default function GroupPage() {
                 <button
                   disabled={mutation.isPending}
                   type="submit"
-                  className="flex-1 text-black border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                  className="flex-1 text-white border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
                 >
                   {mutation.isPending ? "Contributing..." : "Contribute"}
                 </button>
@@ -531,7 +531,7 @@ export default function GroupPage() {
                   placeholder="Enter the amount"
                   type="text"
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-black" />
+                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black" />
               </div>
 
               <div>
@@ -544,7 +544,7 @@ export default function GroupPage() {
                   defaultValue={currentMonth}
                   placeholder="July"
                   onChange={(e) => setMonth(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
                 />
               </div>
               <div>
@@ -555,7 +555,7 @@ export default function GroupPage() {
                   type="text"
                   placeholder="Enter Reason"
                   onChange={(e) => setReason(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-black px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
                 />
               </div>
 
@@ -563,7 +563,7 @@ export default function GroupPage() {
                 <button
                   disabled={requestMutation.isPending}
                   type="submit"
-                  className="flex-1 text-black border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                  className="flex-1 text-white border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
                 >
                   {requestMutation.isPending ? "Sending..." : "Send Request"}
                 </button>
