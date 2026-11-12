@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
       return NextResponse.json(genericResponse);
     }
 
@@ -32,12 +32,20 @@ export async function POST(req: Request) {
       }),
     ]);
 
-    const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+    // In production, require a trusted configured origin instead of trusting the request Host header.
+    const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!configuredAppUrl && process.env.NODE_ENV === "production") {
+      throw new Error("NEXT_PUBLIC_APP_URL must be configured in production.");
+    }
+    const origin = configuredAppUrl
+      ? new URL(configuredAppUrl).origin
+      : new URL(req.url).origin;
     const resetUrl = `${origin}/reset-password?token=${rawToken}`;
 
     try {
       await sendPasswordResetEmail(user.email, resetUrl);
     } catch (emailError) {
+      // Remove the unusable token, but keep the response generic to prevent account enumeration.
       await prisma.passwordResetToken.deleteMany({ where: { tokenHash } });
       console.error("PASSWORD RESET EMAIL ERROR:", emailError);
     }
