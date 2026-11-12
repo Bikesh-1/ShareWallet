@@ -259,7 +259,7 @@ export default function GroupPage() {
 
 
   return (
-    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-[#f4f4f5] text-[#111111]">
+    <div className="relative flex h-screen w-full flex-col overflow-hidden  text-[#111111]">
       <div
         className="absolute inset-0 z-0"
         style={{
