@@ -315,17 +315,17 @@ export default function GroupPage() {
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <button type="button" onClick={() => setOpenContri(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-green-500/30 bg-green-500/[0.09] p-4 text-left transition hover:-translate-y-0.5 hover:border-green-400/60 hover:bg-green-500/[0.14]">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-400/15 text-lg text-green-400">＋</span>
-                  <span><span className="block font-semibold text-white">Contribute</span><span className="mt-1 block text-xs text-zinc-400">Add this month’s savings</span></span>
+                <button type="button" onClick={() => setOpenContri(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-green-500/30 bg-white p-4 text-left text-black transition hover:-translate-y-0.5 hover:bg-zinc-100">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-black/5 text-lg text-black">＋</span>
+                  <span><span className="block font-semibold text-black">Contribute</span><span className="mt-1 block text-xs text-zinc-500">Add this month’s savings</span></span>
                 </button>
-                <button type="button" onClick={() => router.push(`/group/${groupCode}/message`)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
+                <button type="button" onClick={() => router.push(`/group/${groupCode}/message`)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-[#3a3a3a] bg-[#151515] p-4 text-left transition hover:-translate-y-0.5 hover:border-gray-500 hover:bg-[#202020]">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-lg text-zinc-200">↗</span>
                   <span><span className="block font-semibold text-white">Group chat</span><span className="mt-1 block text-xs text-zinc-400">Talk with your members</span></span>
                 </button>
-                <button type="button" onClick={() => setOpenRequest(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-rose-500/20 bg-rose-500/[0.06] p-4 text-left transition hover:-translate-y-0.5 hover:border-rose-400/40 hover:bg-rose-500/[0.10]">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-500/15 text-lg text-rose-300">₹</span>
-                  <span><span className="block font-semibold text-white">Request money</span><span className="mt-1 block text-xs text-zinc-400">Ask the group for support</span></span>
+                <button type="button" onClick={() => setOpenRequest(true)} className="group flex min-h-[112px] flex-col items-start justify-between rounded-xl border border-red-600 bg-red-600 p-4 text-left text-white transition hover:-translate-y-0.5 hover:bg-red-500">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 text-lg text-white">₹</span>
+                  <span><span className="block font-semibold text-white">Request Money</span><span className="mt-1 block text-xs text-white/70">Ask the group for support</span></span>
                 </button>
               </div>
             </div>
