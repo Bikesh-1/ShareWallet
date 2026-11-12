@@ -70,16 +70,16 @@ export default function Creategroup() {
                 }}
             />
             <LoginNavbar />
-            <div className="w-full h-screen flex items-center justify-center relative z-10">
-                <div className="w-1/3 h-[80vh] flex items-center justify-center">
-                    <div className="bg-white border rounded h-[80vh] p-8 w-full max-w-md">
-                        <div className="mb-6">
+            <div className="w-full min-h-screen flex flex-col lg:flex-row items-stretch lg:items-center justify-center gap-4 sm:gap-6 lg:gap-8 px-3 sm:px-5 lg:px-8 py-5 sm:py-8 relative z-10">
+                <div className="w-full lg:w-1/3 flex items-center justify-center">
+                    <div className="bg-white border rounded p-5 sm:p-7 lg:p-8 w-full max-w-2xl lg:max-w-md">
+                        <div className="mb-5 sm:mb-6">
                             <h2 className="text-2xl font-bold text-[#0a0a0a]">Before You Create</h2>
                             <p className="text-red-700 text-sm mt-1 font-black">
                                 Please review these important guidelines before creating your savings group.
                             </p>
                         </div>
-                        <div className="space-y-5 text-sm">
+                        <div className="space-y-4 sm:space-y-5 text-sm">
                             <div className="flex gap-3">
                                 <span className="text-[#4F47EA] font-bold">-</span>
                                 <div>
@@ -109,25 +109,25 @@ export default function Creategroup() {
                                 </div>
                             </div>
                         </div>
-                        <div className="mt-8 border-t border-gray-300 pt-5">
+                        <div className="mt-6 sm:mt-8 border-t border-gray-300 pt-5">
                             <p className="text-xs text-gray-600">
                                 <span className="font-semibold">Tip:</span> Choose a meaningful group name and set a realistic savings goal for better tracking.
                             </p>
                         </div>
                     </div>
                 </div>
-                <div className="w-2/3 h-[80vh] flex items-center justify-center">
-                    <div className="bg-black w-[60vw] h-[80vh] rounded px-10 py-8 flex flex-col justify-center text-white">
-                        <div className="mb-3">
+                <div className="w-full lg:w-2/3 flex items-center justify-center">
+                    <div className="bg-black w-full max-w-5xl min-h-[auto] lg:min-h-[80vh] rounded px-4 py-6 sm:px-7 sm:py-8 lg:px-10 lg:py-8 flex flex-col justify-center text-white">
+                        <div className="mb-4 sm:mb-3">
                             <h1 className="text-3xl font-bold">Create Group</h1>
                             <p className="text-sm mt-1">Build your savings group and invite friends to start contributing together.</p>
                         </div>
-                        <form className="flex flex-col gap-3" onSubmit={handlegroupCreation}>
+                        <form className="flex flex-col gap-3 sm:gap-4" onSubmit={handlegroupCreation}>
                             <div>
                                 <label className="block text-sm font-semibold mb-2">Group Name</label>
                                 <input type="text" placeholder="e.g. Goa Trip Fund" value={groupName}
                                     onChange={(e) => setGroupName(e.target.value)}
-                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
+                                    className="w-full min-w-0 border border-[#dadada] rounded-xl px-4 py-2.5 outline-none focus:border-[#4F47EA] transition" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold mb-2">Description</label>
@@ -135,7 +135,7 @@ export default function Creategroup() {
                                     onChange={(e) => setDescription(e.target.value)}
                                     className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
                             </div>
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
                                 <div>
                                     <label className="block text-sm font-semibold mb-2">Monthly Contribution</label>
                                     <input type="number" placeholder="₹500" value={monthlyContribution}
@@ -145,10 +145,10 @@ export default function Creategroup() {
                                 <div>
                                     <label className="block text-sm font-semibold mb-2">Group Total Contribution</label>
                                     <input type="text" value="₹ 0" readOnly
-                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none bg-gray-100 text-gray-600 cursor-not-allowed" />
+                                        className="w-full min-w-0 border border-[#dadada] rounded-xl px-4 py-2.5 outline-none bg-gray-100 text-gray-600 cursor-not-allowed" />
                                 </div>
                             </div>
-                            <div className="w-1/2">
+                            <div className="w-full sm:w-1/2">
                                 <label className="block text-sm font-semibold mb-2">Monthly Due Date</label>
                                 <input
                                     type="date"
