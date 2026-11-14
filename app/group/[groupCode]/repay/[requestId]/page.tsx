@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, CreditCard, Loader2, Wallet } from "lucide-react";
 import { toast } from "sonner";
@@ -18,25 +19,26 @@ type Repayment = { id: string; amount: number; status: string; provider?: string
 export default function RepayLoanPage() {
   const { groupCode, requestId } = useParams<{ groupCode: string; requestId: string }>();
   const router = useRouter();
-  const [data, setData] = useState<{ originalAmount: number; repaidAmount: number; pendingAmount: number; outstandingAmount: number; repayments: Repayment[]; walletBalance: number } | null>(null);
   const [amount, setAmount] = useState("");
-  const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
   const [cashfreeReady, setCashfreeReady] = useState(false);
-
-  const load = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/group/${groupCode}/sendRequest/${requestId}/repay`, { cache: "no-store" });
+  const { data, isPending: loading, refetch } = useQuery<{
+    originalAmount: number; repaidAmount: number; pendingAmount: number;
+    outstandingAmount: number; repayments: Repayment[]; walletBalance: number;
+  }>({
+    queryKey: ["loan-repayment", groupCode, requestId],
+    queryFn: async () => {
+      const res = await fetch(`/api/group/${encodeURIComponent(groupCode)}/sendRequest/${encodeURIComponent(requestId)}/repay`, { cache: "no-store" });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Unable to load repayment details.");
-      setData(result);
-      setAmount(String(result.outstandingAmount || ""));
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to load repayment details.");
-    } finally {
-      setLoading(false);
-    }
-  }, [groupCode, requestId]);
+      return result;
+    },
+    enabled: !!groupCode && !!requestId,
+    staleTime: 2_000,
+    refetchInterval: (query) => (query.state.data?.pendingAmount || 0) > 0 ? 5_000 : false,
+    refetchIntervalInBackground: false,
+  });
+  const load = async () => { await refetch(); };
 
   useEffect(() => { load(); }, [load]);
 
@@ -60,7 +62,6 @@ export default function RepayLoanPage() {
     const pending = data?.repayments.find((item) => item.status === "PENDING" && item.providerReference);
     if (!pending?.providerReference) return toast.error("No pending Cashfree order was found.");
     try {
-      setLoading(true);
       const res = await fetch(`/api/payment/status?order_id=${encodeURIComponent(pending.providerReference)}`, { cache: "no-store" });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Unable to verify payment.");
@@ -71,7 +72,6 @@ export default function RepayLoanPage() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to verify payment.");
     } finally {
-      setLoading(false);
     }
   }
 
