@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     AlertCircle,
     Building2,
@@ -27,8 +28,6 @@ type PayoutAccount = {
 };
 
 export default function PayoutAccountPage() {
-    const [account, setAccount] =
-        useState<PayoutAccount | null>(null);
 
     const [type, setType] =
         useState<PayoutType>("UPI");
@@ -45,77 +44,30 @@ export default function PayoutAccountPage() {
     const [ifsc, setIfsc] =
         useState("");
 
-    const [loading, setLoading] =
-        useState(true);
 
     const [saving, setSaving] =
         useState(false);
 
-    async function fetchAccount() {
-        try {
-            setLoading(true);
-
-            const res = await fetch(
-                "/api/payout-account",
-                {
-                    method: "GET",
-                    cache: "no-store",
-                }
-            );
-
+    const queryClient = useQueryClient();
+    const { data: account = null, isPending: loading } = useQuery<PayoutAccount | null>({
+        queryKey: ["payout-account"],
+        queryFn: async () => {
+            const res = await fetch("/api/payout-account", { cache: "no-store" });
             const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(
-                    data.error ||
-                        "Failed to fetch payout account"
-                );
-            }
-
-            const payoutAccount =
-                data.account || null;
-
-            setAccount(payoutAccount);
-
-            if (payoutAccount) {
-                setType(
-                    payoutAccount.type || "UPI"
-                );
-
-                setUpiId(
-                    payoutAccount.upiId || ""
-                );
-
-                setAccountHolderName(
-                    payoutAccount.accountHolderName ||
-                        ""
-                );
-
-                setAccountNumber(
-                    payoutAccount.accountNumber ||
-                        ""
-                );
-
-                setIfsc(
-                    payoutAccount.ifsc || ""
-                );
-            }
-        } catch (error) {
-            console.error(error);
-
-            toast.error(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to load payout account"
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
+            if (!res.ok) throw new Error(data.error || "Failed to fetch payout account");
+            return data.account || null;
+        },
+        staleTime: 30_000,
+    });
 
     useEffect(() => {
-        fetchAccount();
-    }, []);
+        if (!account) return;
+        setType(account.type || "UPI");
+        setUpiId(account.upiId || "");
+        setAccountHolderName(account.accountHolderName || "");
+        setAccountNumber(account.accountNumber || "");
+        setIfsc(account.ifsc || "");
+    }, [account]);
 
     function validateForm() {
         if (type === "UPI") {
@@ -243,9 +195,6 @@ export default function PayoutAccountPage() {
                 );
             }
 
-            setAccount(
-                data.account || data
-            );
 
             toast.success(
                 account
@@ -253,7 +202,7 @@ export default function PayoutAccountPage() {
                     : "Payout account added successfully."
             );
 
-            await fetchAccount();
+            await queryClient.invalidateQueries({ queryKey: ["payout-account"] });
         } catch (error) {
             console.error(error);
 
