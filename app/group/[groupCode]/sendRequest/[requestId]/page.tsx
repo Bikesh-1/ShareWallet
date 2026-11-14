@@ -276,7 +276,7 @@ export default function MoneyRequestPage() {
                             Back
                         </button>
 
-                        <button onClick={fetchRequest} disabled={loading} className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm hover:bg-gray-50 disabled:opacity-50">
+                        <button onClick={() => fetchRequest()} disabled={loading} className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm hover:bg-gray-50 disabled:opacity-50">
                             <RefreshCw size={16} className={loading? "animate-spin": ""}/>
                             Refresh
                         </button>
