@@ -133,9 +133,11 @@ export default function GroupPage() {
       queryClient.invalidateQueries({
         queryKey: ["group", groupCode],
       })
-      queryClient.invalidateQueries({
-        queryKey: ["contribution", groupCode],
-      })
+      queryClient.invalidateQueries({ queryKey: ["contribution", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-financial-summary", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-financial-dashboard", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-transactions", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
       setOpenContri(false)
     },
     onError: (error: Error) => {
@@ -158,9 +160,9 @@ export default function GroupPage() {
       queryClient.invalidateQueries({
         queryKey: ["group", groupCode],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["requests", groupCode],
-      });
+      queryClient.invalidateQueries({ queryKey: ["requests", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-financial-summary", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-financial-dashboard", groupCode] });
 
       setOpenRequest(false);
     },
@@ -187,9 +189,9 @@ export default function GroupPage() {
     onSuccess: (data) => {
       toast.success(data.message);
 
-      queryClient.invalidateQueries({
-        queryKey: ["requests", groupCode],
-      });
+      queryClient.invalidateQueries({ queryKey: ["requests", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-financial-summary", groupCode] });
+      queryClient.invalidateQueries({ queryKey: ["group-financial-dashboard", groupCode] });
 
       setProcessingRequest(null);
     },
