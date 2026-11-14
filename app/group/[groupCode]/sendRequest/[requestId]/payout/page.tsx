@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import {
     ArrowLeft,
@@ -39,108 +40,34 @@ export default function PayoutPage() {
     const groupCode = params.groupCode as string;
     const requestId = params.requestId as string;
 
-    const [request, setRequest] =
-        useState<RequestData | null>(null);
-
-    const [payout, setPayout] =
-        useState<PayoutTransaction | null>(null);
-
-    const [loading, setLoading] =
-        useState(true);
-
-    const [retrying, setRetrying] =
-        useState(false);
-
-    async function fetchPayoutStatus() {
-        try {
-            setLoading(true);
-
-            /*
-             * Get request details first.
-             */
-            const requestRes = await fetch(
-                `/api/group/${groupCode}/sendRequest/${requestId}`,
-                {
-                    cache: "no-store",
-                }
-            );
-
-            const requestData =
-                await requestRes.json();
-
-            if (!requestRes.ok) {
-                throw new Error(
-                    requestData.error ||
-                        "Failed to fetch request"
-                );
-            }
-
-            const currentRequest =
-                requestData.request ||
-                requestData;
-
-            setRequest(currentRequest);
-
-            /*
-             * Get transactions for this group.
-             */
-            const transactionRes =
-                await fetch(
-                    `/api/group/${groupCode}/transactions`,
-                    {
-                        cache: "no-store",
-                    }
-                );
-
-            const transactionData =
-                await transactionRes.json();
-
-            if (!transactionRes.ok) {
-                throw new Error(
-                    transactionData.error ||
-                        "Failed to fetch transactions"
-                );
-            }
-
-            const transactions =
-                transactionData.transactions ||
-                [];
-
-            /*
-             * Find payout transaction for this request.
-             */
-            const payoutTransaction =
-                transactions.find(
-                    (transaction: PayoutTransaction & {
-                        requestId?: string;
-                    }) =>
-                        transaction.type ===
-                            "PAYOUT" &&
-                        transaction.requestId ===
-                            requestId
-                );
-
-            setPayout(
-                payoutTransaction || null
-            );
-        } catch (error) {
-            console.error(error);
-
-            toast.error(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to load payout status"
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        if (groupCode && requestId) {
-            fetchPayoutStatus();
-        }
-    }, [groupCode, requestId]);
+    const [retrying, setRetrying] = useState(false);
+    const { data: payoutData, isPending: loading, refetch: fetchPayoutStatus } = useQuery<{
+        request: RequestData;
+        payout: PayoutTransaction | null;
+    }>({
+        queryKey: ["request-payout-status", groupCode, requestId],
+        queryFn: async () => {
+            const requestRes = await fetch(`/api/group/${encodeURIComponent(groupCode)}/sendRequest/${encodeURIComponent(requestId)}`, { cache: "no-store" });
+            const requestData = await requestRes.json();
+            if (!requestRes.ok) throw new Error(requestData.error || "Failed to fetch request");
+            const transactionRes = await fetch(`/api/group/${encodeURIComponent(groupCode)}/transactions`, { cache: "no-store" });
+            const transactionData = await transactionRes.json();
+            if (!transactionRes.ok) throw new Error(transactionData.error || "Failed to fetch transactions");
+            const payout = (transactionData.transactions || []).find((transaction: PayoutTransaction & { requestId?: string }) =>
+                transaction.type === "PAYOUT" && transaction.requestId === requestId
+            ) || null;
+            return { request: requestData.request || requestData, payout };
+        },
+        enabled: !!groupCode && !!requestId,
+        staleTime: 2_000,
+        refetchInterval: (query) => {
+            const current = query.state.data;
+            return current?.payout?.status === "PENDING" || (!current?.payout && current?.request?.status === "ACCEPTED") ? 5_000 : false;
+        },
+        refetchIntervalInBackground: false,
+    });
+    const request = payoutData?.request || null;
+    const payout = payoutData?.payout || null;
 
     async function retryPayout() {
         try {
