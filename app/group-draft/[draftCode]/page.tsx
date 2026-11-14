@@ -21,10 +21,9 @@ export default function GroupDraftDiscussionPage() {
   const [currentUserId, setCurrentUserId] = useState("");
   const [creatorId, setCreatorId] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
 
-  const { data: discussion } = useQuery({
+  const { data: discussion, isPending: loading, error: discussionError } = useQuery({
     queryKey: ["group-draft-messages", draftCode],
     queryFn: async () => {
       const res = await fetch(`/api/group/drafts/${draftCode}/messages`, { cache: "no-store" });
@@ -44,8 +43,11 @@ export default function GroupDraftDiscussionPage() {
     setCurrentUserId(discussion.currentUserId || "");
     setCreatorId(discussion.creatorId || "");
     setIsFinalized(Boolean(discussion.isFinalized));
-    setLoading(false);
   }, [discussion]);
+
+  useEffect(() => {
+    if (discussionError) toast.error(discussionError instanceof Error ? discussionError.message : "Unable to load discussion.");
+  }, [discussionError]);
 
   async function sendMessage(event: FormEvent) {
     event.preventDefault();
