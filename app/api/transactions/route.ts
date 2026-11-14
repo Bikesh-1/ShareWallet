@@ -50,7 +50,8 @@ export async function GET(req: Request) {
                 type: type as
                   | "CONTRIBUTION"
                   | "PAYOUT"
-                  | "REFUND",
+                  | "REFUND"
+                  | "LOAN_REPAYMENT",
               }
             : {}),
 
