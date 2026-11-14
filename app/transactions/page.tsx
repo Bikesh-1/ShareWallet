@@ -310,9 +310,9 @@ export default function TransactionsPage() {
                         <p className="mt-1 text-xs text-gray-400">Successful payments</p>
                     </div>
                     <div className="rounded-2xl border border-gray-200 bg-white p-5">
-                        <p className="text-sm text-gray-500">Payouts received</p>
+                        <p className="text-sm text-gray-500">Payouts & refunds</p>
                         <p className="mt-2 text-2xl font-bold text-green-600">₹{totalPayouts.toLocaleString("en-IN")}</p>
-                        <p className="mt-1 text-xs text-gray-400">Payouts and refunds</p>
+                        <p className="mt-1 text-xs text-gray-400">Successful payout/refund transactions</p>
                     </div>
                     <div className="rounded-2xl border border-gray-200 bg-white p-5">
                         <p className="text-sm text-gray-500">Loan repayments</p>
