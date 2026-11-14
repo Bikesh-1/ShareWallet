@@ -63,6 +63,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
         const transaction = await tx.transaction.create({
           data: { groupId: request.groupId, senderId: user.id, amount, type: "LOAN_REPAYMENT", status: "SUCCESS", requestId, provider: "SHAREWALLET", providerReference: `WALLET_REPAYMENT_${crypto.randomUUID()}`, payoutKey: `WALLET_REPAYMENT_${crypto.randomUUID()}` },
         });
+        await tx.notification.create({
+          data: { userId: user.id, groupId: request.groupId, requestId, type: "PAYMENT_SUCCESS", title: "Loan repayment received", message: `Your ShareWallet repayment of ₹${amount} has been returned to the group.` },
+        });
         return transaction;
       }, { isolationLevel: "Serializable" });
       return NextResponse.json({ success: true, message: "Wallet repayment received.", transaction: result }, { status: 201 });
