@@ -53,7 +53,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
       const result = await prisma.$transaction(async (tx) => {
         const payout = await tx.transaction.findFirst({ where: { requestId, groupId: request.groupId, receiverId: user.id, type: "PAYOUT", status: "SUCCESS" } });
         if (!payout) throw new Error("The original loan payout was not found.");
-        const repayments = await tx.transaction.aggregate({ where: { requestId, type: "LOAN_REPAYMENT", status: "SUCCESS" }, _sum: { amount: true } });
+        const repayments = await tx.transaction.aggregate({ where: { requestId, type: "LOAN_REPAYMENT", status: { in: ["SUCCESS", "PENDING"] } }, _sum: { amount: true } });
         const outstanding = payout.amount - (repayments._sum.amount || 0);
         if (amount > outstanding) throw new Error(`Repayment exceeds the outstanding balance of ₹${Math.max(0, outstanding)}.`);
         const debited = await tx.user.updateMany({ where: { id: user.id, walletBalance: { gte: amount } }, data: { walletBalance: { decrement: amount } } });
@@ -67,25 +67,31 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
       return NextResponse.json({ success: true, message: "Wallet repayment received.", transaction: result }, { status: 201 });
     }
 
-    const existingPending = await prisma.transaction.findFirst({ where: { requestId, type: "LOAN_REPAYMENT", status: "PENDING", provider: "CASHFREE" } });
-    if (existingPending) return NextResponse.json({ error: "A Cashfree repayment is already pending. Complete or wait for that payment before creating another." }, { status: 409 });
-    const payout = await prisma.transaction.findFirst({ where: { requestId, groupId: request.groupId, receiverId: user.id, type: "PAYOUT", status: "SUCCESS" } });
-    if (!payout) return NextResponse.json({ error: "Original loan payout not found." }, { status: 409 });
-    const [repaid, pending] = await Promise.all([
-      prisma.transaction.aggregate({ where: { requestId, type: "LOAN_REPAYMENT", status: "SUCCESS" }, _sum: { amount: true } }),
-      prisma.transaction.aggregate({ where: { requestId, type: "LOAN_REPAYMENT", status: "PENDING" }, _sum: { amount: true } }),
-    ]);
-    const outstanding = payout.amount - (repaid._sum.amount || 0) - (pending._sum.amount || 0);
-    if (amount > outstanding) return NextResponse.json({ error: `Repayment exceeds the available outstanding balance of ₹${Math.max(0, outstanding)}.` }, { status: 400 });
-    const phone = user.userdetails?.mobileNumber?.replace(/\D/g, "") || "";
-    if (!/^\d{10}$/.test(phone)) return NextResponse.json({ error: "Add a valid 10-digit mobile number to your profile before paying." }, { status: 400 });
+    const phone = user.userdetails?.mobileNumber?.replace(/\\D/g, "") || "";
+    if (!/^\\d{10}$/.test(phone)) return NextResponse.json({ error: "Add a valid 10-digit mobile number to your profile before paying." }, { status: 400 });
 
-    const transaction = await prisma.transaction.create({
-      data: {
-        groupId: request.groupId, senderId: user.id, amount, type: "LOAN_REPAYMENT", status: "PENDING",
-        requestId, provider: "CASHFREE", payoutKey: `CASHFREE_REPAYMENT_${crypto.randomUUID()}`,
-      },
-    });
+    const transaction = await prisma.$transaction(async (tx) => {
+      const existingPending = await tx.transaction.findFirst({
+        where: { requestId, type: "LOAN_REPAYMENT", status: "PENDING", provider: "CASHFREE" },
+      });
+      if (existingPending) throw new Error("A Cashfree repayment is already pending. Complete or wait for that payment before creating another.");
+      const payout = await tx.transaction.findFirst({
+        where: { requestId, groupId: request.groupId, receiverId: user.id, type: "PAYOUT", status: "SUCCESS" },
+      });
+      if (!payout) throw new Error("Original loan payout not found.");
+      const totals = await tx.transaction.aggregate({
+        where: { requestId, type: "LOAN_REPAYMENT", status: { in: ["SUCCESS", "PENDING"] } },
+        _sum: { amount: true },
+      });
+      const outstanding = payout.amount - (totals._sum.amount || 0);
+      if (amount > outstanding) throw new Error(`Repayment exceeds the available outstanding balance of ₹${Math.max(0, outstanding)}.`);
+      return tx.transaction.create({
+        data: {
+          groupId: request.groupId, senderId: user.id, amount, type: "LOAN_REPAYMENT", status: "PENDING",
+          requestId, provider: "CASHFREE", payoutKey: `CASHFREE_REPAYMENT_${crypto.randomUUID()}`,
+        },
+      });
+    }, { isolationLevel: "Serializable" });
     const orderId = `SW_REPAYMENT_${transaction.id}`;
     try {
       const order = await createCashfreeOrder({ orderId, amount, customerId: user.id, customerPhone: phone });
