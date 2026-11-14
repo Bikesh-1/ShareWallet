@@ -18,7 +18,7 @@ type Repayment = { id: string; amount: number; status: string; provider?: string
 export default function RepayLoanPage() {
   const { groupCode, requestId } = useParams<{ groupCode: string; requestId: string }>();
   const router = useRouter();
-  const [data, setData] = useState<{ originalAmount: number; repaidAmount: number; outstandingAmount: number; repayments: Repayment[]; walletBalance: number } | null>(null);
+  const [data, setData] = useState<{ originalAmount: number; repaidAmount: number; pendingAmount: number; outstandingAmount: number; repayments: Repayment[]; walletBalance: number } | null>(null);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
@@ -97,9 +97,10 @@ export default function RepayLoanPage() {
         <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
           <div className="flex items-center gap-3"><div className="rounded-xl bg-gray-100 p-3"><Wallet size={22} /></div><div><p className="text-sm text-gray-500">ShareWallet loan</p><h1 className="text-2xl font-bold">Repay emergency fund</h1></div></div>
           {loading ? <p className="py-12 text-center text-sm text-gray-500">Loading repayment details...</p> : data && <>
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
+            <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-xl bg-gray-50 p-4"><p className="text-xs text-gray-500">Original payout</p><p className="mt-1 text-xl font-bold">₹{data.originalAmount.toLocaleString("en-IN")}</p></div>
               <div className="rounded-xl bg-gray-50 p-4"><p className="text-xs text-gray-500">Already repaid</p><p className="mt-1 text-xl font-bold">₹{data.repaidAmount.toLocaleString("en-IN")}</p></div>
+              <div className="rounded-xl bg-gray-50 p-4"><p className="text-xs text-gray-500">Pending payment</p><p className="mt-1 text-xl font-bold">₹{data.pendingAmount.toLocaleString("en-IN")}</p></div>
               <div className="rounded-xl bg-[#F2F0FF] p-4"><p className="text-xs text-[#4F47EA]">Outstanding</p><p className="mt-1 text-xl font-bold text-[#4F47EA]">₹{data.outstandingAmount.toLocaleString("en-IN")}</p></div>
             </div>
             {data.outstandingAmount > 0 ? <>
