@@ -4,6 +4,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import QueryProvider from "@/providers/QueryProvider";
+import RouteTransition from "@/components/RouteTransition";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -25,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={plusJakartaSans.className}>
         <QueryProvider>
-      {children}
+      <RouteTransition>{children}</RouteTransition>
       <Toaster
           position="top-right"
           richColors
