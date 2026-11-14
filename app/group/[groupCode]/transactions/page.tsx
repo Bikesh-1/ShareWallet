@@ -247,7 +247,7 @@ export default function GroupTransactionsPage() {
                     </div>
 
                     <button
-                        onClick={fetchTransactions}
+                        onClick={() => fetchTransactions()}
                         className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition"
                     >
                         Refresh
