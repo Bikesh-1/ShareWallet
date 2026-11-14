@@ -268,7 +268,7 @@ export default function TransactionsPage() {
                         >
                             {item === "ALL"
                                 ? "All"
-                                : item.charAt(0) +
+                                : item === "LOAN_REPAYMENT" ? "Loan Repayment" : item.charAt(0) +
                                   item
                                       .slice(1)
                                       .toLowerCase()}
