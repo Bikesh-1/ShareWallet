@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
     ArrowDownLeft,
     ArrowUpRight,
@@ -59,40 +60,20 @@ type Filter =
     | "FAILED";
 
 export default function TransactionsPage() {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [filter, setFilter] = useState<Filter>("ALL");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    useEffect(() => {
-        fetchTransactions();
-    }, []);
-
-    async function fetchTransactions() {
-        try {
-            setLoading(true);
-
-            const response = await fetch("/api/transactions");
-
+    const { data: transactions = [], isPending: loading, error: queryError, refetch: fetchTransactions } = useQuery<Transaction[]>({
+        queryKey: ["transactions"],
+        queryFn: async () => {
+            const response = await fetch("/api/transactions", { cache: "no-store" });
             const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data?.error || "Failed to load transactions"
-                );
-            }
-
-            setTransactions(data.transactions || []);
-        } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong"
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
+            if (!response.ok) throw new Error(data?.error || "Failed to load transactions");
+            return data.transactions || [];
+        },
+        staleTime: 5_000,
+        refetchInterval: 15_000,
+        refetchIntervalInBackground: false,
+    });
+    const error = queryError instanceof Error ? queryError.message : "";
 
     const filteredTransactions = transactions.filter((transaction) => {
         if (filter === "ALL") return true;
