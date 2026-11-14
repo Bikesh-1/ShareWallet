@@ -9,7 +9,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ groupCode:
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const { groupCode, requestId } = await params;
-    const user = await prisma.user.findUnique({ where: { email: session.user.email }, select: { id: true } });
+    const user = await prisma.user.findUnique({ where: { email: session.user.email }, select: { id: true, walletBalance: true } });
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
     const request = await prisma.sentrequest.findFirst({ where: { id: requestId, userId: user.id, group: { groupCode } } });
     if (!request) return NextResponse.json({ error: "Loan not found for this group." }, { status: 404 });
@@ -19,7 +19,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ groupCode:
     ]);
     const repaid = repayments.filter((item) => item.status === "SUCCESS").reduce((sum, item) => sum + item.amount, 0);
     const originalAmount = payout?.amount ?? 0;
-    return NextResponse.json({ request, originalAmount, repaidAmount: repaid, outstandingAmount: Math.max(0, originalAmount - repaid), repayments });
+    return NextResponse.json({ request, originalAmount, repaidAmount: repaid, outstandingAmount: Math.max(0, originalAmount - repaid), walletBalance: user.walletBalance, repayments });
   } catch (error) {
     console.error("GET LOAN REPAYMENTS:", error);
     return NextResponse.json({ error: "Unable to fetch repayment details." }, { status: 500 });
