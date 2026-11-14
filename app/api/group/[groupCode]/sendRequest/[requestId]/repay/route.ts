@@ -17,6 +17,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ groupCode:
       prisma.transaction.findFirst({ where: { requestId, type: "PAYOUT", status: "SUCCESS", receiverId: user.id, group: { groupCode } } }),
       prisma.transaction.findMany({ where: { requestId, type: "LOAN_REPAYMENT" }, orderBy: { createdAt: "desc" } }),
     ]);
+    if (!payout || request.status !== "ACCEPTED") return NextResponse.json({ error: "The emergency-fund payout is not ready for repayment." }, { status: 409 });
     const repaid = repayments.filter((item) => item.status === "SUCCESS").reduce((sum, item) => sum + item.amount, 0);
     const pendingAmount = repayments.filter((item) => item.status === "PENDING").reduce((sum, item) => sum + item.amount, 0);
     const originalAmount = payout?.amount ?? 0;
