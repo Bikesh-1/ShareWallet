@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import {ArrowLeft,CheckCircle2,Clock3,CreditCard,Loader2,RefreshCw,Wallet,XCircle,} from "lucide-react";
 import { toast } from "sonner";
 
@@ -410,6 +411,20 @@ export default function MoneyRequestPage() {
                         </div>
 
                     </div>
+
+                    {request.status === "ACCEPTED" && request.user?.id === currentUserId && (
+                        <div className="mt-6 rounded-2xl border border-gray-200 bg-black p-6 text-white shadow-sm">
+                            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <h2 className="text-xl font-semibold">Repay your emergency fund</h2>
+                                    <p className="mt-1 text-sm text-gray-300">Return the borrowed amount to your group using your ShareWallet balance or UPI/Cashfree.</p>
+                                </div>
+                                <Link href={`/group/${groupCode}/repay/${requestId}`} className="inline-flex items-center justify-center rounded-lg bg-white px-5 py-3 text-sm font-semibold text-black hover:bg-gray-200">
+                                    View repayment & pay
+                                </Link>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Approval Section */}
 
