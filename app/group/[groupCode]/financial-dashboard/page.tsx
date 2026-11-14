@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import {
     ArrowDownLeft,
@@ -46,48 +47,20 @@ export default function FinancialDashboardPage() {
     const params = useParams();
     const groupCode = params.groupCode as string;
 
-    const [data, setData] = useState<DashboardData | null>(
-        null
-    );
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    useEffect(() => {
-        if (groupCode) {
-            fetchDashboard();
-        }
-    }, [groupCode]);
-
-    async function fetchDashboard() {
-        try {
-            setLoading(true);
-            setError("");
-
-            const response = await fetch(
-                `/api/group/${groupCode}/financial-dashboard`
-            );
-
+    const { data, isPending: loading, error: queryError, refetch: fetchDashboard } = useQuery<DashboardData>({
+        queryKey: ["group-financial-dashboard", groupCode],
+        queryFn: async () => {
+            const response = await fetch(`/api/group/${encodeURIComponent(groupCode)}/financial-dashboard`, { cache: "no-store" });
             const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    result?.error ||
-                        "Failed to load financial dashboard"
-                );
-            }
-
-            setData(result);
-        } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong"
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
+            if (!response.ok) throw new Error(result?.error || "Failed to load financial dashboard");
+            return result;
+        },
+        enabled: !!groupCode,
+        staleTime: 5_000,
+        refetchInterval: 15_000,
+        refetchIntervalInBackground: false,
+    });
+    const error = queryError instanceof Error ? queryError.message : "";
 
     function money(amount: number) {
         return Number(amount || 0).toLocaleString(
