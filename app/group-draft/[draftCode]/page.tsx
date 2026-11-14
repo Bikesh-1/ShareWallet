@@ -20,6 +20,17 @@ export default function GroupDraftDiscussionPage() {
   const [messages, setMessages] = useState<DraftMessage[]>([]);
   const [currentUserId, setCurrentUserId] = useState("");
   const [creatorId, setCreatorId] = useState("");
+  const [isFinalized, setIsFinalized] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [finalizing, setFinalizing] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [description, setDescription] = useState("");
+  const [monthlyContribution, setMonthlyContribution] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [repaymentDueDate, setRepaymentDueDate] = useState("");
+  const [repaymentTerms, setRepaymentTerms] = useState("");
+  const [interestFree, setInterestFree] = useState(true);
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
 
