@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoginNavbar from "../../components/loginNavbar";
 import { toast } from "sonner";
+import { useFriendList } from "@/hooks/useFriendList";
 
 type Friend = {
   receiver: { id: string; coustumerId: string; userdetails?: { name?: string | null; profilephoto?: string | null } | null };
@@ -11,22 +12,11 @@ type Friend = {
 
 export default function Creategroup() {
   const router = useRouter();
-  const [friends, setFriends] = useState<Friend[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    let active = true;
-    fetch("/api/addfriends").then(async (res) => {
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Unable to fetch friends.");
-      if (active) setFriends(data.friendlist || []);
-    }).catch((error) => toast.error(error instanceof Error ? error.message : "Unable to fetch friends."))
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
-  }, []);
+  const { data: friends = [], isPending: loading } = useFriendList();
 
   const filteredFriends = useMemo(() => friends.filter(({ receiver }) =>
     (receiver.userdetails?.name || receiver.coustumerId).toLowerCase().includes(search.toLowerCase())
