@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import LoginNavbar from "@/components/loginNavbar";
 import { MessageCircle, Users } from "lucide-react";
-import { toast } from "sonner";
 
 type Draft = {
   id: string;
@@ -17,19 +17,20 @@ type Draft = {
 
 export default function GroupDraftsPage() {
   const router = useRouter();
-  const [drafts, setDrafts] = useState<Draft[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: drafts = [], isPending: loading, isError, error } = useQuery({
+    queryKey: ["group-drafts"],
+    queryFn: async (): Promise<Draft[]> => {
+      const res = await fetch("/api/group/drafts", { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to load discussions.");
+      return data.drafts || [];
+    },
+    staleTime: 2_000,
+    refetchInterval: 5_000,
+    refetchIntervalInBackground: false,
+  });
 
-  useEffect(() => {
-    fetch("/api/group/drafts", { cache: "no-store" })
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Unable to load discussions.");
-        setDrafts(data.drafts || []);
-      })
-      .catch((error) => toast.error(error instanceof Error ? error.message : "Unable to load discussions."))
-      .finally(() => setLoading(false));
-  }, []);
+  if (isError) console.error("GROUP DRAFTS QUERY ERROR:", error);
 
   return (
     <div className="min-h-screen bg-white">
