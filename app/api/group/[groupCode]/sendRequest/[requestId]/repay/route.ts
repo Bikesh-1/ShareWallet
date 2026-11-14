@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { createCashfreeOrder } from "@/lib/cashfree/payment";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function GET(_: Request, { params }: { params: Promise<{ groupCode: string; requestId: string }> }) {
   try {
@@ -33,11 +34,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const { groupCode, requestId } = await params;
-    const body = await req.json();
-    const method = body.method === "cashfree" ? "cashfree" : body.method === "wallet" ? "wallet" : null;
-    const amount = Number(body.amount);
-    if (!method) return NextResponse.json({ error: "Choose wallet or Cashfree repayment." }, { status: 400 });
-    if (!Number.isSafeInteger(amount) || amount <= 0) return NextResponse.json({ error: "Repayment amount must be a positive whole number." }, { status: 400 });
+    const bodySchema = z.object({
+      method: z.enum(["wallet", "cashfree"]),
+      amount: z.coerce.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+    });
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON request body." }, { status: 400 });
+    }
+    const parsedBody = bodySchema.safeParse(body);
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: "Choose wallet or Cashfree and provide a positive whole-number repayment amount." }, { status: 400 });
+    }
+    const { method, amount } = parsedBody.data;
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
@@ -61,8 +72,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
         const debited = await tx.user.updateMany({ where: { id: user.id, walletBalance: { gte: amount } }, data: { walletBalance: { decrement: amount } } });
         if (debited.count !== 1) throw new Error("Insufficient ShareWallet balance.");
         await tx.group.update({ where: { id: request.groupId }, data: { totalAmount: { increment: amount } } });
+        const repaymentReference = `WALLET_REPAYMENT_${crypto.randomUUID()}`;
         const transaction = await tx.transaction.create({
-          data: { groupId: request.groupId, senderId: user.id, amount, type: "LOAN_REPAYMENT", status: "SUCCESS", requestId, provider: "SHAREWALLET", providerReference: `WALLET_REPAYMENT_${crypto.randomUUID()}`, payoutKey: `WALLET_REPAYMENT_${crypto.randomUUID()}` },
+          data: { groupId: request.groupId, senderId: user.id, amount, type: "LOAN_REPAYMENT", status: "SUCCESS", requestId, provider: "SHAREWALLET", providerReference: repaymentReference, payoutKey: repaymentReference },
         });
         await tx.notification.create({
           data: { userId: user.id, groupId: request.groupId, requestId, type: "PAYMENT_SUCCESS", title: "Loan repayment received", message: `Your ShareWallet repayment of ₹${amount} has been returned to the group.` },
