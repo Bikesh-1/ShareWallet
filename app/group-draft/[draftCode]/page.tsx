@@ -57,7 +57,7 @@ export default function GroupDraftDiscussionPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unable to send message.");
-      queryClient.setQueryData(["group-draft-messages", draftCode], (current: typeof discussion) => current ? { ...current, messages: [...current.messages, data.message] } : current);
+      queryClient.setQueryData(["group-draft-messages", draftCode], (current: { messages: DraftMessage[]; currentUserId: string; creatorId: string; isFinalized: boolean } | undefined) => current ? { ...current, messages: [...current.messages, data.message] } : current);
       setMessage("");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to send message.");
