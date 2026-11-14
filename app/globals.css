@@ -5,3 +5,102 @@
 .caveat{
   font-family: "Caveat", cursive;
 }
+
+/* ShareWallet interaction polish */
+:root {
+  --sw-motion-fast: 160ms;
+  --sw-motion-base: 220ms;
+  --sw-motion-slow: 320ms;
+  --sw-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+[role="button"],
+a,
+input,
+select,
+textarea {
+  transition:
+    color var(--sw-motion-base) var(--sw-ease),
+    background-color var(--sw-motion-base) var(--sw-ease),
+    border-color var(--sw-motion-base) var(--sw-ease),
+    box-shadow var(--sw-motion-base) var(--sw-ease),
+    opacity var(--sw-motion-base) var(--sw-ease),
+    transform var(--sw-motion-fast) var(--sw-ease);
+}
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  transform: translateZ(0);
+}
+
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active {
+  transform: scale(0.975);
+}
+
+a:active {
+  opacity: 0.78;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover,
+  [role="button"]:not([aria-disabled="true"]):hover {
+    filter: brightness(1.035);
+  }
+
+  a:hover {
+    text-decoration-thickness: 1.5px;
+  }
+}
+
+/* Native dialogs, popovers and common headless UI surfaces */
+dialog[open],
+[popover]:popover-open,
+[data-state="open"][role="dialog"],
+[data-state="open"][role="menu"],
+[data-state="open"][data-radix-popper-content-wrapper] {
+  animation: sw-surface-in var(--sw-motion-slow) var(--sw-ease) both;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin, center);
+}
+
+@keyframes sw-surface-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
