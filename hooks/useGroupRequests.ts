@@ -6,6 +6,8 @@ export const useGroupRequests = (groupCode: string) => {
     queryKey: ["requests", groupCode],
     queryFn: () => getGroupRequests(groupCode),
     enabled: !!groupCode,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 5_000,
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: false,
   });
 };
