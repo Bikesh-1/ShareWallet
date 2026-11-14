@@ -16,7 +16,7 @@ import { useParams } from "next/navigation";
 type Transaction = {
     id: string;
     amount: number;
-    type: "CONTRIBUTION" | "PAYOUT" | "REFUND";
+    type: "CONTRIBUTION" | "PAYOUT" | "REFUND" | "LOAN_REPAYMENT";
     status: "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED";
     provider?: string | null;
     providerReference?: string | null;
@@ -52,6 +52,7 @@ type Filter =
     | "CONTRIBUTION"
     | "PAYOUT"
     | "REFUND"
+    | "LOAN_REPAYMENT"
     | "SUCCESS"
     | "PENDING"
     | "FAILED";
@@ -141,6 +142,10 @@ export default function GroupTransactionsPage() {
             );
         }
 
+        if (type === "LOAN_REPAYMENT") {
+            return <div className="h-11 w-11 rounded-full bg-violet-100 flex items-center justify-center"><ArrowUpRight size={21} className="text-violet-600" /></div>;
+        }
+
         return (
             <div className="h-11 w-11 rounded-full bg-orange-100 flex items-center justify-center">
                 <RotateCcw
@@ -217,6 +222,7 @@ export default function GroupTransactionsPage() {
             return "Payout";
         }
 
+        if (transaction.type === "LOAN_REPAYMENT") return "Loan repayment";
         return "Refund";
     }
 
@@ -235,6 +241,7 @@ export default function GroupTransactionsPage() {
             )}`;
         }
 
+        if (transaction.type === "LOAN_REPAYMENT") return `From ${getUserName(transaction.sender)}`;
         return "Contribution refund";
     }
 
@@ -282,6 +289,7 @@ export default function GroupTransactionsPage() {
                         "CONTRIBUTION",
                         "PAYOUT",
                         "REFUND",
+                        "LOAN_REPAYMENT",
                         "SUCCESS",
                         "PENDING",
                         "FAILED",
@@ -403,6 +411,8 @@ export default function GroupTransactionsPage() {
                                                             : transaction.type ===
                                                               "REFUND"
                                                             ? "text-orange-600"
+                                                            : transaction.type === "LOAN_REPAYMENT"
+                                                            ? "text-green-600"
                                                             : "text-black"
                                                     }`}
                                                 >
@@ -410,7 +420,7 @@ export default function GroupTransactionsPage() {
                                                     "PAYOUT"
                                                         ? "+"
                                                         : transaction.type ===
-                                                          "REFUND"
+                                                          "REFUND" || transaction.type === "LOAN_REPAYMENT"
                                                         ? "+"
                                                         : "-"}
                                                     ₹
