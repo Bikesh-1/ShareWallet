@@ -67,8 +67,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
       return NextResponse.json({ success: true, message: "Wallet repayment received.", transaction: result }, { status: 201 });
     }
 
-    const phone = user.userdetails?.mobileNumber?.replace(/\\D/g, "") || "";
-    if (!/^\\d{10}$/.test(phone)) return NextResponse.json({ error: "Add a valid 10-digit mobile number to your profile before paying." }, { status: 400 });
+    const phone = user.userdetails?.mobileNumber?.replace(/\D/g, "") || "";
+    if (!/^\d{10}$/.test(phone)) return NextResponse.json({ error: "Add a valid 10-digit mobile number to your profile before paying." }, { status: 400 });
 
     const transaction = await prisma.$transaction(async (tx) => {
       const existingPending = await tx.transaction.findFirst({
@@ -104,7 +104,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ groupCo
   } catch (error) {
     console.error("CREATE LOAN REPAYMENT:", error);
     const message = error instanceof Error ? error.message : "Unable to process repayment.";
-    const status = /Insufficient|exceeds|not found|approved|outstanding/i.test(message) ? 400 : 500;
+    const status = /already pending/i.test(message) ? 409 : /Insufficient|exceeds|not found|approved|outstanding/i.test(message) ? 400 : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }
