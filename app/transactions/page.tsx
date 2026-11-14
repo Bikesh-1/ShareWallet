@@ -75,6 +75,42 @@ export default function TransactionsPage() {
     });
     const error = queryError instanceof Error ? queryError.message : "";
 
+    const successful = transactions.filter((item) => item.status === "SUCCESS");
+    const totalContributions = successful.filter((item) => item.type === "CONTRIBUTION").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const totalPayouts = successful.filter((item) => item.type === "PAYOUT" || item.type === "REFUND").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const totalRepayments = successful.filter((item) => item.type === "LOAN_REPAYMENT").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const pendingAmount = transactions.filter((item) => item.status === "PENDING").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    function exportStatement() {
+        const columns = ["Date", "Transaction ID", "Type", "Status", "Amount (INR)", "Group", "Description", "Provider", "Provider Reference"];
+        const escapeCsv = (value: unknown) => {
+            let text = String(value ?? "");
+            if (/^[=+@\\-\\t\\r]/.test(text)) text = "'" + text;
+            return '"' + text.replace(/"/g, '""') + '"';
+        };
+        const rows = filteredTransactions.map((item) => [
+            new Date(item.createdAt).toISOString(),
+            item.id,
+            item.type,
+            item.status,
+            item.amount,
+            item.group?.groupName || "",
+            item.request?.reason || "",
+            item.provider || "",
+            item.providerReference || "",
+        ]);
+        const csv = [columns, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\\r\\n");
+        const blob = new Blob(["\\uFEFF", csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `sharewallet-statement-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    }
+
     const filteredTransactions = transactions.filter((transaction) => {
         if (filter === "ALL") return true;
 
@@ -216,12 +252,21 @@ export default function TransactionsPage() {
                         </p>
                     </div>
 
-                    <button
-                        onClick={() => fetchTransactions()}
-                        className="w-fit px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition"
-                    >
-                        Refresh
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={exportStatement}
+                            disabled={filteredTransactions.length === 0}
+                            className="w-fit px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                        >
+                            Export statement
+                        </button>
+                        <button
+                            onClick={() => fetchTransactions()}
+                            className="w-fit px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition"
+                        >
+                            Refresh
+                        </button>
+                    </div>
                 </div>
 
                 {/* Filters */}
@@ -255,6 +300,30 @@ export default function TransactionsPage() {
                                       .toLowerCase()}
                         </button>
                     ))}
+                </div>
+
+                {/* Financial summary */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                        <p className="text-sm text-gray-500">Total contributions</p>
+                        <p className="mt-2 text-2xl font-bold">₹{totalContributions.toLocaleString("en-IN")}</p>
+                        <p className="mt-1 text-xs text-gray-400">Successful payments</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                        <p className="text-sm text-gray-500">Payouts received</p>
+                        <p className="mt-2 text-2xl font-bold text-green-600">₹{totalPayouts.toLocaleString("en-IN")}</p>
+                        <p className="mt-1 text-xs text-gray-400">Payouts and refunds</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                        <p className="text-sm text-gray-500">Loan repayments</p>
+                        <p className="mt-2 text-2xl font-bold">₹{totalRepayments.toLocaleString("en-IN")}</p>
+                        <p className="mt-1 text-xs text-gray-400">Successfully repaid</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                        <p className="text-sm text-gray-500">Pending amount</p>
+                        <p className="mt-2 text-2xl font-bold text-amber-600">₹{pendingAmount.toLocaleString("en-IN")}</p>
+                        <p className="mt-1 text-xs text-gray-400">Awaiting payment confirmation</p>
+                    </div>
                 </div>
 
                 {/* Error */}
