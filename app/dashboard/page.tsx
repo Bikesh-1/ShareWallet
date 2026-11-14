@@ -31,6 +31,7 @@ import SettingsSection from "@/components/dashboard/SettingsSection";
 const menuItems = [
   { id: "home", label: "Home", icon: House },
   { id: "group", label: "Groups", icon: Users },
+  { id: "payout", label: "Payout", icon: CreditCard },
   { id: "friend", label: "Friends", icon: Users },
   { id: "contribution", label: "Contribution", icon: Wallet },
   { id: "activity", label: "Activity", icon: Activity },
@@ -292,6 +293,27 @@ export default function Dashboard() {
       {groupsLoading ? <p className="text-zinc-400">Loading groups…</p> : groupsError ? <p className="text-red-400">{groupError.message}</p> : filteredGroups.length ? <div className="grid gap-4 lg:grid-cols-2">{filteredGroups.map((group: any) => <article key={group.id} className="rounded-2xl border border-zinc-800 bg-[#101014] p-5"><div className="flex items-start justify-between gap-3"><div><h2 className="text-lg font-semibold text-white">{group.groupName}</h2><p className="mt-1 text-xs text-zinc-500">Code: {group.groupCode}</p></div><span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs text-emerald-300">Joined</span></div><p className="mt-4 min-h-10 text-sm text-zinc-400">{group.description || "No group description added."}</p><div className="my-4 grid grid-cols-2 gap-3"><div className="rounded-xl bg-black/40 p-3"><p className="text-xs text-zinc-500">Monthly contribution</p><p className="mt-1 font-semibold text-white">{money(Number(group.monthlyContribution || 0))}</p></div><div className="rounded-xl bg-black/40 p-3"><p className="text-xs text-zinc-500">Total contributions</p><p className="mt-1 font-semibold text-white">{money(Number(group.totalAmount || 0))}</p></div><div className="rounded-xl bg-black/40 p-3"><p className="text-xs text-zinc-500">Members</p><p className="mt-1 font-semibold text-white">{group.groupmember?.length || 0}</p></div><div className="rounded-xl bg-black/40 p-3"><p className="text-xs text-zinc-500">Monthly due date</p><p className="mt-1 font-semibold text-white">{group.dueDate ? new Date(group.dueDate).toLocaleDateString() : "Not set"}</p></div></div><button onClick={() => router.push(`/group/${group.groupCode}`)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-2.5 text-sm font-semibold text-black">Open group workspace <ExternalLink size={15} /></button></article>)}</div> : <EmptyState title="No matching groups" detail="Try another search or create a new savings group." />}
     </div>;
 
+    if (page === "payout") {
+      const payoutTransactions = transactions.filter((item) => item.type === "PAYOUT");
+      const successfulPayouts = payoutTransactions.filter((item) => item.status === "SUCCESS");
+      const pendingPayouts = payoutTransactions.filter((item) => item.status === "PENDING");
+      const payoutTotal = successfulPayouts.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+      return <div>
+        <PanelHeader
+          title="Payouts"
+          description="Track emergency-fund payouts received from your groups and check their payment status."
+          action={<button onClick={refresh} className="inline-flex items-center gap-2 rounded-xl border border-zinc-300 px-4 py-2.5 text-sm text-black"><RefreshCw size={15} /> Refresh</button>}
+        />
+        <div className="mb-6 grid gap-4 sm:grid-cols-3">
+          <StatCard label="Total received" value={money(payoutTotal)} detail="Successfully completed payouts" icon={CheckCircle2} />
+          <StatCard label="Pending payouts" value={String(pendingPayouts.length)} detail={money(pendingPayouts.reduce((sum, item) => sum + Number(item.amount || 0), 0)) + " awaiting confirmation"} icon={Clock3} />
+          <StatCard label="Payout transactions" value={String(payoutTransactions.length)} detail="All payout records" icon={CreditCard} />
+        </div>
+        {transactionsLoading ? <p className="text-sm text-zinc-500">Loading payouts…</p> : transactionsError ? <p className="text-sm text-red-500">{transactionsError}</p> : transactionRows(payoutTransactions)}
+      </div>;
+    }
+
     if (page === "friend") return <div>
       <PanelHeader title="Friends" description="Connect with people on ShareWallet using their unique customer ID." />
       <form onSubmit={(e) => { e.preventDefault(); if (!friendCode.trim()) return; addFriendMutation.mutate({ coustumerId: friendCode.trim() }); }} className="mb-6 flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-[#101014] p-4 sm:flex-row"><input value={friendCode} onChange={(e) => setFriendCode(e.target.value)} placeholder="Enter friend customer ID" className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-black px-4 py-3 text-sm text-white outline-none focus:border-[#6d63ef]" /><button disabled={addFriendMutation.isPending || !friendCode.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F47EA] px-5 py-3 text-sm font-semibold text-white disabled:opacity-50"><UserPlus size={16} />{addFriendMutation.isPending ? "Sending…" : "Add friend"}</button></form>
@@ -367,6 +389,7 @@ export default function Dashboard() {
     friend: FriendsSection,
     contribution: ContributionSection,
     activity: ActivitySection,
+    payout: ActivitySection,
     notification: NotificationsSection,
     profile: ProfileSection,
     setting: SettingsSection,
@@ -408,8 +431,8 @@ export default function Dashboard() {
           {renderContent()}
         </main>
 
-        <nav aria-label="Mobile dashboard navigation" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-zinc-800 bg-black/95 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 backdrop-blur lg:hidden">
-          {menuItems.slice(0, 4).map((item) => {
+        <nav aria-label="Mobile dashboard navigation" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-zinc-800 bg-black/95 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 backdrop-blur lg:hidden">
+          {menuItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
             return (
               <button
