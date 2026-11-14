@@ -381,7 +381,7 @@ export default function Dashboard() {
     <div className="flex h-screen min-h-screen flex-col overflow-hidden bg-white">
       <LoginNavbar />
       <div className="relative flex min-h-0 flex-1 overflow-hidden">
-        <aside className="relative z-20 hidden h-full w-64 shrink-0 flex-col justify-between bg-black p-2 lg:flex">
+        <aside className="relative z-20 hidden h-full w-64 shrink-0 flex-col justify-between bg-white border-r border-black-400 p-2 lg:flex">
           <div className="flex flex-col gap-2">
 
             {menuItems.map((item) => {
@@ -391,8 +391,8 @@ export default function Dashboard() {
                   key={item.id}
                   onClick={() => setPage(item.id)}
                   className={`flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all ${page === item.id
-                    ? "bg-[#4f47ea81] text-white shadow-md"
-                    : "text-[#dadada] hover:bg-zinc-800"
+                    ? "bg-[#000000] text-white shadow-md"
+                    : "text-[#000000] hover:bg-black hover:text-white"
                     }`}
                 >
                   <Icon size={18} />

@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
-    <div className="h-screen flex items-center justify-center bg-[#dadada]">
-      <h1 className="font-mono text-xl">
+    <div className="h-screen flex items-center justify-center bg-[#ffffff]">
+      <h1 className="text-xl">
         Loading please wait...
       </h1>
     </div>
