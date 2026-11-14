@@ -18,8 +18,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ groupCode:
       prisma.transaction.findMany({ where: { requestId, type: "LOAN_REPAYMENT" }, orderBy: { createdAt: "desc" } }),
     ]);
     const repaid = repayments.filter((item) => item.status === "SUCCESS").reduce((sum, item) => sum + item.amount, 0);
+    const pendingAmount = repayments.filter((item) => item.status === "PENDING").reduce((sum, item) => sum + item.amount, 0);
     const originalAmount = payout?.amount ?? 0;
-    return NextResponse.json({ request, originalAmount, repaidAmount: repaid, outstandingAmount: Math.max(0, originalAmount - repaid), walletBalance: user.walletBalance, repayments });
+    return NextResponse.json({ request, originalAmount, repaidAmount: repaid, pendingAmount, outstandingAmount: Math.max(0, originalAmount - repaid - pendingAmount), walletBalance: user.walletBalance, repayments });
   } catch (error) {
     console.error("GET LOAN REPAYMENTS:", error);
     return NextResponse.json({ error: "Unable to fetch repayment details." }, { status: 500 });
