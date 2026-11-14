@@ -42,7 +42,7 @@ const menuItems = [
 type Transaction = {
   id: string;
   amount: number | string;
-  type: "CONTRIBUTION" | "PAYOUT" | "REFUND" | "LOAN_REPAYMENT" | "LOAN_REPAYMENT";
+  type: "CONTRIBUTION" | "PAYOUT" | "REFUND" | "LOAN_REPAYMENT";
   status: "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED";
   createdAt: string;
   group?: { id: string; groupName?: string; groupCode?: string } | null;
