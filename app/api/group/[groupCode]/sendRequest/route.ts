@@ -236,7 +236,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
             },
         });
         return NextResponse.json(
-            { sentrequestDetails, message: "Sending Request details. " },
+            { sentrequestDetails, currentUserId: user.id, message: "Sending Request details. " },
             { status: 200 }
         )
     } catch {
