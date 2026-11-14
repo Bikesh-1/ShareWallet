@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
     ArrowDownLeft,
     ArrowUpRight,
@@ -62,49 +63,21 @@ export default function GroupTransactionsPage() {
 
     const groupCode = params.groupCode as string;
 
-    const [transactions, setTransactions] = useState<Transaction[]>(
-        []
-    );
-
     const [filter, setFilter] = useState<Filter>("ALL");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    useEffect(() => {
-        if (groupCode) {
-            fetchTransactions();
-        }
-    }, [groupCode]);
-
-    async function fetchTransactions() {
-        try {
-            setLoading(true);
-            setError("");
-
-            const response = await fetch(
-                `/api/group/${groupCode}/transactions`
-            );
-
+    const { data: transactions = [], isPending: loading, error: queryError, refetch: fetchTransactions } = useQuery<Transaction[]>({
+        queryKey: ["group-transactions", groupCode],
+        queryFn: async () => {
+            const response = await fetch(`/api/group/${encodeURIComponent(groupCode)}/transactions`, { cache: "no-store" });
             const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data?.error ||
-                        "Failed to load group transactions"
-                );
-            }
-
-            setTransactions(data.transactions || []);
-        } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong"
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
+            if (!response.ok) throw new Error(data?.error || "Failed to load group transactions");
+            return data.transactions || [];
+        },
+        enabled: !!groupCode,
+        staleTime: 5_000,
+        refetchInterval: 15_000,
+        refetchIntervalInBackground: false,
+    });
+    const error = queryError instanceof Error ? queryError.message : "";
 
     const filteredTransactions = transactions.filter(
         (transaction) => {
