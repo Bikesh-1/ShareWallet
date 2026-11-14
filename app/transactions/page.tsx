@@ -15,7 +15,7 @@ import {
 type Transaction = {
     id: string;
     amount: number;
-    type: "CONTRIBUTION" | "PAYOUT" | "REFUND";
+    type: "CONTRIBUTION" | "PAYOUT" | "REFUND" | "LOAN_REPAYMENT";
     status: "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED";
     provider?: string | null;
     providerReference?: string | null;
@@ -53,6 +53,7 @@ type Filter =
     | "CONTRIBUTION"
     | "PAYOUT"
     | "REFUND"
+    | "LOAN_REPAYMENT"
     | "SUCCESS"
     | "PENDING"
     | "FAILED";
@@ -125,6 +126,10 @@ export default function TransactionsPage() {
             );
         }
 
+        if (type === "LOAN_REPAYMENT") {
+            return <div className="h-10 w-10 rounded-full bg-violet-100 flex items-center justify-center"><ArrowUpRight size={20} className="text-violet-600" /></div>;
+        }
+
         return (
             <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
                 <RotateCcw
@@ -180,6 +185,7 @@ export default function TransactionsPage() {
             return "Payout";
         }
 
+        if (transaction.type === "LOAN_REPAYMENT") return "Loan repayment";
         return "Refund";
     }
 
@@ -198,6 +204,7 @@ export default function TransactionsPage() {
             );
         }
 
+        if (transaction.type === "LOAN_REPAYMENT") return transaction.group?.groupName || "Emergency-fund repayment";
         return "Payment refunded";
     }
 
@@ -243,6 +250,7 @@ export default function TransactionsPage() {
                         "CONTRIBUTION",
                         "PAYOUT",
                         "REFUND",
+                        "LOAN_REPAYMENT",
                         "SUCCESS",
                         "PENDING",
                         "FAILED",
