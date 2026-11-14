@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 
 export async function POST(req: Request, { params, }: { params: Promise<{ groupCode: string; }>; }
@@ -17,22 +18,28 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
             );
         }
 
-        const body = await req.json();
-        const reason = typeof body?.reason === "string" ? body.reason.trim() : "";
-        const amount = Number(body?.amount);
-        const month = body?.month || new Date().toISOString().slice(0, 7);
-
-        if (typeof reason !== "string" || reason.length < 5 || reason.length > 500) {
-            return NextResponse.json({ error: "Reason must be between 5 and 500 characters." }, { status: 400 });
+        let body: unknown;
+        try {
+            body = await req.json();
+        } catch {
+            return NextResponse.json({ error: "Invalid JSON request body." }, { status: 400 });
         }
 
-        if (typeof month !== "string" || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
-            return NextResponse.json({ error: "Month must use YYYY-MM format." }, { status: 400 });
+        const requestSchema = z.object({
+            reason: z.string().trim().min(5).max(500),
+            amount: z.coerce.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+            month: z.string().regex(/^\\d{4}-(0[1-9]|1[0-2])$/).optional(),
+        });
+        const parsedBody = requestSchema.safeParse(body);
+        if (!parsedBody.success) {
+            return NextResponse.json({
+                error: "Provide a reason (5–500 characters), a positive whole-number amount, and a valid YYYY-MM month.",
+            }, { status: 400 });
         }
 
-        if (!Number.isSafeInteger(amount) || amount <= 0) {
-            return NextResponse.json({ error: "Amount must be a positive whole number", }, { status: 400 });
-        }
+        const reason = parsedBody.data.reason;
+        const amount = parsedBody.data.amount;
+        const month = parsedBody.data.month || new Date().toISOString().slice(0, 7);
 
         const user = await prisma.user.findUnique({
             where: {
