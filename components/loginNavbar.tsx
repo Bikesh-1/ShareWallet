@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { Bell, Plus, Menu, X } from "lucide-react";
+import { Bell, Plus, Menu, X, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useUserDetails } from "@/hooks/useUserDetails";
@@ -107,6 +107,14 @@ export default function LoginNavbar() {
           </button>
           <button
             type="button"
+            onClick={() => router.push("/group-draft")}
+            className="hidden items-center justify-center gap-2 rounded-xl border border-[#dadada] bg-white px-3 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-zinc-50 sm:inline-flex"
+          >
+            <MessageCircle size={16} />
+            Discussions
+          </button>
+          <button
+            type="button"
             onClick={() => router.push("/creategroup")}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-black px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition  sm:px-4"
           >
@@ -142,6 +150,13 @@ export default function LoginNavbar() {
             >
               {userDetails?.isprofileCompleted ? "Profile details added" : "Add your profile details"}
               <span className="text-xs text-zinc-400">{userDetails?.isprofileCompleted ? "Complete" : "Required"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { router.push("/group-draft"); setMobileMenuOpen(false); }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100"
+            >
+              <MessageCircle size={17} /> Group discussions
             </button>
             <button
               type="button"
