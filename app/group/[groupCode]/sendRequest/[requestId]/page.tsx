@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {ArrowLeft,CheckCircle2,Clock3,CreditCard,Loader2,RefreshCw,Wallet,XCircle,} from "lucide-react";
@@ -81,11 +82,26 @@ export default function MoneyRequestPage() {
     const params = useParams();
     const groupCode = params.groupCode as string;
     const requestId = params.requestId as string;
-    const [request, setRequest] = useState<RequestData | null>(null);
-    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
     const [paying, setPaying] = useState(false);
     const [cashfreeReady, setCashfreeReady] = useState(false);
+    const { data: requestPayload, isPending: loading, refetch: fetchRequest } = useQuery<{
+        request: RequestData;
+        currentUserId: string;
+    }>({
+        queryKey: ["request", groupCode, requestId],
+        queryFn: async () => {
+            const res = await fetch(`/api/group/${encodeURIComponent(groupCode)}/sendRequest/${encodeURIComponent(requestId)}`, { cache: "no-store" });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to fetch request");
+            return { request: data.request || data, currentUserId: data.currentUserId || "" };
+        },
+        enabled: !!groupCode && !!requestId,
+        staleTime: 3_000,
+        refetchInterval: 10_000,
+        refetchIntervalInBackground: false,
+    });
+    const request = requestPayload?.request || null;
+    const currentUserId = requestPayload?.currentUserId || null;
 
     const cashfreeMode =
         process.env.NEXT_PUBLIC_CASHFREE_ENV === "production"
@@ -123,29 +139,7 @@ export default function MoneyRequestPage() {
         };
     }, []);
 
-    async function fetchRequest() {
-        try {
-            setLoading(true);
-            const res = await fetch(`/api/group/${groupCode}/sendRequest/${requestId}`);
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.error ||"Failed to fetch request");
-            }
-            setRequest(data.request || data);
-            setCurrentUserId(data.currentUserId || null);
-        } catch (error) {
-            console.error(error);
-            toast.error(error instanceof Error? error.message: "Failed to load request");
-        } finally {
-            setLoading(false);
-        }
-    }
 
-    useEffect(() => {
-        if (groupCode &&requestId) {
-            fetchRequest();
-        }
-    }, [groupCode,requestId]);
 
     async function handleApproval(status:| "APPROVED"| "REJECTED") {
         try {
