@@ -40,7 +40,9 @@ export default function RepayLoanPage() {
   });
   const load = async () => { await refetch(); };
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (data && !amount) setAmount(String(data.outstandingAmount || ""));
+  }, [data?.outstandingAmount]);
 
   useEffect(() => {
     const scriptId = "cashfree-checkout-sdk";
@@ -71,7 +73,6 @@ export default function RepayLoanPage() {
       await load();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to verify payment.");
-    } finally {
     }
   }
 
