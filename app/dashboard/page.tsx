@@ -42,7 +42,7 @@ const menuItems = [
 type Transaction = {
   id: string;
   amount: number | string;
-  type: "CONTRIBUTION" | "PAYOUT" | "REFUND";
+  type: "CONTRIBUTION" | "PAYOUT" | "REFUND" | "LOAN_REPAYMENT" | "LOAN_REPAYMENT";
   status: "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED";
   createdAt: string;
   group?: { id: string; groupName?: string; groupCode?: string } | null;
@@ -226,7 +226,7 @@ export default function Dashboard() {
         <div key={item.id} className="flex flex-col gap-3 border-b border-zinc-800 p-4 last:border-0 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <span className="rounded-xl bg-[#4F47EA]/15 p-3 text-[#9690ff]">{item.type === "CONTRIBUTION" ? <ArrowUpRight size={18} /> : item.type === "PAYOUT" ? <ArrowDownLeft size={18} /> : <RefreshCw size={18} />}</span>
-            <div><p className="font-medium text-white">{item.type === "PAYOUT" && item.request ? "Money request received" : item.type.charAt(0) + item.type.slice(1).toLowerCase()}</p><p className="mt-1 text-xs text-zinc-500">{item.group?.groupName || item.request?.reason || "ShareWallet transaction"} · {new Date(item.createdAt).toLocaleString()}</p></div>
+            <div><p className="font-medium text-white">{item.type === "PAYOUT" && item.request ? "Money request received" : item.type === "LOAN_REPAYMENT" ? "Loan repayment sent" : item.type.charAt(0) + item.type.slice(1).toLowerCase()}</p><p className="mt-1 text-xs text-zinc-500">{item.group?.groupName || item.request?.reason || "ShareWallet transaction"} · {new Date(item.createdAt).toLocaleString()}</p></div>
           </div>
           <div className="flex items-center justify-between gap-4 sm:justify-end"><span className="font-semibold text-white">{money(Number(item.amount || 0))}</span>{transactionStatus(item.status)}</div>
         </div>
