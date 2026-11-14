@@ -96,7 +96,7 @@ export default function FinancialDashboardPage() {
                     </p>
 
                     <button
-                        onClick={fetchDashboard}
+                        onClick={() => fetchDashboard()}
                         className="mt-5 px-5 py-2 rounded-lg bg-black text-white"
                     >
                         Try Again
@@ -134,7 +134,7 @@ export default function FinancialDashboardPage() {
                     </div>
 
                     <button
-                        onClick={fetchDashboard}
+                        onClick={() => fetchDashboard()}
                         className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition"
                     >
                         Refresh
