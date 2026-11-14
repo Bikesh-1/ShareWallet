@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-type Repayment = { id: string; amount: number; status: string; provider?: string | null; createdAt: string };
+type Repayment = { id: string; amount: number; status: string; provider?: string | null; providerReference?: string | null; createdAt: string };
 
 export default function RepayLoanPage() {
   const { groupCode, requestId } = useParams<{ groupCode: string; requestId: string }>();
@@ -55,6 +55,25 @@ export default function RepayLoanPage() {
     script.addEventListener("load", markReady);
     return () => script?.removeEventListener("load", markReady);
   }, []);
+
+  async function refreshPending() {
+    const pending = data?.repayments.find((item) => item.status === "PENDING" && item.providerReference);
+    if (!pending?.providerReference) return toast.error("No pending Cashfree order was found.");
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/payment/status?order_id=${encodeURIComponent(pending.providerReference)}`, { cache: "no-store" });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Unable to verify payment.");
+      if (result.status === "SUCCESS") toast.success("Repayment confirmed.");
+      else if (result.status === "FAILED") toast.error("Payment failed. You can try again.");
+      else toast.message("Cashfree is still processing this payment.");
+      await load();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to verify payment.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function repay(method: "wallet" | "cashfree") {
     const value = Number(amount);
@@ -114,7 +133,7 @@ export default function RepayLoanPage() {
                 <button onClick={() => repay("cashfree")} disabled={paying || !cashfreeReady} className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-3 font-semibold text-black hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">{paying ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={18} />} Pay with UPI / Cashfree</button>
               </div>
               <p className="mt-4 text-xs leading-5 text-gray-500">Wallet repayments are transferred back to the group balance immediately. UPI/Cashfree repayments update the group balance only after Cashfree confirms successful payment.</p>
-            </> : data.pendingAmount > 0 ? <div className="mt-7 rounded-xl border border-yellow-200 bg-yellow-50 p-5 text-sm font-semibold text-yellow-800">A repayment of ₹{data.pendingAmount.toLocaleString("en-IN")} is awaiting Cashfree confirmation. Refresh this page shortly.</div> : <div className="mt-7 rounded-xl border border-green-200 bg-green-50 p-5 text-sm font-semibold text-green-700">This loan has been fully repaid. Thank you.</div>}
+            </> : data.pendingAmount > 0 ? <div className="mt-7 rounded-xl border border-yellow-200 bg-yellow-50 p-5 text-sm font-semibold text-yellow-800">A repayment of ₹{data.pendingAmount.toLocaleString("en-IN")} is awaiting Cashfree confirmation. <button type="button" onClick={refreshPending} className="ml-2 underline">Check payment status</button></div> : <div className="mt-7 rounded-xl border border-green-200 bg-green-50 p-5 text-sm font-semibold text-green-700">This loan has been fully repaid. Thank you.</div>}
           </>}
         </section>
         {data?.repayments?.length ? <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"><h2 className="font-bold">Repayment history</h2><div className="mt-4 divide-y divide-gray-100">{data.repayments.map((item) => <div key={item.id} className="flex items-center justify-between gap-4 py-3 text-sm"><div><p className="font-semibold">₹{item.amount.toLocaleString("en-IN")}</p><p className="mt-1 text-xs text-gray-500">{item.provider === "CASHFREE" ? "UPI / Cashfree" : "ShareWallet Wallet"} · {new Date(item.createdAt).toLocaleString()}</p></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.status === "SUCCESS" ? "bg-green-100 text-green-700" : item.status === "FAILED" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}>{item.status}</span></div>)}</div></section> : null}
