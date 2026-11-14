@@ -1,173 +1,109 @@
-"use client"
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 import LoginNavbar from "../../components/loginNavbar";
 import { toast } from "sonner";
-import { useGroupDetails } from "@/hooks/useGroupDetails";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createGroup } from "@/services/group.service";
+
+type Friend = {
+  receiver: { id: string; coustumerId: string; userdetails?: { name?: string | null; profilephoto?: string | null } | null };
+};
 
 export default function Creategroup() {
-    const [groupName, setGroupName] = useState("");
-    const [description, setDescription] = useState("");
-    const [monthlyContribution, setMonthlyContribution] = useState<number>(0);
-    const [dueDate, setDuedate] = useState("");
-    const totalAmount = 0;
-    const router = useRouter();
+  const router = useRouter();
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [starting, setStarting] = useState(false);
+  const [search, setSearch] = useState("");
 
-    const currentDate = new Date();
-    const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-        .toISOString().split("T")[0];
-    const currentMonthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-        .toISOString().split("T")[0];
+  useEffect(() => {
+    let active = true;
+    fetch("/api/addfriends").then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to fetch friends.");
+      if (active) setFriends(data.friendlist || []);
+    }).catch((error) => toast.error(error instanceof Error ? error.message : "Unable to fetch friends."))
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
 
-    const{data: Group} = useGroupDetails();
+  const filteredFriends = useMemo(() => friends.filter(({ receiver }) =>
+    (receiver.userdetails?.name || receiver.coustumerId).toLowerCase().includes(search.toLowerCase())
+  ), [friends, search]);
 
-    const queryClient = useQueryClient();
+  function toggleFriend(id: string) {
+    setSelected((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  }
 
-    const mutation = useMutation({
-        mutationFn: createGroup,
-
-        onSuccess: (data) =>{
-            toast.success(data.message);
-            queryClient.invalidateQueries({
-                queryKey:["group"],
-            })
-            queryClient.invalidateQueries({
-                queryKey: ["friend"],
-            })
-            router.push("/dashboard")
-        },
-
-        onError:(error:Error) =>{
-            toast.error(error.message)
-        }
-    })
-
-    const handlegroupCreation = (e: React.FormEvent) =>{
-        e.preventDefault();
-
-        mutation.mutate({
-            groupName,
-            description,
-            monthlyContribution,
-            dueDate,
-            totalAmount,
-        })
+  async function startDiscussion() {
+    if (!selected.length) return toast.error("Select at least one friend to start a discussion.");
+    try {
+      setStarting(true);
+      const res = await fetch("/api/group/drafts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memberIds: selected }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to start discussion.");
+      router.push(`/group-draft/${data.draft.draftCode}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to start discussion.");
+      setStarting(false);
     }
+  }
 
-    return (
-        <div className="min-h-screen w-full relative bg-white ">
-            <div className="absolute inset-0 z-0"
-                style={{
-                    backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
-                    backgroundSize: "20px 20px",
-                    backgroundPosition: "0 0, 0 0",
-                    maskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 100% 0%, #000 50%, transparent 90%)`,
-                    WebkitMaskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 100% 0%, #000 50%, transparent 90%)`,
-                    maskComposite: "intersect",
-                    WebkitMaskComposite: "source-in",
-                }}
-            />
-            <LoginNavbar />
-            <div className="w-full min-h-screen flex flex-col lg:flex-row items-stretch lg:items-center justify-center gap-4 sm:gap-6 lg:gap-8 px-3 sm:px-5 lg:px-8 py-5 sm:py-8 relative z-10">
-                <div className="w-full lg:w-1/3 flex items-center justify-center">
-                    <div className="bg-white border rounded p-5 sm:p-7 lg:p-8 w-full max-w-2xl lg:max-w-md">
-                        <div className="mb-5 sm:mb-6">
-                            <h2 className="text-2xl font-bold text-[#0a0a0a]">Before You Create</h2>
-                            <p className="text-red-700 text-sm mt-1 font-black">
-                                Please review these important guidelines before creating your savings group.
-                            </p>
-                        </div>
-                        <div className="space-y-4 sm:space-y-5 text-sm">
-                            <div className="flex gap-3">
-                                <span className="text-[#4F47EA] font-bold">-</span>
-                                <div>
-                                    <p className="font-semibold text-black">Group Deletion</p>
-                                    <p className="text-gray-700">Groups cannot be deleted directly after creation. If required, contact our support team.</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-3">
-                                <span className="text-[#4F47EA] font-bold">-</span>
-                                <div>
-                                    <p className="font-semibold text-black">Invite Members</p>
-                                    <p className="text-gray-700">After creating the group, you can invite your friends to join.</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-3">
-                                <span className="text-[#4F47EA] font-bold">-</span>
-                                <div>
-                                    <p className="font-semibold text-black">Member Management</p>
-                                    <p className="text-gray-700">Once a member joins the group, they cannot be removed.</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-3">
-                                <span className="text-[#4F47EA] font-bold">-</span>
-                                <div>
-                                    <p className="font-semibold text-black">Contributions</p>
-                                    <p className="text-gray-700">Ensure every member understands the monthly contribution amount before joining.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-6 sm:mt-8 border-t border-gray-300 pt-5">
-                            <p className="text-xs text-gray-600">
-                                <span className="font-semibold">Tip:</span> Choose a meaningful group name and set a realistic savings goal for better tracking.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full lg:w-2/3 flex items-center justify-center">
-                    <div className="bg-black w-full max-w-5xl min-h-[auto] lg:min-h-[80vh] rounded px-4 py-6 sm:px-7 sm:py-8 lg:px-10 lg:py-8 flex flex-col justify-center text-white">
-                        <div className="mb-4 sm:mb-3">
-                            <h1 className="text-3xl font-bold">Create Group</h1>
-                            <p className="text-sm mt-1">Build your savings group and invite friends to start contributing together.</p>
-                        </div>
-                        <form className="flex flex-col gap-3 sm:gap-4" onSubmit={handlegroupCreation}>
-                            <div>
-                                <label className="block text-sm font-semibold mb-2">Group Name</label>
-                                <input type="text" placeholder="e.g. Goa Trip Fund" value={groupName}
-                                    onChange={(e) => setGroupName(e.target.value)}
-                                    className="w-full min-w-0 border border-[#dadada] rounded-xl px-4 py-2.5 outline-none focus:border-[#4F47EA] transition" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold mb-2">Description</label>
-                                <input type="text" placeholder="Describe the purpose of your group" value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
-                                <div>
-                                    <label className="block text-sm font-semibold mb-2">Monthly Contribution</label>
-                                    <input type="number" placeholder="₹500" value={monthlyContribution}
-                                        onChange={(e) => setMonthlyContribution(Number(e.target.value))}
-                                        className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold mb-2">Group Total Contribution</label>
-                                    <input type="text" value="₹ 0" readOnly
-                                        className="w-full min-w-0 border border-[#dadada] rounded-xl px-4 py-2.5 outline-none bg-gray-100 text-gray-600 cursor-not-allowed" />
-                                </div>
-                            </div>
-                            <div className="w-full sm:w-1/2">
-                                <label className="block text-sm font-semibold mb-2">Monthly Due Date</label>
-                                <input
-                                    type="date"
-                                    value={dueDate}
-                                    min={currentMonthStart}
-                                    max={currentMonthEnd}
-                                    onChange={(e) => setDuedate(e.target.value)}
-                                    className="w-full border border-[#dadada] rounded-xl px-4 py-2 outline-none focus:border-[#4F47EA] transition"
-                                />
-                                <p className="text-xs text-gray-400 mt-1">Choose a date from the current month only.</p>
-                            </div>
-                            <button disabled={mutation.isPending} type="submit"
-                                className="mt-3 text-black border bg-white px-3 py-2 rounded-lg text-[15px] font-medium cursor-pointer">
-                                {mutation.isPending ? "creating..." : "Create Group"}
-                            </button>
-                        </form>
-                    </div>
-                </div>
+  return (
+    <div className="min-h-screen w-full relative bg-white">
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{
+        backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)",
+        backgroundSize: "20px 20px",
+        maskImage: "radial-gradient(ellipse 80% 80% at 100% 0%, #000 35%, transparent 90%)",
+        WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 100% 0%, #000 35%, transparent 90%)",
+      }} />
+      <LoginNavbar />
+      <main className="relative z-10 mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-6xl items-center justify-center px-4 py-8">
+        <section className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div className="grid lg:grid-cols-[0.85fr_1.15fr]">
+            <aside className="bg-black p-6 text-white sm:p-9">
+              <p className="text-sm font-semibold text-gray-300">CREATE A SAVINGS GROUP</p>
+              <h1 className="mt-3 text-3xl font-bold">Start with your people.</h1>
+              <p className="mt-4 text-sm leading-6 text-gray-300">Select friends from your ShareWallet friend list. A private discussion will open first, so everyone can talk through the plan before the group is created.</p>
+              <div className="mt-8 space-y-4 text-sm">
+                <div className="flex gap-3"><span className="font-bold text-[#6D5DFB]">01</span><span>Add friends to the discussion</span></div>
+                <div className="flex gap-3"><span className="font-bold text-[#6D5DFB]">02</span><span>Discuss contributions and repayment terms</span></div>
+                <div className="flex gap-3"><span className="font-bold text-[#6D5DFB]">03</span><span>You finalize the details and create the group</span></div>
+              </div>
+              <p className="mt-10 border-t border-white/20 pt-5 text-xs text-gray-400">No actual savings group or financial activity is created during this discussion.</p>
+            </aside>
+            <div className="p-5 sm:p-8">
+              <div className="flex items-center justify-between gap-3">
+                <div><h2 className="text-2xl font-bold text-black">Choose friends</h2><p className="mt-1 text-sm text-gray-500">Select who should join the pre-group discussion.</p></div>
+                <span className="rounded-full bg-[#F0EEFF] px-3 py-1 text-sm font-semibold text-[#4F47EA]">{selected.length} selected</span>
+              </div>
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search friends..." className="mt-6 w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-black outline-none transition focus:border-[#4F47EA]" />
+              <div className="mt-4 max-h-[390px] min-h-[180px] space-y-2 overflow-y-auto">
+                {loading ? <p className="py-12 text-center text-sm text-gray-500">Loading friends...</p> :
+                  filteredFriends.length === 0 ? <p className="py-12 text-center text-sm text-gray-500">{friends.length ? "No friends match your search." : "Your friend list is empty. Add friends first, then come back here."}</p> :
+                  filteredFriends.map(({ receiver }) => {
+                    const name = receiver.userdetails?.name || receiver.coustumerId;
+                    const checked = selected.includes(receiver.id);
+                    return <button type="button" key={receiver.id} onClick={() => toggleFriend(receiver.id)} className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${checked ? "border-[#4F47EA] bg-[#F5F3FF]" : "border-gray-200 hover:border-gray-400"}`}>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-sm font-bold text-gray-700">{receiver.userdetails?.profilephoto ? <img src={receiver.userdetails.profilephoto} alt="" className="h-full w-full object-cover" /> : name.slice(0, 1).toUpperCase()}</span>
+                      <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-gray-900">{name}</span><span className="block text-xs text-gray-500">{receiver.coustumerId}</span></span>
+                      <span className={`flex h-5 w-5 items-center justify-center rounded border text-xs ${checked ? "border-[#4F47EA] bg-[#4F47EA] text-white" : "border-gray-300"}`}>{checked ? "✓" : ""}</span>
+                    </button>;
+                  })}
+              </div>
+              <div className="mt-6 flex flex-col-reverse gap-3 border-t border-gray-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <button type="button" onClick={() => router.back()} className="rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">Back</button>
+                <button type="button" onClick={startDiscussion} disabled={starting || loading || !selected.length} className="rounded-lg bg-[#4F47EA] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{starting ? "Opening discussion..." : "Start discussion"}</button>
+              </div>
             </div>
-        </div>
-    )
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
