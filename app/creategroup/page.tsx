@@ -6,10 +6,6 @@ import LoginNavbar from "../../components/loginNavbar";
 import { toast } from "sonner";
 import { useFriendList } from "@/hooks/useFriendList";
 
-type Friend = {
-  receiver: { id: string; coustumerId: string; userdetails?: { name?: string | null; profilephoto?: string | null } | null };
-};
-
 export default function Creategroup() {
   const router = useRouter();
   const [selected, setSelected] = useState<string[]>([]);
