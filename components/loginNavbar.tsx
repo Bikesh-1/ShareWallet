@@ -179,14 +179,14 @@ export default function LoginNavbar() {
               </div>
               <div>
                 <label className="mb-2 block text-sm text-zinc-800">Date of Birth</label>
-                <input required type="date" value={dateOfbirth} onChange={(e) => setDateOfbirth(e.target.value)} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#6d63ef]" />
+                <input required type="date" value={dateOfbirth} onChange={(e) => setDateOfbirth(e.target.value)} className="w-full rounded-xl border border-zinc-700 bg-white px-3 py-2.5 text-sm text-black outline-none transition focus:border-[#6d63ef]" />
               </div>
               <div>
                 <label className="mb-2 block text-sm text-zinc-800">Mobile Number</label>
-                <input required type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} placeholder="9876543210" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value.replace(/\\D/g, "").slice(0, 10))} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#6d63ef]" />
+                <input required type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} placeholder="9876543210" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value.replace(/\\D/g, "").slice(0, 10))} className="w-full rounded-xl border border-zinc-700 bg-white px-3 py-2.5 text-sm text-black outline-none transition focus:border-[#6d63ef]" />
               </div>
               <div className="mt-1 flex gap-3">
-                <button disabled={mutation.isPending} type="submit" className="flex-1 rounded-xl bg-[#4F47EA] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4038d5] disabled:opacity-60">{mutation.isPending ? "Saving..." : "Save Details"}</button>
+                <button disabled={mutation.isPending} type="submit" className="flex-1 rounded-xl bg-black px-3 py-2.5 text-sm font-semibold text-white transition disabled:opacity-60">{mutation.isPending ? "Saving..." : "Save Details"}</button>
                 <button type="button" onClick={() => setPopup(false)} className="flex-1 rounded-xl border border-zinc-300 px-3 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-100">Cancel</button>
               </div>
             </form>

@@ -31,8 +31,9 @@ export default function Addfriend() {
         <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-zinc-400">Invite</span>
       </div>
       <form className="mt-5 flex flex-col gap-2 sm:flex-row" onSubmit={handleAddingFriend}>
-        <input aria-label="Friend customer ID" placeholder="Enter friend customer ID" className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-[#111] px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-[#7770ff] focus:ring-2 focus:ring-[#4F47EA]/20" value={coustumerId} onChange={(e) => setCoustumerId(e.target.value)} />
-        <button disabled={mutation.isPending || !coustumerId.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F47EA] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#4038d5] disabled:cursor-not-allowed disabled:opacity-50" type="submit">{mutation.isPending ? "Adding..." : "Add friend"} <ArrowUpRight size={15} /></button>
+        <input aria-label="Friend customer ID" placeholder="Enter friend customer ID" className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-white px-4 py-3 text-sm text-black outline-none transition placeholder:text-zinc-500 focus:border-[#7770ff] focus:ring-2 focus:ring-[#4F47EA]/20" value={coustumerId} onChange={(e) => setCoustumerId(e.target.value)} />
+
+        <button disabled={mutation.isPending || !coustumerId.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-black transition hover:bg-[#4038d5] disabled:cursor-not-allowed disabled:opacity-50" type="submit">{mutation.isPending ? "Adding..." : "Add friend"} <ArrowUpRight size={15} /></button>
       </form>
     </section>
   );

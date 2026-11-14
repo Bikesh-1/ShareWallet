@@ -45,8 +45,15 @@ type Transaction = {
   type: "CONTRIBUTION" | "PAYOUT" | "REFUND" | "LOAN_REPAYMENT";
   status: "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED";
   createdAt: string;
-  group?: { id: string; groupName?: string; groupCode?: string } | null;
-  request?: { reason?: string; month?: string } | null;
+  group?: { 
+    id: string; 
+    groupName?: string; 
+    groupCode?: string 
+  } | null;
+  request?: { 
+    reason?: string; 
+    month?: string 
+  } | null;
 };
 
 type NotificationItem = {
@@ -56,18 +63,36 @@ type NotificationItem = {
   type: string;
   read: boolean;
   createdAt: string;
-  group?: { id: string; groupName: string; groupCode: string } | null;
-  request?: { id: string; reason: string; amount: string; status: string } | null;
+  group?: { 
+    id: string; 
+    groupName: string; 
+    groupCode: string 
+  } | null;
+  request?: { 
+    id: string; 
+    reason: string; 
+    amount: string; 
+    status: string 
+  } | null;
 };
 
-const money = (value: number) =>
-  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value || 0);
+const money = (value: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value || 0);
 
-function PanelHeader({ title, description, action }: { title: string; description: string; action?: React.ReactNode }) {
+function PanelHeader({ 
+  title, 
+  description, 
+  action 
+}: { 
+  title: string; 
+  description: string; 
+  action?: React.ReactNode 
+}) {
   return (
     <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#6d63ef]">ShareWallet</p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#6d63ef]">
+          ShareWallet
+          </p>
         <h1 className="text-3xl font-bold tracking-tight text-[#101014]">{title}</h1>
         <p className="mt-2 text-sm text-zinc-400">{description}</p>
       </div>
@@ -76,12 +101,24 @@ function PanelHeader({ title, description, action }: { title: string; descriptio
   );
 }
 
-function StatCard({ label, value, detail, icon: Icon }: { label: string; value: string; detail: string; icon: any }) {
+function StatCard({ 
+  label, 
+  value, 
+  detail, 
+  icon: Icon 
+}: { 
+  label: string; 
+  value: string; 
+  detail: string; 
+  icon: any 
+}) {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-[#101014] p-5">
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-400">{label}</p>
-        <span className="rounded-xl bg-[#4F47EA]/15 p-2 text-[#8d86ff]"><Icon size={19} /></span>
+        <span className="rounded-xl bg-[#4F47EA]/15 p-2 text-[#8d86ff]">
+        <Icon size={19} />
+        </span>
       </div>
       <p className="mt-4 text-2xl font-bold text-white">{value}</p>
       <p className="mt-1 text-xs text-zinc-500">{detail}</p>
@@ -89,10 +126,23 @@ function StatCard({ label, value, detail, icon: Icon }: { label: string; value: 
   );
 }
 
-function EmptyState({ title, detail }: { title: string; detail: string }) {
+function EmptyState({ 
+  title, 
+  detail 
+}: { 
+  title: string; 
+  detail: string 
+}) {
   return <div className="rounded-2xl border border-dashed border-zinc-700 px-6 py-14 text-center">
-    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 text-zinc-400"><Wallet size={21} /></div>
-    <h3 className="font-semibold text-[#101014]">{title}</h3><p className="mt-1 text-sm text-zinc-500">{detail}</p>
+    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 text-zinc-400">
+      <Wallet size={21} />
+      </div>
+    <h3 className="font-semibold text-[#101014]">
+      {title}
+      </h3>
+      <p className="mt-1 text-sm text-zinc-500">
+        {detail}
+        </p>
   </div>;
 }
 
@@ -119,7 +169,8 @@ export default function Dashboard() {
   });
   const transactionsError = transactionsQueryError?.message || "";
 
-  const { data: notifications = [], isPending: notificationsLoading, error: notificationsQueryError } = useQuery<NotificationItem[]>({
+  const { 
+    data: notifications = [], isPending: notificationsLoading, error: notificationsQueryError } = useQuery<NotificationItem[]>({
     queryKey: ["notifications"],
     queryFn: async () => {
       const response = await fetch("/api/notifications", { cache: "no-store" });
@@ -229,7 +280,7 @@ export default function Dashboard() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">Your Groups</h2>
             <button onClick={() => setPage("group")} className="text-sm text-black">View all</button>
-            </div>
+          </div>
           {groupsLoading ? <p className="text-sm text-zinc-500">Loading groups…</p> : groupsError ? <p className="text-sm text-red-400">{groupError.message}</p> : groups.length ? <div className="space-y-3">{groups.slice(0, 4).map((group: any) => <div key={group.id} className="flex items-center justify-between rounded-xl border border-zinc-800 p-3"><div><p className="font-medium text-white">{group.groupName}</p><p className="mt-1 text-xs text-zinc-500">{group.groupmember?.length || 0} members · {money(Number(group.monthlyContribution || 0))}/month</p></div><button onClick={() => router.push(`/group/${group.groupCode}`)} className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-black">Open</button></div>)}</div> : <EmptyState title="No groups yet" detail="Create a savings group or join one with your friends." />}</section>
         <section className="rounded-2xl border border-zinc-800 bg-[#101014] p-5"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold text-white">Recent Activity</h2><button onClick={() => setPage("activity")} className="text-sm text-[#a49fff]">View all</button></div>{transactionsLoading ? <p className="text-sm text-zinc-500">Loading activity…</p> : transactionRows(transactions.slice(0, 3))}</section>
       </div>
@@ -245,7 +296,22 @@ export default function Dashboard() {
       <PanelHeader title="Friends" description="Connect with people on ShareWallet using their unique customer ID." />
       <form onSubmit={(e) => { e.preventDefault(); if (!friendCode.trim()) return; addFriendMutation.mutate({ coustumerId: friendCode.trim() }); }} className="mb-6 flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-[#101014] p-4 sm:flex-row"><input value={friendCode} onChange={(e) => setFriendCode(e.target.value)} placeholder="Enter friend customer ID" className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-black px-4 py-3 text-sm text-white outline-none focus:border-[#6d63ef]" /><button disabled={addFriendMutation.isPending || !friendCode.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F47EA] px-5 py-3 text-sm font-semibold text-white disabled:opacity-50"><UserPlus size={16} />{addFriendMutation.isPending ? "Sending…" : "Add friend"}</button></form>
       <div className="mb-4 flex items-center gap-2 rounded-xl border border-zinc-800 bg-[#101014] px-3"><Search size={17} className="text-zinc-500" /><input value={friendSearch} onChange={(e) => setFriendSearch(e.target.value)} placeholder="Search friends…" className="w-full bg-transparent py-3 text-sm text-white outline-none placeholder:text-zinc-600" /></div>
-      {friendsLoading ? <p className="text-zinc-400">Loading friends…</p> : friendsError ? <p className="text-red-400">{friendError.message}</p> : filteredFriends.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{filteredFriends.map((friend: any) => <div key={friend.receiver?.coustumerId} className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-[#101014] p-4"><div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#4F47EA]/20 font-bold text-[#aaa4ff]">{friend.receiver?.userdetails?.name?.charAt(0)?.toUpperCase() || "?"}</div><div className="min-w-0"><p className="truncate font-semibold text-white">{friend.receiver?.userdetails?.name || "Profile not completed"}</p><p className="mt-1 text-xs text-zinc-500">{friend.receiver?.coustumerId}</p></div></div>)}</div> : <EmptyState title="No friends found" detail="Add a friend using their ShareWallet customer ID." />}
+      {friendsLoading ? <p className="text-zinc-400">Loading friends…</p> : friendsError ? <p className="text-red-400">{friendError.message}</p> : filteredFriends.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{filteredFriends.map((friend: any) =>
+        <div key={friend.receiver?.coustumerId} className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-[#101014] p-4">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#4F47EA]/20 font-bold text-[#aaa4ff]">{friend.receiver?.userdetails?.name?.charAt(0)?.toUpperCase() || "?"}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-white">
+              {friend.receiver?.userdetails?.name || "Profile not completed"}
+            </p>
+            <p className="mt-1 text-xs text-zinc-500">
+              {friend.receiver?.coustumerId}
+
+            </p>
+          </div>
+        </div>
+      )}
+      </div> : <EmptyState title="No friends found" detail="Add a friend using their ShareWallet customer ID." />}
     </div>;
 
     if (page === "contribution") return <div>
@@ -327,7 +393,7 @@ export default function Dashboard() {
                   className={`flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all ${page === item.id
                     ? "bg-[#4f47ea81] text-white shadow-md"
                     : "text-[#dadada] hover:bg-zinc-800"
-                  }`}
+                    }`}
                 >
                   <Icon size={18} />
                   {item.label}

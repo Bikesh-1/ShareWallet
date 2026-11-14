@@ -42,12 +42,20 @@ export default function Creategroup() {
 
   return (
     <div className="min-h-screen w-full relative bg-white">
-      <div className="absolute inset-0 z-0 pointer-events-none" style={{
-        backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)",
-        backgroundSize: "20px 20px",
-        maskImage: "radial-gradient(ellipse 80% 80% at 100% 0%, #000 35%, transparent 90%)",
-        WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 100% 0%, #000 35%, transparent 90%)",
-      }} />
+      <div
+                className="absolute inset-0 z-0"
+                style={{
+                    backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
+                    backgroundSize: "20px 20px",
+                    backgroundPosition: "0 0, 0 0",
+                    maskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),
+                    repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),
+                    radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)`,
+                    WebkitMaskImage: `repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)`,
+                    maskComposite: "intersect",
+                    WebkitMaskComposite: "source-in",
+                }}
+            />
       <LoginNavbar />
       <main className="relative z-10 mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-6xl items-center justify-center px-4 py-8">
         <section className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -66,7 +74,7 @@ export default function Creategroup() {
             <div className="p-5 sm:p-8">
               <div className="flex items-center justify-between gap-3">
                 <div><h2 className="text-2xl font-bold text-black">Choose friends</h2><p className="mt-1 text-sm text-gray-500">Select who should join the pre-group discussion.</p></div>
-                <span className="rounded-full bg-[#F0EEFF] px-3 py-1 text-sm font-semibold text-[#4F47EA]">{selected.length} selected</span>
+                <span className="rounded-full bg-[#F0EEFF] px-3 py-1 text-sm font-semibold ">{selected.length} selected</span>
               </div>
               <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search friends..." className="mt-6 w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-black outline-none transition focus:border-[#4F47EA]" />
               <div className="mt-4 max-h-[390px] min-h-[180px] space-y-2 overflow-y-auto">
@@ -84,7 +92,7 @@ export default function Creategroup() {
               </div>
               <div className="mt-6 flex flex-col-reverse gap-3 border-t border-gray-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
                 <button type="button" onClick={() => router.back()} className="rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">Back</button>
-                <button type="button" onClick={startDiscussion} disabled={starting || loading || !selected.length} className="rounded-lg bg-[#4F47EA] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{starting ? "Opening discussion..." : "Start discussion"}</button>
+                <button type="button" onClick={startDiscussion} disabled={starting || loading || !selected.length} className="rounded-lg bg-black px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{starting ? "Opening discussion..." : "Start discussion"}</button>
               </div>
             </div>
           </div>

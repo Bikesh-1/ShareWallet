@@ -52,7 +52,7 @@ export default function Group() {
     <>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-2">
         {groups.map((group: any) => (
-          <article key={group.id} className="group flex w-full min-w-0 flex-col rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-sm shadow-zinc-200/50 transition duration-200 hover:-translate-y-1 hover:border-[#c9c5ff] hover:shadow-[0_16px_36px_rgba(79,71,234,0.10)]">
+          <article key={group.id} className="group flex w-full min-w-0 flex-col rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-sm shadow-zinc-200/50 transition duration-200">
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4F47EA]/10 text-[#4F47EA]"><Users size={19} /></span>
