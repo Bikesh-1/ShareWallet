@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { settleInternalWalletRequest } from "@/lib/payout/settleInternalWalletRequest";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function PATCH(
   req: Request,
@@ -23,12 +24,20 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json();
-    const status = body?.status;
-
-    if (status !== "APPROVED" && status !== "REJECTED") {
-      return NextResponse.json({ error: "Invalid approval status" }, { status: 400 });
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON request body." }, { status: 400 });
     }
+    const parsedBody = z.object({
+      status: z.enum(["APPROVED", "REJECTED"]),
+    }).safeParse(body);
+
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: "Approval status must be APPROVED or REJECTED." }, { status: 400 });
+    }
+    const { status } = parsedBody.data;
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
