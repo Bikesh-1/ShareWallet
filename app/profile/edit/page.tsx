@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -9,29 +10,33 @@ type Profile = { name: string; mobileNumber: string; dateOfbirth: string };
 export default function EditProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile>({ name: "", mobileNumber: "", dateOfbirth: "" });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  const queryClient = useQueryClient();
+  const { data: profileData, isPending: loading, error: profileQueryError } = useQuery<Profile>({
+    queryKey: ["profile-edit"],
+    queryFn: async () => {
+      const response = await fetch("/api/userdetails", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to load profile.");
+      return {
+        name: data.userDetails?.name || "",
+        mobileNumber: data.userDetails?.mobileNumber || "",
+        dateOfbirth: data.userDetails?.dateOfbirth || "",
+      };
+    },
+    staleTime: 60_000,
+  });
+
   useEffect(() => {
-    let active = true;
-    fetch("/api/userdetails")
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Unable to load profile.");
-        if (active && data.userDetails) {
-          setProfile({
-            name: data.userDetails.name || "",
-            mobileNumber: data.userDetails.mobileNumber || "",
-            dateOfbirth: data.userDetails.dateOfbirth || "",
-          });
-        }
-      })
-      .catch((err) => { if (active) setError(err instanceof Error ? err.message : "Unable to load profile."); })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
-  }, []);
+    if (profileData) setProfile(profileData);
+  }, [profileData]);
+
+  useEffect(() => {
+    if (profileQueryError) setError(profileQueryError.message);
+  }, [profileQueryError]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -47,6 +52,8 @@ export default function EditProfilePage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to update profile.");
       setMessage(data.message);
+      queryClient.setQueryData(["profile-edit"], profile);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
