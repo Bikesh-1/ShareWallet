@@ -309,7 +309,7 @@ export default function GroupTransactionsPage() {
                         >
                             {item === "ALL"
                                 ? "All"
-                                : item
+                                : item === "LOAN_REPAYMENT" ? "Loan Repayment" : item
                                       .charAt(0)
                                       .toUpperCase() +
                                   item
