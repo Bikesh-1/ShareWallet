@@ -5,7 +5,7 @@ import { Bell, Plus, Menu, X, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useUserDetails } from "@/hooks/useUserDetails";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createUserDetails } from "@/services/user.service";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,6 @@ export default function LoginNavbar() {
   const router = useRouter();
   const [popup, setPopup] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [name, setName] = useState("");
   const [dateOfbirth, setDateOfbirth] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -37,27 +36,26 @@ export default function LoginNavbar() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const { data: notificationSummary } = useQuery({
+    queryKey: ["notification-summary"],
+    queryFn: async () => {
+      const response = await fetch("/api/notifications", { cache: "no-store" });
+      if (!response.ok) throw new Error("Unable to load notifications");
+      return response.json() as Promise<{ unreadCount: number }>;
+    },
+    staleTime: 5_000,
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
+  });
+  const unreadCount = Number(notificationSummary?.unreadCount || 0);
+
   useEffect(() => {
-    let active = true;
-    const loadUnreadCount = async () => {
-      try {
-        const response = await fetch("/api/notifications", { cache: "no-store" });
-        if (!response.ok) return;
-        const data = await response.json();
-        if (active) setUnreadCount(Number(data.unreadCount || 0));
-      } catch {
-        // Keep the navbar usable if notifications are temporarily unavailable.
-      }
+    const refreshNotificationCount = () => {
+      queryClient.invalidateQueries({ queryKey: ["notification-summary"] });
     };
-    loadUnreadCount();
-    window.addEventListener("sharewallet:notifications-updated", loadUnreadCount);
-    const interval = window.setInterval(loadUnreadCount, 30000);
-    return () => {
-      active = false;
-      window.removeEventListener("sharewallet:notifications-updated", loadUnreadCount);
-      window.clearInterval(interval);
-    };
-  }, []);
+    window.addEventListener("sharewallet:notifications-updated", refreshNotificationCount);
+    return () => window.removeEventListener("sharewallet:notifications-updated", refreshNotificationCount);
+  }, [queryClient]);
 
   const openNotifications = () => {
     window.dispatchEvent(new Event("sharewallet:notifications"));
