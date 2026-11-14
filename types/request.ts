@@ -38,6 +38,7 @@ export type SendRequestResponse = {
 
 export type GroupRequestsResponse = {
   sentrequestDetails: SentRequest[];
+  currentUserId: string;
   message: string;
 };
 
