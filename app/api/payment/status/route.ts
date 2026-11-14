@@ -23,9 +23,57 @@ export async function GET(req: Request) {
     }
 
     const orderId = new URL(req.url).searchParams.get("order_id");
-    if (!orderId || !orderId.startsWith("SW_CONTRIBUTION_")) {
-      return NextResponse.json({ error: "Invalid order ID" }, { status: 400 });
+    if (!orderId) return NextResponse.json({ error: "Invalid order ID" }, { status: 400 });
+
+    if (orderId.startsWith("SW_REPAYMENT_")) {
+      const repayment = await prisma.transaction.findFirst({
+        where: { providerReference: orderId, type: "LOAN_REPAYMENT", senderId: user.id, provider: "CASHFREE" },
+      });
+      if (!repayment || !repayment.requestId || !repayment.groupId) return NextResponse.json({ error: "Repayment not found" }, { status: 404 });
+      if (repayment.status === "PENDING") {
+        if (!cashfreeConfig.clientId || !cashfreeConfig.clientSecret) return NextResponse.json({ error: "Cashfree credentials are not configured" }, { status: 500 });
+        const providerResponse = await fetch(`${cashfreeConfig.baseUrl}/pg/orders/${encodeURIComponent(orderId)}`, {
+          method: "GET",
+          headers: { "x-client-id": cashfreeConfig.clientId, "x-client-secret": cashfreeConfig.clientSecret, "x-api-version": "2025-01-01" },
+          cache: "no-store",
+        });
+        const order = await providerResponse.json();
+        if (!providerResponse.ok) return NextResponse.json({ error: "Cashfree could not verify this repayment right now" }, { status: 502 });
+        const amountMatches = Number(order.order_amount) === repayment.amount;
+        const currencyMatches = order.order_currency === "INR";
+        if (order.order_status === "PAID" && amountMatches && currencyMatches) {
+          await prisma.$transaction(async (tx) => {
+            const claimed = await tx.transaction.updateMany({
+              where: { id: repayment.id, status: "PENDING", senderId: user.id, requestId: repayment.requestId, groupId: repayment.groupId, amount: repayment.amount },
+              data: { status: "SUCCESS" },
+            });
+            if (claimed.count !== 1) return;
+            const loan = await tx.sentrequest.findFirst({ where: { id: repayment.requestId!, userId: user.id, groupId: repayment.groupId! } });
+            const payout = await tx.transaction.findFirst({
+              where: { requestId: repayment.requestId!, groupId: repayment.groupId!, receiverId: user.id, type: "PAYOUT", status: "SUCCESS" },
+            });
+            if (!loan || !payout) throw new Error("Original loan payout was not found.");
+            const totals = await tx.transaction.aggregate({
+              where: { requestId: loan.id, type: "LOAN_REPAYMENT", status: "SUCCESS" },
+              _sum: { amount: true },
+            });
+            if ((totals._sum.amount || 0) > payout.amount) throw new Error("Repayment total exceeds original payout.");
+            await tx.group.update({ where: { id: loan.groupId }, data: { totalAmount: { increment: repayment.amount } } });
+            await tx.notification.create({
+              data: { userId: user.id, groupId: loan.groupId, requestId: loan.id, type: "PAYMENT_SUCCESS", title: "Loan repayment received", message: `Your Cashfree repayment of ₹${repayment.amount} has been received by the group.` },
+            });
+          }, { isolationLevel: "Serializable" });
+        } else if (order.order_status === "EXPIRED" || order.order_status === "TERMINATED") {
+          await prisma.transaction.updateMany({ where: { id: repayment.id, status: "PENDING" }, data: { status: "FAILED" } });
+        } else if (order.order_status === "PAID" && (!amountMatches || !currencyMatches)) {
+          return NextResponse.json({ error: "Repayment details did not match. Contact support." }, { status: 409 });
+        }
+      }
+      const latestRepayment = await prisma.transaction.findUnique({ where: { id: repayment.id }, select: { status: true } });
+      return NextResponse.json({ status: latestRepayment?.status || repayment.status }, { headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } });
     }
+
+    if (!orderId.startsWith("SW_CONTRIBUTION_")) return NextResponse.json({ error: "Invalid order ID" }, { status: 400 });
 
     const transaction = await prisma.transaction.findFirst({
       where: {
