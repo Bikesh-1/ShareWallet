@@ -6,7 +6,7 @@ import Sidebarmsg from "../../components/sidebarusermsg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   House, Users, Wallet, Activity, UserRound, Settings, Bell,
@@ -102,50 +102,42 @@ export default function Dashboard() {
   const [friendSearch, setFriendSearch] = useState("");
   const [groupSearch, setGroupSearch] = useState("");
   const [transactionFilter, setTransactionFilter] = useState("ALL");
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [notificationsLoading, setNotificationsLoading] = useState(false);
-  const [notificationsError, setNotificationsError] = useState("");
-  const [transactionsLoading, setTransactionsLoading] = useState(false);
-  const [transactionsError, setTransactionsError] = useState("");
-  const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const { data: transactions = [], isPending: transactionsLoading, error: transactionsQueryError } = useQuery<Transaction[]>({
+    queryKey: ["transactions"],
+    queryFn: async () => {
+      const response = await fetch("/api/transactions", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "Could not load transactions");
+      return data.transactions || [];
+    },
+    staleTime: 5_000,
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
+  });
+  const transactionsError = transactionsQueryError?.message || "";
+
+  const { data: notifications = [], isPending: notificationsLoading, error: notificationsQueryError } = useQuery<NotificationItem[]>({
+    queryKey: ["notifications"],
+    queryFn: async () => {
+      const response = await fetch("/api/notifications", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not load notifications");
+      return data.notifications || [];
+    },
+    staleTime: 5_000,
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
+  });
+  const notificationsError = notificationsQueryError?.message || "";
 
   const { data: groups = [], isPending: groupsLoading, isError: groupsError, error: groupError } = useGroupDetails();
   const { data: friends = [], isPending: friendsLoading, isError: friendsError, error: friendError } = useFriendList();
   const { data: profile, isPending: profileLoading, isError: profileError, error: profileErrorObj } = useUserDetails();
 
-  useEffect(() => {
-    let active = true;
-    async function loadTransactions() {
-      setTransactionsLoading(true);
-      setTransactionsError("");
-      try {
-        const response = await fetch("/api/transactions", { cache: "no-store" });
-        const contentType = response.headers.get("content-type") || "";
-        if (!contentType.includes("application/json")) {
-          const body = await response.text();
-          console.error("Expected JSON from /api/transactions, received:", {
-            url: response.url,
-            status: response.status,
-            contentType,
-            body: body.slice(0, 300),
-          });
-          throw new Error(`Transactions API returned non-JSON response (${response.status}). Check the API URL and server logs.`);
-        }
-        const data = await response.json();
-        if (!response.ok) throw new Error(data?.error || "Could not load transactions");
-        if (active) setTransactions(data.transactions || []);
-      } catch (error) {
-        if (active) setTransactionsError(error instanceof Error ? error.message : "Could not load transactions");
-      } finally {
-        if (active) setTransactionsLoading(false);
-      }
-    }
-    loadTransactions();
-    return () => { active = false; };
-  }, [refreshKey]);
+
 
   useEffect(() => {
     const openNotifications = () => setPage("notification");
@@ -153,25 +145,7 @@ export default function Dashboard() {
     return () => window.removeEventListener("sharewallet:notifications", openNotifications);
   }, []);
 
-  useEffect(() => {
-    let active = true;
-    async function loadNotifications() {
-      setNotificationsLoading(true);
-      setNotificationsError("");
-      try {
-        const response = await fetch("/api/notifications", { cache: "no-store" });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Could not load notifications");
-        if (active) setNotifications(data.notifications || []);
-      } catch (error) {
-        if (active) setNotificationsError(error instanceof Error ? error.message : "Could not load notifications");
-      } finally {
-        if (active) setNotificationsLoading(false);
-      }
-    }
-    loadNotifications();
-    return () => { active = false; };
-  }, [refreshKey]);
+
 
   async function markNotificationRead(id?: string) {
     try {
@@ -182,7 +156,7 @@ export default function Dashboard() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not update notification");
-      setNotifications((current) => current.map((item) => !id || item.id === id ? { ...item, read: true } : item));
+      queryClient.setQueryData<NotificationItem[]>(["notifications"], (current = []) => current.map((item) => !id || item.id === id ? { ...item, read: true } : item));
       window.dispatchEvent(new Event("sharewallet:notifications-updated"));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not update notification");
@@ -208,7 +182,8 @@ export default function Dashboard() {
   const filteredTransactions = transactions.filter((item) => transactionFilter === "ALL" || item.type === transactionFilter || item.status === transactionFilter);
 
   const refresh = () => {
-    setRefreshKey((value) => value + 1);
+    queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["notifications"] });
     queryClient.invalidateQueries({ queryKey: ["group"] });
     queryClient.invalidateQueries({ queryKey: ["friend"] });
     queryClient.invalidateQueries({ queryKey: ["profile"] });
