@@ -74,9 +74,6 @@ export async function POST(req: Request) {
     }
 
 
-      return NextResponse.json({ received: true }, { status: 200 });
-    }
-
     const contributionId = orderId.slice("SW_CONTRIBUTION_".length).replace(/_\d+$/, "");
     const [contribution, transaction] = await Promise.all([
       prisma.contribution.findUnique({ where: { id: contributionId } }),
