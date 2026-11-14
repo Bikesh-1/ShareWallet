@@ -436,6 +436,17 @@ export default function GroupPage() {
                           <p className="shrink-0 text-sm font-semibold tabular-nums text-black">₹{money(Number(item.amount))}</p>
                         </div>
                         <span className={`mt-2 inline-flex rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-[10px] font-bold text-zinc-700`}>{item.status}</span>
+                        {item.status === "ACCEPTED" && item.user.id === groupRequests?.currentUserId && (
+                          <div className="mt-3">
+                            <button
+                              type="button"
+                              onClick={() => router.push(`/group/${groupCode}/repay/${item.id}`)}
+                              className="rounded-lg bg-black px-4 py-2 text-xs font-semibold text-white transition hover:bg-zinc-800"
+                            >
+                              Repay Now →
+                            </button>
+                          </div>
+                        )}
                         {item.status === "PENDING" && item.approvals?.[0]?.status === "PENDING" && (
                           <div className="mt-3 flex gap-2">
                             <button type="button" disabled={updateRequestMutation.isPending} onClick={() => { setProcessingRequest({ id: item.id, status: "ACCEPTED" }); updateRequestMutation.mutate({ groupCode, requestId: item.id, status: "ACCEPTED" }); }} className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-black transition hover:bg-zinc-200 disabled:opacity-50">{processingRequest?.id === item.id && processingRequest.status === "ACCEPTED" ? "Processing..." : "Approve"}</button>
