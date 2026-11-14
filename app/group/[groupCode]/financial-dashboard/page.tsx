@@ -36,6 +36,7 @@ type DashboardData = {
         totalContributions: number;
         totalPayouts: number;
         totalRefunds: number;
+        totalRepayments: number;
         netFlow: number;
         totalRequests: number;
     };
@@ -112,6 +113,7 @@ export default function FinancialDashboardPage() {
         totalContributions,
         totalPayouts,
         totalRefunds,
+        totalRepayments,
         netFlow,
         totalRequests,
     } = data.summary;
@@ -143,7 +145,7 @@ export default function FinancialDashboardPage() {
 
                 {/* Summary Cards */}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
 
                     {/* Contributions */}
 
@@ -220,6 +222,18 @@ export default function FinancialDashboardPage() {
                         </p>
                     </div>
 
+                    {/* Loan Repayments */}
+                    <div className="bg-white border border-gray-200 rounded-2xl p-5">
+                        <div className="flex items-center justify-between">
+                            <div className="h-10 w-10 rounded-full bg-violet-100 flex items-center justify-center">
+                                <ArrowUpRight size={20} className="text-violet-600" />
+                            </div>
+                            <span className="text-xs text-gray-400">REPAYMENTS</span>
+                        </div>
+                        <p className="text-2xl font-bold mt-5">₹{money(totalRepayments)}</p>
+                        <p className="text-sm text-gray-500 mt-1">Loan repayments received</p>
+                    </div>
+
                     {/* Net Flow */}
 
                     <div className="bg-white border border-gray-200 rounded-2xl p-5">
@@ -292,7 +306,7 @@ export default function FinancialDashboardPage() {
                             </h2>
 
                             <p className="text-gray-400 text-sm mt-2">
-                                Contributions − payouts − refunds
+                                Contributions − payouts − refunds + repayments
                             </p>
                         </div>
 
