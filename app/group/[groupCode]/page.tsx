@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import LoginNavbar from "@/components/loginNavbar";
 import { useContributionDetail, useGroupContribution } from "@/hooks/useGroupContribution";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { contribution } from "@/services/contribution.service";
 import { toast } from "sonner";
 import { sendRequest, updateRequestApproval } from "@/services/request.service";
@@ -54,7 +54,7 @@ export default function GroupPage() {
 
 
   const queryClient = useQueryClient();
-  const [financialSummary, setFinancialSummary] = useState<{
+  const { data: financialSummary } = useQuery<{
     totalContributions: number;
     contributionCount: number;
     pendingContributionAmount: number;
@@ -63,26 +63,19 @@ export default function GroupPage() {
     totalRefunds: number;
     netFlow: number;
     totalRequests: number;
-  } | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    fetch(`/api/group/${groupCode}/financial-dashboard`)
-      .then(async (response) => {
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error || "Unable to load group finances");
-        return result;
-      })
-      .then((result) => {
-        if (active) setFinancialSummary(result.summary);
-      })
-      .catch((error) => {
-        console.error("GROUP FINANCIAL SUMMARY ERROR:", error);
-      });
-    return () => {
-      active = false;
-    };
-  }, [groupCode]);
+  }>({
+    queryKey: ["group-financial-summary", groupCode],
+    queryFn: async () => {
+      const response = await fetch(`/api/group/${encodeURIComponent(groupCode)}/financial-dashboard`, { cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to load group finances");
+      return result.summary;
+    },
+    enabled: !!groupCode,
+    staleTime: 5_000,
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
+  });
 
   const money = (value: number) =>
     Number(value || 0).toLocaleString("en-IN");
