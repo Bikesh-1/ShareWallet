@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import LoginNavbar from "@/components/loginNavbar";
 import { toast } from "sonner";
@@ -21,39 +22,30 @@ export default function GroupDraftDiscussionPage() {
   const [creatorId, setCreatorId] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
-  const [finalizing, setFinalizing] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [description, setDescription] = useState("");
-  const [monthlyContribution, setMonthlyContribution] = useState("0");
-  const [dueDate, setDueDate] = useState("");
-  const [repaymentDueDate, setRepaymentDueDate] = useState("");
-  const [repaymentTerms, setRepaymentTerms] = useState("");
-  const [interestFree, setInterestFree] = useState(true);
-  const [isFinalized, setIsFinalized] = useState(false);
+  const queryClient = useQueryClient();
 
-  const loadMessages = useCallback(async () => {
-    try {
+  const { data: discussion } = useQuery({
+    queryKey: ["group-draft-messages", draftCode],
+    queryFn: async () => {
       const res = await fetch(`/api/group/drafts/${draftCode}/messages`, { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unable to load discussion.");
-      setMessages(data.messages || []);
-      setCurrentUserId(data.currentUserId || "");
-      setCreatorId(data.creatorId || "");
-      setIsFinalized(Boolean(data.isFinalized));
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to load discussion.");
-    } finally {
-      setLoading(false);
-    }
-  }, [draftCode]);
+      return data as { messages: DraftMessage[]; currentUserId: string; creatorId: string; isFinalized: boolean };
+    },
+    enabled: !!draftCode,
+    staleTime: 1_000,
+    refetchInterval: 4_000,
+    refetchIntervalInBackground: false,
+  });
 
   useEffect(() => {
-    loadMessages();
-    const timer = window.setInterval(loadMessages, 4000);
-    return () => window.clearInterval(timer);
-  }, [loadMessages]);
+    if (!discussion) return;
+    setMessages(discussion.messages || []);
+    setCurrentUserId(discussion.currentUserId || "");
+    setCreatorId(discussion.creatorId || "");
+    setIsFinalized(Boolean(discussion.isFinalized));
+    setLoading(false);
+  }, [discussion]);
 
   async function sendMessage(event: FormEvent) {
     event.preventDefault();
@@ -65,7 +57,7 @@ export default function GroupDraftDiscussionPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unable to send message.");
-      setMessages((current) => [...current, data.message]);
+      queryClient.setQueryData(["group-draft-messages", draftCode], (current: typeof discussion) => current ? { ...current, messages: [...current.messages, data.message] } : current);
       setMessage("");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Unable to send message.");
