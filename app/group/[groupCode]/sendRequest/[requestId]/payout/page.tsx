@@ -175,9 +175,7 @@ export default function PayoutPage() {
                     </button>
 
                     <button
-                        onClick={
-                            fetchPayoutStatus
-                        }
+                        onClick={() => fetchPayoutStatus()}
                         disabled={loading}
                         className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm hover:bg-gray-50"
                     >
