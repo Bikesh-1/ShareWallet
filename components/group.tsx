@@ -52,23 +52,23 @@ export default function Group() {
     <>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-2">
         {groups.map((group: any) => (
-          <article key={group.id} className="group flex w-full min-w-0 flex-col rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-sm shadow-zinc-200/50 transition duration-200">
+          <article key={group.id} className="group flex w-full min-w-0 flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-200/50 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-white/10 dark:bg-[#141419] dark:shadow-black/30 sm:p-6">
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4F47EA]/10 text-[#4F47EA]"><Users size={19} /></span>
-                <div className="min-w-0"><h3 className="truncate text-base font-bold text-zinc-900">{group.groupName}</h3><p className="mt-1 truncate text-[11px] text-zinc-500">ID · {group.groupCode}</p></div>
+                <div className="min-w-0"><h3 className="truncate text-base font-bold text-zinc-900 dark:text-zinc-100">{group.groupName}</h3><p className="mt-1 truncate text-[11px] text-zinc-500 dark:text-zinc-400">ID · {group.groupCode}</p></div>
               </div>
-              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Active</span>
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Active</span>
             </div>
-            <p className="mt-4 min-h-10 text-sm leading-5 text-zinc-500">{group.description || "A shared space to save, plan and achieve your goals."}</p>
+            <p className="mt-4 min-h-10 text-sm leading-5 text-zinc-500 dark:text-zinc-400">{group.description || "A shared space to save, plan and achieve your goals."}</p>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-[#f7f7fa] p-4"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Monthly target</p><p className="mt-1 text-lg font-bold text-zinc-900">₹{Number(group.monthlyContribution || 0).toLocaleString("en-IN")}</p></div>
-              <div className="rounded-xl bg-[#f7f7fa] p-4"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Group target</p><p className="mt-1 text-lg font-bold text-zinc-900">₹{Number(group.totalAmount || 0).toLocaleString("en-IN")}</p></div>
+              <div className="rounded-xl bg-[#f7f7fa] p-4 dark:bg-[#202027]"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Monthly target</p><p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">₹{Number(group.monthlyContribution || 0).toLocaleString("en-IN")}</p></div>
+              <div className="rounded-xl bg-[#f7f7fa] p-4"><p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Group target</p><p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">₹{Number(group.totalAmount || 0).toLocaleString("en-IN")}</p></div>
             </div>
-            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-zinc-500"><span className="inline-flex items-center gap-1.5"><Users size={14} /> {group.groupmember?.length || 0} members</span><span className="h-1 w-1 rounded-full bg-zinc-300" /><span className="inline-flex items-center gap-1.5"><Wallet size={14} /> Shared savings</span></div>
-            <div className="mt-5 flex gap-3 border-t border-zinc-100 pt-4">
-              <button onClick={() => router.push(`/group/${group.groupCode}`)} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#101014] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-[#292638]">Open group <ArrowUpRight size={15} /></button>
-              <button onClick={() => { setSelectedGroup(group); setOpenPopup(true); }} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#dedbff] bg-[#f7f6ff] px-3 py-2.5 text-sm font-semibold text-[#4F47EA] transition hover:bg-[#eeecff]"><Plus size={15} /> Add member</button>
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400"><span className="inline-flex items-center gap-1.5"><Users size={14} /> {group.groupmember?.length || 0} members</span><span className="h-1 w-1 rounded-full bg-zinc-300" /><span className="inline-flex items-center gap-1.5"><Wallet size={14} /> Shared savings</span></div>
+            <div className="mt-5 flex gap-3 border-t border-zinc-100 pt-4 dark:border-white/10">
+              <button onClick={() => router.push(`/group/${group.groupCode}`)} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#101014] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4F47EA] dark:bg-[#4F47EA] dark:hover:bg-[#625bff]">Open group <ArrowUpRight size={15} /></button>
+              <button onClick={() => { setSelectedGroup(group); setOpenPopup(true); }} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#dedbff] bg-[#f7f6ff] px-3 py-2.5 text-sm font-semibold text-[#4F47EA] transition hover:bg-[#eeecff] dark:border-[#6d63ef]/40 dark:bg-[#24213b] dark:text-[#b7b1ff] dark:hover:bg-[#302b50]"><Plus size={15} /> Add member</button>
             </div>
           </article>
         ))}
@@ -76,10 +76,10 @@ export default function Group() {
 
       {openPopup && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/65 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4 sm:px-6">
-              <div><h2 className="text-lg font-bold text-zinc-900">Add group members</h2><p className="mt-1 text-xs text-zinc-500">Invite a friend to {selectedGroup?.groupName}</p></div>
-              <button type="button" onClick={() => setOpenPopup(false)} className="rounded-lg px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-100">Close</button>
+          <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#15151b]">
+            <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4 dark:border-white/10 sm:px-6">
+              <div><h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">Add group members</h2><p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Invite a friend to {selectedGroup?.groupName}</p></div>
+              <button type="button" onClick={() => setOpenPopup(false)} className="rounded-lg px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-white/10">Close</button>
             </div>
             <div className="max-h-[55vh] space-y-2 overflow-y-auto p-4 sm:p-5">
               {FriendList.length === 0 ? <div className="py-10 text-center text-sm text-zinc-500">No friends found. Add friends to your account first.</div> : FriendList.map((friend: any) => {
@@ -87,9 +87,9 @@ export default function Group() {
                 const isAdded = selectedGroup?.groupmember?.some((member: any) => member.user.coustumerId === friendCode);
                 const friendName = friend.receiver.userdetails?.name ?? "Profile not completed";
                 return (
-                  <div key={friendCode} className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 p-3 transition hover:border-[#c9c5ff]">
-                    <div className="flex min-w-0 items-center gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#4F47EA]/10 font-semibold text-[#4F47EA]">{friendName.charAt(0).toUpperCase()}</span><div className="min-w-0"><p className="truncate text-sm font-semibold text-zinc-900">{friendName}</p><p className="mt-0.5 truncate text-xs text-zinc-500">{friendCode}</p></div></div>
-                    <button disabled={isAdded || addingFriendId === friendCode} onClick={() => handleAddMember(friendCode)} className={`shrink-0 rounded-lg px-3 py-2 text-xs font-semibold transition ${isAdded ? "bg-emerald-50 text-emerald-700" : "bg-[#4F47EA] text-white hover:bg-[#4038d5] disabled:opacity-60"}`}>{isAdded ? <span className="inline-flex items-center gap-1"><Check size={13} /> Added</span> : addingFriendId === friendCode ? "Adding..." : "Add"}</button>
+                  <div key={friendCode} className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 p-3 transition hover:border-[#c9c5ff] dark:border-white/10 dark:hover:border-[#6d63ef]/50">
+                    <div className="flex min-w-0 items-center gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#4F47EA]/10 font-semibold text-[#4F47EA]">{friendName.charAt(0).toUpperCase()}</span><div className="min-w-0"><p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">{friendName}</p><p className="mt-0.5 truncate text-xs text-zinc-500 dark:text-zinc-400">{friendCode}</p></div></div>
+                    <button disabled={isAdded || addingFriendId === friendCode} onClick={() => handleAddMember(friendCode)} className={`shrink-0 rounded-lg px-3 py-2 text-xs font-semibold transition ${isAdded ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300" : "bg-[#4F47EA] text-white hover:bg-[#4038d5] disabled:opacity-60"}`}>{isAdded ? <span className="inline-flex items-center gap-1"><Check size={13} /> Added</span> : addingFriendId === friendCode ? "Adding..." : "Add"}</button>
                   </div>
                 );
               })}
