@@ -205,6 +205,16 @@ export default function GroupPage() {
 
   const handleSendRequest = (e: React.FormEvent) => {
     e.preventDefault();
+    const requestedAmount = Number(amount);
+    const availableBalance = Number(groupDetails?.totalAmount ?? 0);
+    if (!Number.isSafeInteger(requestedAmount) || requestedAmount <= 0) {
+      toast.error("Enter a valid whole-number amount.");
+      return;
+    }
+    if (requestedAmount > availableBalance) {
+      toast.error(`You can request up to ₹${money(availableBalance)} from the group wallet.`);
+      return;
+    }
 
     requestMutation.mutate({
       groupCode,
@@ -535,9 +545,14 @@ export default function GroupPage() {
                 </label>
                 <input
                   placeholder="Enter the amount"
-                  type="text"
+                  type="number"
+                  min={1}
+                  max={groupDetails.totalAmount}
+                  step={1}
+                  value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black" />
+                <p className="mt-2 text-xs text-zinc-500">Available group wallet balance: ₹{money(groupDetails.totalAmount)}</p>
               </div>
 
               <div>
