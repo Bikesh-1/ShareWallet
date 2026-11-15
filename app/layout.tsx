@@ -5,8 +5,6 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import QueryProvider from "@/providers/QueryProvider";
 import RouteTransition from "@/components/RouteTransition";
-import { ThemeProvider } from "@/components/theme-provider";
-import ThemeToggle from "@/components/theme-toggle";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -25,9 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={plusJakartaSans.className}>
-        <ThemeProvider>
         <QueryProvider>
       <RouteTransition>{children}</RouteTransition>
       <Toaster
@@ -37,8 +34,6 @@ export default function RootLayout({
           duration={3000}
         />
         </QueryProvider>
-        <ThemeToggle />
-        </ThemeProvider>
       </body>
       
     </html>
