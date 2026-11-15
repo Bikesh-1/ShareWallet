@@ -1,51 +1,55 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+const links = [
+    { label: "Home", href: "#home" },
+    { label: "About", href: "#about" },
+    { label: "How it works?", href: "#how-it-works" },
+    { label: "Contact", href: "#contact" },
+];
 
 export default function Navbar() {
     const router = useRouter();
 
     return (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[92%] sm:w-[90%] h-10 flex items-center justify-between">
+        <header className="absolute left-1/2 top-4 z-50 flex h-12 w-[92%] max-w-[1500px] -translate-x-1/2 items-center justify-between sm:top-5 sm:w-[90%]">
+            <Link href="/" aria-label="ShareWallet home" className="shrink-0">
+                <Image
+                    src="/logo.png"
+                    alt="ShareWallet"
+                    width={150}
+                    height={150}
+                    priority
+                    className="h-auto w-28 sm:w-32 md:w-[150px]"
+                />
+            </Link>
 
-            <div className="shrink-0">
-                <Image src="/logo.png" alt="logo" width={150} height={150}
-                    className="w-27.5 sm:w-32.5 md:w-37.5 h-auto" />
-            </div>
-
-            <div className="hidden md:flex items-center justify-center text-white bg-black/95 backdrop-blur-sm px-2 py-1 gap-1 rounded-full h-11 text-[14px] font-medium shadow-lg shadow-black/10">
-                <p className="relative cursor-pointer group px-4 py-2 rounded-full">
-                    Home
-                    <span className="absolute left-4 right-4 bottom-1 h-px bg-white scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100" />
-                </p>
-
-                <p className="relative cursor-pointer group px-4 py-2 rounded-full">
-                    About
-                    <span className="absolute left-4 right-4 bottom-1 h-px bg-white scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100" />
-                </p>
-
-                <p className="relative cursor-pointer group px-4 py-2 rounded-full">
-                    How it works?
-                    <span className="absolute left-4 right-4 bottom-1 h-px bg-white scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100" />
-                </p>
-
-                <p className="relative cursor-pointer group px-4 py-2 rounded-full">
-                    Contact
-                    <span className="absolute left-4 right-4 bottom-1 h-px bg-white scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100" />
-                </p>
-            </div>
+            <nav aria-label="Main navigation" className="hidden items-center justify-center gap-1 rounded-full bg-black/95 px-2 py-1 text-[14px] font-medium text-white shadow-lg shadow-black/10 backdrop-blur-sm md:flex">
+                {links.map((link) => (
+                    <a key={link.href} href={link.href} className="group relative rounded-full px-4 py-2 transition-colors hover:text-[#C8C3FF]">
+                        {link.label}
+                        <span className="absolute bottom-1 left-4 right-4 h-px origin-center scale-x-0 bg-current transition-transform duration-300 group-hover:scale-x-100" />
+                    </a>
+                ))}
+            </nav>
 
             <div className="flex items-center justify-center gap-2 sm:gap-3">
-                <button onClick={() => router.push("/signin")}
-                    className="text-white bg-[#000000] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-[15px] font-medium cursor-pointer flex items-center justify-center">
+                <button
+                    onClick={() => router.push("/signin")}
+                    className="flex items-center justify-center rounded-lg bg-black px-3 py-2 text-xs font-medium text-white transition hover:bg-zinc-800 sm:px-4 sm:text-[15px]"
+                >
                     Login
                 </button>
-                <button onClick={() => router.push("/signup")}
-                    className="text-black border border-[#dadada] bg-white px-2.5 sm:px-3 py-2 rounded-lg text-xs sm:text-[15px] font-medium cursor-pointer whitespace-nowrap">
+                <button
+                    onClick={() => router.push("/signup")}
+                    className="whitespace-nowrap rounded-lg border border-[#dadada] bg-white px-2.5 py-2 text-xs font-medium text-black transition hover:border-black sm:px-3 sm:text-[15px]"
+                >
                     Create account
                 </button>
             </div>
-        </div>
+        </header>
     );
 }
