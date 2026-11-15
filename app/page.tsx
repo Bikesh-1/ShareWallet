@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
 import { LandingSections } from "../components/landing/landing-sections";
-import { PortalShowcase } from "../components/landing/portal-showcase";
 
 export default function Home() {
   const router = useRouter();
@@ -67,7 +66,6 @@ export default function Home() {
         <p className="caveat pointer-events-none absolute right-8 top-28 hidden -rotate-12 text-left text-2xl text-gray-400 lg:block xl:right-20">Better<br />together</p>
       </section>
 
-      <PortalShowcase />
       <LandingSections />
     </main>
   );
