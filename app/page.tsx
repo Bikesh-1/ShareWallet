@@ -9,18 +9,21 @@ import { LandingSections } from "../components/landing/landing-sections";
 
 export default function Home() {
   const router = useRouter();
-  const heroSpotlightRef = useRef<HTMLDivElement>(null);
+  const heroGridRef = useRef<HTMLDivElement>(null);
 
   const handleHeroMouseMove = (event: MouseEvent<HTMLElement>) => {
-    if (!heroSpotlightRef.current) return;
+    if (!heroGridRef.current) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
-    heroSpotlightRef.current.style.background = `radial-gradient(260px circle at ${x}px ${y}px, rgba(109,77,254,0.13), transparent 75%)`;
+    const reveal = `radial-gradient(circle 190px at ${x}px ${y}px, #000 0%, transparent 100%)`;
+    const dotted = "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px), repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px)";
+    heroGridRef.current.style.maskImage = `${dotted}, ${reveal}`;
+    heroGridRef.current.style.webkitMaskImage = `${dotted}, ${reveal}`;
   };
 
   const handleHeroMouseLeave = () => {
-    if (heroSpotlightRef.current) heroSpotlightRef.current.style.background = "transparent";
+    if (heroGridRef.current) { heroGridRef.current.style.maskImage = "none"; heroGridRef.current.style.webkitMaskImage = "none"; }
   };
 
   return (
@@ -41,9 +44,16 @@ export default function Home() {
           }}
         />
         <div
-          ref={heroSpotlightRef}
+          ref={heroGridRef}
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-[1] transition-[background] duration-150"
+          className="pointer-events-none absolute inset-0 z-[1]"
+          style={{
+            backgroundImage: "linear-gradient(to right, rgba(109,77,254,0.65) 1px, transparent 1px), linear-gradient(to bottom, rgba(109,77,254,0.65) 1px, transparent 1px)",
+            backgroundSize: "20px 20px",
+            backgroundPosition: "0 0, 0 0",
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }}
         />
 
         <Navbar />
