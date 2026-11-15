@@ -25,6 +25,7 @@ import {
   Sparkles,
   Eye,
   TrendingUp,
+  Quote,
 } from "lucide-react";
 
 const features = [
@@ -205,6 +206,71 @@ function SavingsExperience() {
             })}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+
+const storyCards = [
+  { quote: "Saving together should feel organised, simple and stress-free.", detail: "A shared space for every savings circle.", label: "SIMPLICITY", initials: "SW" },
+  { quote: "Everyone deserves a clear view of where their group stands.", detail: "Keep contributions and group activity easy to follow.", label: "TRANSPARENCY", initials: "CL" },
+  { quote: "Small contributions can bring a much bigger goal within reach.", detail: "Make steady progress, one contribution at a time.", label: "SHARED GOALS", initials: "GO" },
+  { quote: "When life gets unexpected, your circle should be close.", detail: "Coordinate support with the people you trust.", label: "COMMUNITY", initials: "TO" },
+  { quote: "The best plans are the ones we make happen together.", detail: "Bring your people and your plans into one place.", label: "TOGETHER", initials: "US" },
+];
+
+function CommunityStories() {
+  return (
+    <section className="relative isolate overflow-hidden bg-[#F8F8FB] px-5 py-20 sm:px-8 lg:py-28">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ backgroundImage: "radial-gradient(circle at 50% 45%, rgba(109,77,254,0.12), transparent 48%)" }} />
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#4F47EA]">The ShareWallet philosophy</p>
+          <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.05em] text-[#111116] sm:text-5xl">
+            Better goals are built <span className="text-[#4F47EA]">together.</span>
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-zinc-600 sm:text-base">
+            Every group is different. The things that matter stay the same: trust, clarity and showing up for each other.
+          </p>
+        </div>
+        <div className="mt-14 flex snap-x snap-mandatory items-center gap-4 overflow-x-auto px-3 pb-8 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-center lg:overflow-visible">
+          {storyCards.map((card, index) => {
+            const featured = index === 2;
+            return (
+              <motion.article
+                key={card.label}
+                initial={{ opacity: 0, y: 24, rotate: index % 2 === 0 ? -2 : 2 }}
+                whileInView={{ opacity: 1, y: 0, rotate: featured ? 0 : index % 2 === 0 ? -2 : 2 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -9, rotate: 0, scale: 1.025 }}
+                className={`relative flex min-h-[300px] w-[270px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-[1.7rem] border p-6 shadow-[0_18px_50px_rgba(20,18,50,0.09)] sm:min-h-[330px] sm:w-[290px] ${featured ? "border-[#4F47EA] bg-[#4F47EA] text-white lg:min-h-[365px] lg:w-[320px]" : "border-[#E5E2F5] bg-white text-[#171722]"}`}
+              >
+                <div>
+                  <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${featured ? "bg-white/15 text-white" : "bg-[#F0EFFF] text-[#4F47EA]"}`}>
+                    <Quote size={21} />
+                  </div>
+                  <p className={`mt-7 text-[10px] font-bold tracking-[0.22em] ${featured ? "text-white/65" : "text-[#7770D9]"}`}>{card.label}</p>
+                  <blockquote className={`mt-3 text-xl font-semibold leading-[1.28] tracking-[-0.035em] sm:text-[22px] ${featured ? "text-white" : "text-[#171722]"}`}>
+                    “{card.quote}”
+                  </blockquote>
+                </div>
+                <div className={`mt-8 border-t pt-5 ${featured ? "border-white/20" : "border-[#ECEAF5]"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className={`flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-bold ${featured ? "bg-white text-[#4F47EA]" : "bg-[#F0EFFF] text-[#4F47EA]"}`}>{card.initials}</span>
+                    <div>
+                      <p className={`text-xs font-semibold ${featured ? "text-white" : "text-[#171722]"}`}>The ShareWallet idea</p>
+                      <p className={`mt-1 text-[10px] ${featured ? "text-white/60" : "text-zinc-500"}`}>{card.detail}</p>
+                    </div>
+                  </div>
+                </div>
+                <span aria-hidden="true" className={`pointer-events-none absolute -bottom-12 -right-10 text-[150px] font-black leading-none opacity-[0.055] ${featured ? "text-white" : "text-[#4F47EA]"}`}>“</span>
+              </motion.article>
+            );
+          })}
+        </div>
+        <p className="mt-1 text-center text-[11px] text-zinc-400">ShareWallet principles — real community stories will be featured as feedback comes in.</p>
       </div>
     </section>
   );
@@ -406,6 +472,8 @@ export function LandingSections() {
           </div>
         </div>
       </section>
+
+      <CommunityStories />
 
       <section id="security" className="border-y border-zinc-100 bg-[#F8F8FB] px-5 py-16 sm:px-8 lg:py-20">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
