@@ -529,7 +529,7 @@ export default function GroupPage() {
       )}
 
       {openRequest && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center h-screen overflow-hidden bg-black/80 p-4">
           <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
 
             <div className="mb-6">
