@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowUp,
@@ -26,7 +26,7 @@ function MagneticLink({
   secondary = false,
 }: {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
   secondary?: boolean;
 }) {
   return (
@@ -113,7 +113,7 @@ export function CinematicFooter() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="sw-footer-reveal overflow-hidden border-y border-white/10 bg-white/[0.035] py-4 backdrop-blur-md">
+        <div data-footer-reveal className="sw-footer-reveal overflow-hidden border-y border-white/10 bg-white/[0.035] py-4 backdrop-blur-md">
           <div className="sw-footer-marquee flex w-max items-center gap-10 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.24em] text-white/55 sm:gap-14 sm:text-xs">
             {[0, 1].map((copy) => (
               <div key={copy} className="flex items-center gap-10 sm:gap-14">
