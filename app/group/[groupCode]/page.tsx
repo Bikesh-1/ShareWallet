@@ -21,6 +21,7 @@ export default function GroupPage() {
   const [amount, setAmount] = useState("");
   const [openContri, setOpenContri] = useState(false);
   const [openRequest, setOpenRequest] = useState(false);
+  const [groupInviteLoading, setGroupInviteLoading] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"ALL" | "CONTRIBUTIONS" | "REQUESTS">("ALL");
   const params = useParams();
   const currentMonth = new Date().toISOString().slice(0, 7);
@@ -76,6 +77,29 @@ export default function GroupPage() {
     refetchInterval: 15_000,
     refetchIntervalInBackground: false,
   });
+
+  async function shareGroupInvite() {
+    setGroupInviteLoading(true);
+    try {
+      const response = await fetch("/api/group/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ groupCode }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to create invite link.");
+      const inviteUrl = `${window.location.origin}/join/group/${data.token}`;
+      if (navigator.share) {
+        try { await navigator.share({ title: `Join ${data.groupName} on ShareWallet`, text: "Join our savings group. This invite is only for existing friends of the person sharing it.", url: inviteUrl }); }
+        catch (error) { if (error instanceof Error && error.name !== "AbortError") throw error; }
+      } else {
+        await navigator.clipboard.writeText(inviteUrl);
+        toast.success("Group invite link copied. Share it with your existing friends.");
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to share group invite.");
+    } finally { setGroupInviteLoading(false); }
+  }
 
   const money = (value: number) =>
     Number(value || 0).toLocaleString("en-IN");
@@ -280,6 +304,9 @@ export default function GroupPage() {
               catch { toast.error("Unable to copy group code"); }
             }} className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-800 transition hover:border-zinc-400 hover:bg-zinc-100">
               Invite code · {groupDetails.groupCode} <span className="ml-2 text-black">Copy ↗</span>
+            </button>
+            <button type="button" disabled={groupInviteLoading} onClick={shareGroupInvite} className="inline-flex items-center gap-2 rounded-xl bg-[#4F47EA] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3f38cf] disabled:cursor-not-allowed disabled:opacity-60">
+              {groupInviteLoading ? "Creating link..." : "Invite existing friends"}
             </button>
           </div>
         </div>
