@@ -532,75 +532,123 @@ export default function GroupPage() {
       ), document.body)}
 
       {openRequest && portalMounted && createPortal((
-        <div className="fixed inset-0 z-50 flex items-center justify-center h-screen overflow-hidden bg-black/80 p-4">
-          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
-
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-black">
-                Send Request
-              </h2>
-              <p className="mt-2 text-sm text-black">
-                Enter your amount and reason in details.
-              </p>
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-zinc-950/60 p-4 backdrop-blur-sm"
+          onMouseDown={(event) => { if (event.target === event.currentTarget) setOpenRequest(false); }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="send-request-title"
+            className="relative my-auto w-full max-w-lg overflow-hidden rounded-[28px] border border-white/70 bg-white text-zinc-950 shadow-[0_24px_80px_rgba(0,0,0,0.28)]"
+          >
+            <div className="border-b border-zinc-100 bg-gradient-to-br from-violet-50 via-white to-white px-6 pb-5 pt-6 sm:px-8 sm:pt-8">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-xl font-bold text-violet-700 ring-1 ring-violet-200">
+                    ₹
+                  </div>
+                  <div>
+                    <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-700">Group support</p>
+                    <h2 id="send-request-title" className="text-2xl font-bold tracking-tight text-zinc-950 sm:text-[28px]">
+                      Send a request
+                    </h2>
+                    <p className="mt-1.5 text-sm leading-5 text-zinc-500">
+                      Tell your group how much you need and why.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Close request dialog"
+                  onClick={() => setOpenRequest(false)}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-200 text-xl leading-none text-zinc-500 transition hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900"
+                >
+                  ×
+                </button>
+              </div>
             </div>
 
-            <form onSubmit={handleSendRequest} className="space-y-4">
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-black">
-                  Withdraw Amount
-                </label>
-                <input
-                  placeholder="Enter the amount"
-                  type="number"
-                  min={1}
-                  max={availableGroupBalance}
-                  step={1}
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  aria-invalid={requestExceedsBalance}
-                  className={`w-full rounded border bg-white px-3 py-2 text-black ${requestExceedsBalance ? "border-red-500 focus:ring-2 focus:ring-red-200" : "border-[#2c2c2c]"}`} />
-                <p className="mt-2 text-xs text-zinc-600">Available group wallet balance: ₹{money(availableGroupBalance)}</p>
-                {requestExceedsBalance && <p className="mt-1 text-xs font-medium text-red-600">Amount exceeds the available group balance. Maximum request: ₹{money(availableGroupBalance)}.</p>}
+            <form onSubmit={handleSendRequest} className="space-y-5 px-6 py-6 sm:px-8 sm:py-7">
+              <div className="rounded-2xl border border-violet-100 bg-violet-50/70 px-4 py-3.5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-zinc-500">Available group wallet balance</p>
+                    <p className="mt-1 text-2xl font-bold tracking-tight text-zinc-950">₹{money(availableGroupBalance)}</p>
+                  </div>
+                  <span className="rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-violet-700 ring-1 ring-violet-100">
+                    Available
+                  </span>
+                </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-black">
-                  Month
+                <label htmlFor="request-amount" className="mb-2 block text-sm font-semibold text-zinc-800">
+                  Request amount
                 </label>
+                <div className={`flex items-center rounded-xl border bg-white transition focus-within:ring-4 ${requestExceedsBalance ? "border-red-400 focus-within:ring-red-100" : "border-zinc-200 focus-within:border-violet-400 focus-within:ring-violet-100"}`}>
+                  <span className="border-r border-zinc-100 px-4 py-3.5 text-base font-semibold text-zinc-500">₹</span>
+                  <input
+                    id="request-amount"
+                    placeholder="0"
+                    type="number"
+                    min={1}
+                    max={availableGroupBalance}
+                    step={1}
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    aria-invalid={requestExceedsBalance}
+                    className="w-full rounded-r-xl bg-transparent px-4 py-3.5 text-base font-semibold text-zinc-950 outline-none placeholder:font-normal placeholder:text-zinc-400"
+                  />
+                </div>
+                {requestExceedsBalance ? (
+                  <p className="mt-2 text-xs font-medium text-red-600">Amount exceeds the available balance. Maximum: ₹{money(availableGroupBalance)}.</p>
+                ) : (
+                  <p className="mt-2 text-xs text-zinc-500">You can request up to ₹{money(availableGroupBalance)}.</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="request-month" className="mb-2 block text-sm font-semibold text-zinc-800">Request month</label>
                 <input
+                  id="request-month"
                   type="month"
                   readOnly
-                  defaultValue={currentMonth}
-                  placeholder="July"
+                  value={currentMonth}
                   onChange={(e) => setMonth(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-black">
-                  Reason
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter Reason"
-                  onChange={(e) => setReason(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3.5 text-sm text-zinc-800 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
                 />
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div>
+                <label htmlFor="request-reason" className="mb-2 block text-sm font-semibold text-zinc-800">Reason for request</label>
+                <input
+                  id="request-reason"
+                  type="text"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="e.g. Medical emergency, travel expenses"
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-100"
+                />
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 border-t border-zinc-100 pt-5 sm:flex-row">
                 <button
-                  disabled={requestMutation.isPending || requestExceedsBalance || isGroupDetailsPending}
-                  type="submit"
-                  className="flex-1 text-white border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
+                  type="button"
+                  onClick={() => setOpenRequest(false)}
+                  className="flex-1 rounded-xl border border-zinc-200 bg-white px-5 py-3.5 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
                 >
-                  {requestMutation.isPending ? "Sending..." : "Send Request"}
+                  Cancel
                 </button>
                 <button
-                  className="flex-1 text-black border border-zinc-300 px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
-                  onClick={() => setOpenRequest(false)}>Close</button>
+                  disabled={requestMutation.isPending || requestExceedsBalance || isGroupDetailsPending || availableGroupBalance <= 0 || !amount || enteredRequestAmount <= 0 || !reason.trim()}
+                  type="submit"
+                  className="flex-1 rounded-xl bg-violet-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:bg-violet-700 hover:shadow-violet-600/30 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0"
+                >
+                  {requestMutation.isPending ? "Sending request..." : "Send request"}
+                </button>
               </div>
+              <p className="text-center text-[11px] text-zinc-400">Your request will be shared with the group for approval.</p>
             </form>
           </div>
         </div>
