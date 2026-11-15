@@ -54,8 +54,8 @@ export async function POST(req: Request) {
 
         if (alreadyFriend) {
             return NextResponse.json(
-                { error: "This user is already in your friend list." },
-                { status: 409 }
+                { message: "This user is already in your friend list.", alreadyFriend: true },
+                { status: 200 }
             )
         }
 
