@@ -473,10 +473,10 @@ export default function GroupPage() {
       </main>
 
       {openContri && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4">
-          <div className="relative z-10 my-auto max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:p-8">
+        <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black/80 p-3 sm:p-4">
+          <div className="relative z-10 max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-gray-200 bg-white p-5 text-black shadow-2xl sm:max-h-[calc(100dvh-2rem)] sm:p-7">
 
-            <div className="mb-6">
+            <div className="mb-4">
               <h2 className="text-2xl font-bold text-black">
                 Monthly Contribution
               </h2>
@@ -541,7 +541,7 @@ export default function GroupPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSendRequest} className="space-y-5">
+            <form onSubmit={handleSendRequest} className="space-y-4">
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-black">
