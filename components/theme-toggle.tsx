@@ -13,14 +13,42 @@ export default function ThemeToggle() {
   const isDark = mounted && resolvedTheme === "dark";
 
   return (
-    <button
-      type="button"
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="fixed bottom-5 right-5 z-[100] flex h-12 w-12 items-center justify-center rounded-full border border-black/10 bg-white/90 text-[#17171C] shadow-[0_8px_28px_rgba(15,15,25,0.16)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#6D4DFE]/40 hover:bg-[#F4F1FF] hover:text-[#4F47EA] dark:border-white/10 dark:bg-[#17171C]/90 dark:text-white dark:hover:bg-[#292536] sm:bottom-7 sm:right-7"
+    <div
+      style={{
+        position: "fixed",
+        right: "24px",
+        bottom: "24px",
+        zIndex: 2147483000,
+        pointerEvents: "auto",
+      }}
     >
-      {isDark ? <Sun size={19} strokeWidth={2} /> : <Moon size={19} strokeWidth={2} />}
-    </button>
+      <button
+        type="button"
+        aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        onClick={() => setTheme(isDark ? "light" : "dark")}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "9px",
+          minWidth: "54px",
+          height: "54px",
+          padding: "0 16px",
+          borderRadius: "9999px",
+          border: isDark ? "1px solid rgba(255,255,255,.16)" : "1px solid rgba(20,20,30,.12)",
+          background: isDark ? "#24232B" : "#FFFFFF",
+          color: isDark ? "#FFFFFF" : "#17171C",
+          boxShadow: "0 8px 30px rgba(15,15,25,.22)",
+          cursor: "pointer",
+          fontSize: "13px",
+          fontWeight: 600,
+          backdropFilter: "blur(16px)",
+        }}
+      >
+        {isDark ? <Sun size={19} /> : <Moon size={19} />}
+        <span>{isDark ? "Light" : "Dark"}</span>
+      </button>
+    </div>
   );
 }
