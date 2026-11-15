@@ -316,7 +316,7 @@ export default function Dashboard() {
 
     if (page === "friend") return <div>
       <PanelHeader title="Friends" description="Connect with people on ShareWallet using their unique customer ID." action={<button type="button" disabled={!profile?.user?.coustumerId} onClick={async () => {
-        const inviteUrl = `${window.location.origin}/join/friend/${profile.user.coustumerId}`;
+        const inviteUrl = `${window.location.origin}/join/friend/${profile?.user?.coustumerId}`;
         try {
           if (navigator.share) await navigator.share({ title: "Connect on ShareWallet", text: "Add me as a friend on ShareWallet.", url: inviteUrl });
           else { await navigator.clipboard.writeText(inviteUrl); toast.success("Friend invite link copied."); }
