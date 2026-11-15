@@ -23,7 +23,11 @@ export default function Home() {
   };
 
   const handleHeroMouseLeave = () => {
-    if (heroGridRef.current) { heroGridRef.current.style.maskImage = "none"; heroGridRef.current.style.webkitMaskImage = "none"; }
+    if (heroGridRef.current) {
+      const hiddenMask = "radial-gradient(circle 0px at 50% 50%, black 0%, transparent 100%)";
+      heroGridRef.current.style.maskImage = hiddenMask;
+      heroGridRef.current.style.webkitMaskImage = hiddenMask;
+    }
   };
 
   return (
@@ -51,6 +55,8 @@ export default function Home() {
             backgroundImage: "linear-gradient(to right, rgba(109,77,254,0.65) 1px, transparent 1px), linear-gradient(to bottom, rgba(109,77,254,0.65) 1px, transparent 1px)",
             backgroundSize: "20px 20px",
             backgroundPosition: "0 0, 0 0",
+            maskImage: "radial-gradient(circle 0px at 50% 50%, black 0%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(circle 0px at 50% 50%, black 0%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskComposite: "source-in",
           }}
