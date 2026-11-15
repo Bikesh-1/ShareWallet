@@ -1,16 +1,31 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import type { MouseEvent } from "react";
 import Navbar from "../components/navbar";
 import { AnimatedText } from "@/components/ui/animated-underline-text-one";
 import { LandingSections } from "../components/landing/landing-sections";
 
 export default function Home() {
   const router = useRouter();
+  const heroSpotlightRef = useRef<HTMLDivElement>(null);
+
+  const handleHeroMouseMove = (event: MouseEvent<HTMLElement>) => {
+    if (!heroSpotlightRef.current) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
+    heroSpotlightRef.current.style.background = `radial-gradient(260px circle at ${x}px ${y}px, rgba(109,77,254,0.13), transparent 75%)`;
+  };
+
+  const handleHeroMouseLeave = () => {
+    if (heroSpotlightRef.current) heroSpotlightRef.current.style.background = "transparent";
+  };
 
   return (
     <main className="w-full overflow-hidden bg-white text-[#101014]">
-      <section id="home" className="relative flex min-h-[760px] min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 text-center sm:px-8">
+      <section id="home" onMouseMove={handleHeroMouseMove} onMouseLeave={handleHeroMouseLeave} className="relative flex min-h-[760px] min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 text-center sm:px-8">
         <div
           className="pointer-events-none absolute inset-0 z-0"
           aria-hidden="true"
@@ -24,6 +39,11 @@ export default function Home() {
             maskComposite: "intersect",
             WebkitMaskComposite: "source-in",
           }}
+        />
+        <div
+          ref={heroSpotlightRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-[1] transition-[background] duration-150"
         />
 
         <Navbar />
