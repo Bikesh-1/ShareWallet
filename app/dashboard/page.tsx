@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   House, Users, Wallet, Activity, UserRound, Settings, Bell,
-  Search, Plus, ExternalLink, RefreshCw, Share2,
+  Search, Plus, ExternalLink, RefreshCw,
   CheckCircle2, Clock3, XCircle, ArrowDownLeft, ArrowUpRight,
   ShieldCheck, LogOut, UserPlus, CreditCard
 } from "lucide-react";
@@ -315,13 +315,7 @@ export default function Dashboard() {
     }
 
     if (page === "friend") return <div>
-      <PanelHeader title="Friends" description="Connect with people on ShareWallet using their unique customer ID." action={<button type="button" disabled={!profile?.user?.coustumerId} onClick={async () => {
-        const inviteUrl = `${window.location.origin}/join/friend/${profile?.user?.coustumerId}`;
-        try {
-          if (navigator.share) await navigator.share({ title: "Connect on ShareWallet", text: "Add me as a friend on ShareWallet.", url: inviteUrl });
-          else { await navigator.clipboard.writeText(inviteUrl); toast.success("Friend invite link copied."); }
-        } catch (error) { if (error instanceof Error && error.name !== "AbortError") toast.error("Unable to share invite link."); }
-      }} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F47EA] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><Share2 size={16} /> Share invite link</button>} />
+      <PanelHeader title="Friends" description="Connect with people on ShareWallet using their unique customer ID." />
       <form onSubmit={(e) => { e.preventDefault(); if (!friendCode.trim()) return; addFriendMutation.mutate({ coustumerId: friendCode.trim() }); }} className="mb-6 flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-[#101014] p-4 sm:flex-row"><input value={friendCode} onChange={(e) => setFriendCode(e.target.value)} placeholder="Enter friend customer ID" className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-black px-4 py-3 text-sm text-white outline-none focus:border-[#6d63ef]" /><button disabled={addFriendMutation.isPending || !friendCode.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F47EA] px-5 py-3 text-sm font-semibold text-white disabled:opacity-50"><UserPlus size={16} />{addFriendMutation.isPending ? "Sending…" : "Add friend"}</button></form>
       <div className="mb-4 flex items-center gap-2 rounded-xl border border-zinc-800 bg-[#101014] px-3"><Search size={17} className="text-zinc-500" /><input value={friendSearch} onChange={(e) => setFriendSearch(e.target.value)} placeholder="Search friends…" className="w-full bg-transparent py-3 text-sm text-white outline-none placeholder:text-zinc-600" /></div>
       {friendsLoading ? <p className="text-zinc-400">Loading friends…</p> : friendsError ? <p className="text-red-400">{friendError.message}</p> : filteredFriends.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{filteredFriends.map((friend: any) =>
