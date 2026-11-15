@@ -42,6 +42,7 @@ textarea {
     border-color var(--sw-motion-base) var(--sw-ease),
     box-shadow var(--sw-motion-base) var(--sw-ease),
     opacity var(--sw-motion-base) var(--sw-ease),
+    filter var(--sw-motion-base) var(--sw-ease),
     transform var(--sw-motion-fast) var(--sw-ease);
 }
 
@@ -72,7 +73,7 @@ textarea:focus-visible {
 @media (hover: hover) and (pointer: fine) {
   button:not(:disabled):hover,
   [role="button"]:not([aria-disabled="true"]):hover {
-    filter: brightness(1.035);
+    filter: brightness(0.92) saturate(1.15);
   }
 
   a:hover {
