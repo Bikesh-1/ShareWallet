@@ -69,14 +69,14 @@ export default function LoginNavbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-[76px] w-full shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 backdrop-blur-md dark:border-white/10 dark:bg-[#101014] sm:px-5 lg:px-7">
+      <header className="sticky top-0 z-40 flex h-[76px] w-full shrink-0 items-center justify-between border-b bg-white px-3 backdrop-blur-md sm:px-5 lg:px-7">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
             aria-label="Toggle navigation"
             aria-expanded={mobileMenuOpen}
             onClick={() => setMobileMenuOpen((open) => !open)}
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#dadada] bg-white text-[#171717] transition hover:bg-zinc-100 dark:border-white/15 dark:bg-[#19191f] dark:text-zinc-100 dark:hover:bg-white/10 lg:hidden"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#dadada] bg-white text-[#171717] transition hover:bg-zinc-100 lg:hidden"
           >
             {mobileMenuOpen ? <X size={19} /> : <Menu size={19} />}
           </button>
@@ -86,7 +86,7 @@ export default function LoginNavbar() {
             className="hidden items-center gap-2 lg:flex"
             aria-label="ShareWallet dashboard"
           >
-            <Image src="/logo.png" alt="ShareWallet" width={44} height={44} className="rounded-lg p-1 w-28 dark:invert dark:hue-rotate-180" />
+            <Image src="/logo.png" alt="ShareWallet" width={44} height={44} className="rounded-lg  p-1 w-28" />
           </button>
           <span className="truncate text-base font-bold text-[#171717] lg:hidden">ShareWallet</span>
         </div>
@@ -97,8 +97,8 @@ export default function LoginNavbar() {
             onClick={() => setPopup(true)}
             disabled={!!userDetails?.isprofileCompleted}
             className={`hidden rounded-xl border px-3 py-2 text-sm font-medium transition sm:inline-flex ${userDetails?.isprofileCompleted
-              ? "cursor-not-allowed border-[#dadada] bg-white text-zinc-500 dark:border-white/10 dark:bg-[#19191f] dark:text-zinc-500"
-              : "border-[#dadada] bg-white text-[#171717] hover:bg-zinc-50 dark:border-white/15 dark:bg-[#19191f] dark:text-zinc-100 dark:hover:bg-white/10"
+              ? "cursor-not-allowed border-[#dadada] bg-white text-zinc-500"
+              : "border-[#dadada] bg-white text-[#171717] hover:bg-zinc-50"
             }`}
           >
             {userDetails?.isprofileCompleted ? "Details Added" : "Add Details"}
@@ -106,7 +106,7 @@ export default function LoginNavbar() {
           <button
             type="button"
             onClick={() => router.push("/group-draft")}
-            className="hidden items-center justify-center gap-2 rounded-xl border border-[#dadada] bg-white px-3 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-zinc-50 dark:border-white/15 dark:bg-[#19191f] dark:text-zinc-100 dark:hover:bg-white/10 sm:inline-flex"
+            className="hidden items-center justify-center gap-2 rounded-xl border border-[#dadada] bg-white px-3 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-zinc-50 sm:inline-flex"
           >
             <MessageCircle size={16} />
             Discussions
@@ -124,7 +124,7 @@ export default function LoginNavbar() {
             type="button"
             onClick={openNotifications}
             aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#dadada] bg-white text-[#171717] transition hover:bg-zinc-50 dark:border-white/15 dark:bg-[#19191f] dark:text-zinc-100 dark:hover:bg-white/10"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#dadada] bg-white text-[#171717] transition hover:bg-zinc-50"
           >
             <Bell size={18} />
             {unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{unreadCount > 99 ? "99+" : unreadCount}</span>}
@@ -132,19 +132,19 @@ export default function LoginNavbar() {
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/signin" })}
-            className="rounded-xl border border-[#dadada] bg-white px-3 py-2 text-sm font-medium text-[#171717] transition hover:bg-zinc-50 dark:border-white/15 dark:bg-[#19191f] dark:text-zinc-100 dark:hover:bg-white/10 sm:px-4"
+            className="rounded-xl border border-[#dadada] bg-white px-3 py-2 text-sm font-medium text-[#171717] transition hover:bg-zinc-50 sm:px-4"
           >
             Logout
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="absolute left-3 right-3 top-[68px] z-50 rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl dark:border-white/10 dark:bg-[#17171c] lg:hidden">
+          <div className="absolute left-3 right-3 top-[68px] z-50 rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl lg:hidden">
             <button
               type="button"
               onClick={() => { setPopup(true); setMobileMenuOpen(false); }}
               disabled={!!userDetails?.isprofileCompleted}
-              className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-white/10 disabled:text-zinc-400"
+              className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100 disabled:text-zinc-400"
             >
               {userDetails?.isprofileCompleted ? "Profile details added" : "Add your profile details"}
               <span className="text-xs text-zinc-400">{userDetails?.isprofileCompleted ? "Complete" : "Required"}</span>
@@ -152,7 +152,7 @@ export default function LoginNavbar() {
             <button
               type="button"
               onClick={() => { router.push("/group-draft"); setMobileMenuOpen(false); }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-white/10"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-zinc-800 transition hover:bg-zinc-100"
             >
               <MessageCircle size={17} /> Group discussions
             </button>
