@@ -19,9 +19,6 @@ export default function GroupPage() {
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [reason, setReason] = useState("");
   const [amount, setAmount] = useState("");
-  const availableGroupBalance = Number(groupDetails?.totalAmount ?? 0);
-  const enteredRequestAmount = Number(amount);
-  const requestExceedsBalance = amount !== "" && Number.isFinite(enteredRequestAmount) && enteredRequestAmount > availableGroupBalance;
   const [openContri, setOpenContri] = useState(false);
   const [openRequest, setOpenRequest] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"ALL" | "CONTRIBUTIONS" | "REQUESTS">("ALL");
@@ -40,6 +37,10 @@ export default function GroupPage() {
     error: errorGroupDetails
 
   } = useGroupContribution(groupCode);
+
+  const availableGroupBalance = Number(groupDetails?.totalAmount ?? 0);
+  const enteredRequestAmount = Number(amount);
+  const requestExceedsBalance = amount !== "" && Number.isFinite(enteredRequestAmount) && enteredRequestAmount > availableGroupBalance;
 
   const {
     data: contributionDetails,
