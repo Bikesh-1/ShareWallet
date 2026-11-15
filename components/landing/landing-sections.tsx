@@ -157,19 +157,6 @@ function SavingsExperience() {
                 </motion.div>
               </AnimatePresence>
             </div>
-            <div className="mt-5 flex items-center gap-2">
-              {experienceCards.map((card, index) => (
-                <button
-                  key={card.number}
-                  type="button"
-                  aria-label={`Show ${card.title}`}
-                  aria-pressed={activeIndex === index}
-                  onClick={() => setActiveIndex(index)}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${activeIndex === index ? "w-10 bg-[#4F47EA]" : "w-4 bg-zinc-300 hover:bg-zinc-400"}`}
-                />
-              ))}
-            </div>
-            <p className="mt-3 text-[11px] text-zinc-400">Hover or select a panel to explore</p>
           </div>
 
           <div className="flex h-[390px] min-w-0 gap-2 overflow-x-auto pb-2 md:h-[470px] md:overflow-hidden md:pb-0">
