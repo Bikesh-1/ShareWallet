@@ -368,9 +368,52 @@ export default function Dashboard() {
       </div> : <EmptyState title="You're all caught up" detail="New payment and account updates will appear here." />}
     </div>;
 
-    if (page === "profile") return <div>
+    if (page === "profile") return <div className="space-y-6">
       <PanelHeader title="My Profile" description="Your ShareWallet account identity and personal details." />
-      {profileLoading ? <p className="text-zinc-400">Loading profile…</p> : profileError ? <p className="text-red-400">{profileErrorObj?.message}</p> : profile ? <div className="max-w-2xl rounded-2xl border border-zinc-800 bg-[#101014] p-6"><div className="mb-6 flex items-center gap-4"><div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#4F47EA]/20 text-2xl font-bold text-[#aaa4ff]">{profile.name?.charAt(0)?.toUpperCase() || "U"}</div><div><h2 className="text-xl font-semibold text-white">{profile.name}</h2><p className="mt-1 text-sm text-zinc-500">ShareWallet member</p></div></div><div className="space-y-4">{[["Full name", profile.name], ["Customer ID", profile.user?.coustumerId], ["Mobile number", profile.mobileNumber], ["Date of birth", profile.dateOfbirth ? new Date(profile.dateOfbirth).toLocaleDateString() : "Not added"]].map(([label, value]) => <div key={label} className="flex flex-col gap-1 border-b border-zinc-800 pb-3 sm:flex-row sm:items-center sm:justify-between"><span className="text-sm text-zinc-500">{label}</span><span className="text-sm font-medium text-white">{value || "—"}</span></div>)}</div><a href="/profile/edit" className="mt-5 inline-flex rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Edit profile</a></div> : <EmptyState title="Profile details unavailable" detail="Complete your profile from the dashboard navigation." />}
+      {profileLoading ? (
+        <div className="max-w-3xl animate-pulse rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm"><div className="h-16 w-16 rounded-2xl bg-zinc-100" /><div className="mt-5 h-5 w-40 rounded bg-zinc-100" /><div className="mt-8 space-y-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-12 rounded-xl bg-zinc-100" />)}</div></div>
+      ) : profileError ? (
+        <div className="max-w-3xl rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">{profileErrorObj?.message || "Unable to load profile details."}</div>
+      ) : profile ? (
+        <section className="group relative max-w-3xl overflow-hidden rounded-3xl border border-zinc-800 bg-[#101014] shadow-[0_18px_55px_rgba(0,0,0,0.12)]">
+          <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#4F47EA]/10 blur-3xl" />
+          <div className="relative border-b border-white/10 px-6 py-7 sm:px-8 sm:py-8">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 items-center gap-4">
+                <div className="flex h-[68px] w-[68px] shrink-0 items-center justify-center rounded-2xl bg-[#4F47EA]/20 text-3xl font-bold text-[#aaa4ff] ring-1 ring-[#4F47EA]/30 shadow-inner">
+                  {profile.name?.charAt(0)?.toUpperCase() || "U"}
+                </div>
+                <div className="min-w-0">
+                  <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#aaa4ff]">Account profile</p>
+                  <h2 className="truncate text-xl font-semibold tracking-tight text-white sm:text-2xl">{profile.name || "ShareWallet member"}</h2>
+                  <p className="mt-1 text-sm text-zinc-400">ShareWallet member</p>
+                </div>
+              </div>
+              <a href="/profile/edit" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-sm transition hover:-translate-y-0.5 hover:bg-zinc-100 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-white/20">
+                <UserRound size={16} /> Edit profile
+              </a>
+            </div>
+          </div>
+
+          <div className="relative grid gap-3 p-5 sm:grid-cols-2 sm:p-7">
+            {[
+              { label: "Full name", value: profile.name || "—", icon: "person" },
+              { label: "Customer ID", value: profile.user?.coustumerId || "—", icon: "id" },
+              { label: "Mobile number", value: profile.mobileNumber || "—", icon: "phone" },
+              { label: "Date of birth", value: profile.dateOfbirth ? new Date(profile.dateOfbirth).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "Not added", icon: "date" },
+            ].map((item) => (
+              <div key={item.label} className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-4 transition duration-200 hover:border-white/20 hover:bg-white/[0.06]">
+                <p className="text-[11px] font-medium uppercase tracking-[0.13em] text-zinc-500">{item.label}</p>
+                <p className={`mt-2 break-words text-sm font-semibold text-white sm:text-[15px] ${item.label === "Customer ID" ? "font-mono tracking-wide" : ""}`}>{item.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-black/20 px-6 py-4 sm:px-8">
+            <p className="text-xs text-zinc-500">Keep your account information up to date.</p>
+            <span className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Account details</span>
+          </div>
+        </section>
+      ) : <EmptyState title="Profile details unavailable" detail="Complete your profile from the dashboard navigation." />}
     </div>;
 
     return <div>
