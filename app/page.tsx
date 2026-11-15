@@ -23,12 +23,6 @@ export default function Home() {
         .fromTo(".hero-note", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12 }, "-=0.35");
 
       gsap.fromTo(".hero-grid-base", { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power2.out" });
-      gsap.to(".hero-grid-base", {
-        backgroundPosition: "20px 20px",
-        duration: 18,
-        repeat: -1,
-        ease: "none",
-      });
     });
     return () => ctx.revert();
   }, []);
