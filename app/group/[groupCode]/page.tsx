@@ -19,6 +19,9 @@ export default function GroupPage() {
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [reason, setReason] = useState("");
   const [amount, setAmount] = useState("");
+  const availableGroupBalance = Number(groupDetails?.totalAmount ?? 0);
+  const enteredRequestAmount = Number(amount);
+  const requestExceedsBalance = amount !== "" && Number.isFinite(enteredRequestAmount) && enteredRequestAmount > availableGroupBalance;
   const [openContri, setOpenContri] = useState(false);
   const [openRequest, setOpenRequest] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"ALL" | "CONTRIBUTIONS" | "REQUESTS">("ALL");
@@ -206,7 +209,7 @@ export default function GroupPage() {
   const handleSendRequest = (e: React.FormEvent) => {
     e.preventDefault();
     const requestedAmount = Number(amount);
-    const availableBalance = Number(groupDetails?.totalAmount ?? 0);
+    const availableBalance = availableGroupBalance;
     if (!Number.isSafeInteger(requestedAmount) || requestedAmount <= 0) {
       toast.error("Enter a valid whole-number amount.");
       return;
@@ -547,12 +550,14 @@ export default function GroupPage() {
                   placeholder="Enter the amount"
                   type="number"
                   min={1}
-                  max={groupDetails.totalAmount}
+                  max={availableGroupBalance}
                   step={1}
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black" />
-                <p className="mt-2 text-xs text-zinc-500">Available group wallet balance: ₹{money(groupDetails.totalAmount)}</p>
+                  aria-invalid={requestExceedsBalance}
+                  className={`w-full rounded border bg-white px-3 py-2 text-black ${requestExceedsBalance ? "border-red-500 focus:ring-2 focus:ring-red-200" : "border-[#2c2c2c]"}`} />
+                <p className="mt-2 text-xs text-zinc-600">Available group wallet balance: ₹{money(availableGroupBalance)}</p>
+                {requestExceedsBalance && <p className="mt-1 text-xs font-medium text-red-600">Amount exceeds the available group balance. Maximum request: ₹{money(availableGroupBalance)}.</p>}
               </div>
 
               <div>
@@ -582,7 +587,7 @@ export default function GroupPage() {
 
               <div className="flex gap-3 pt-2">
                 <button
-                  disabled={requestMutation.isPending}
+                  disabled={requestMutation.isPending || requestExceedsBalance || isGroupDetailsPending}
                   type="submit"
                   className="flex-1 text-white border bg-black px-2 py-2 rounded-lg text-[15px] font-medium cursor-pointer"
                 >
