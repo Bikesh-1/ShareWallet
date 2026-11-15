@@ -29,7 +29,7 @@ export default function Navbar() {
                         width={150}
                         height={150}
                         priority
-                        className="h-auto w-28 sm:w-32 md:w-[145px] dark:brightness-0 dark:invert"
+                        className="h-auto w-28 sm:w-32 md:w-[145px]"
                     />
                 </Link>
 
