@@ -130,8 +130,21 @@ function SavingsExperience() {
   const active = experienceCards[activeIndex];
 
   return (
-    <section className="overflow-hidden bg-[#F8F8FB] px-5 py-20 sm:px-8 lg:py-28">
-      <div className="mx-auto max-w-7xl">
+    <section className="relative isolate overflow-hidden bg-[#F8F8FB] px-5 py-20 sm:px-8 lg:py-28">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+          backgroundPosition: "0 0, 0 0",
+          maskImage: "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px), repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px), radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)",
+          WebkitMaskImage: "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px), repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px), radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)",
+          maskComposite: "intersect",
+          WebkitMaskComposite: "source-in",
+        }}
+      />
+      <div className="relative z-10 mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-14">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#4F47EA]">One circle. Many possibilities.</p>
