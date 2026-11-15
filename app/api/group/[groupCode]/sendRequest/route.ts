@@ -73,6 +73,14 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
             return NextResponse.json({ error: "Group not found or you are not a member", }, { status: 404 });
         }
 
+        if (amount > group.totalAmount) {
+            return NextResponse.json({
+                error: `Requested amount exceeds the available group wallet balance of ₹${group.totalAmount.toLocaleString("en-IN")}.`,
+                availableBalance: group.totalAmount,
+                requestedAmount: amount,
+            }, { status: 400 });
+        }
+
         const members = await prisma.user.findMany({
             where: {
                 OR: [
