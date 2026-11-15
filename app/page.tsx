@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
+import { AnimatedText } from "@/components/ui/animated-underline-text-one";
 import { LandingSections } from "../components/landing/landing-sections";
 
 export default function Home() {
@@ -39,7 +40,7 @@ export default function Home() {
 
         <h1 className="relative z-10 mt-4 max-w-5xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
           The Future of <br />
-          Group <span className="relative cursor-pointer text-[#4F47EA] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#4F47EA] after:transition-all after:duration-300 after:ease-out hover:after:w-full">Savings</span>
+          Group <AnimatedText text="Savings" textClassName="text-[#4F47EA]" underlineClassName="text-[#4F47EA]" underlineDuration={1.35} />
           <span className="text-[#4F47EA]">.</span>
         </h1>
 
