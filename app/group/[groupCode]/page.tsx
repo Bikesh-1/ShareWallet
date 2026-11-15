@@ -404,7 +404,7 @@ export default function GroupPage() {
                     {contributionDetails.map((item) => (
                       <div key={item.id} className="flex items-center justify-between gap-3 py-4">
                         <div className="min-w-0">
-                          <p className="text-sm leading-6 text-zinc-700"><span className="font-semibold text-black">{item.user.userdetails.name}</span> contributed</p>
+                          <p className="text-sm leading-6 text-zinc-700"><span className="font-semibold text-black">{item.user?.userdetails?.name || "ShareWallet member"}</span> contributed</p>
                           <p className="mt-1 text-xs text-zinc-500">{item.month}</p>
                         </div>
                         <p className="shrink-0 text-sm font-semibold tabular-nums text-black">₹{money(Number(item.amount))}</p>
@@ -425,7 +425,7 @@ export default function GroupPage() {
                       <div key={item.id} className="py-4">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="text-sm leading-6 text-zinc-700"><span className="font-semibold text-black">{item.user.userdetails.name}</span> requested</p>
+                            <p className="text-sm leading-6 text-zinc-700"><span className="font-semibold text-black">{item.user?.userdetails?.name || "ShareWallet member"}</span> requested</p>
                             <p className="mt-1 text-xs text-zinc-500">{item.month} · {item.reason}</p>
                           </div>
                           <p className="shrink-0 text-sm font-semibold tabular-nums text-black">₹{money(Number(item.amount))}</p>
