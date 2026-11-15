@@ -222,55 +222,65 @@ const storyCards = [
 
 function CommunityStories() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#F8F8FB] px-5 py-20 sm:px-8 lg:py-28">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ backgroundImage: "radial-gradient(circle at 50% 45%, rgba(109,77,254,0.12), transparent 48%)" }} />
-      <div className="mx-auto max-w-7xl">
+    <section className="relative isolate overflow-hidden bg-[#080809] px-5 py-20 text-white sm:px-8 lg:py-28">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 opacity-80" style={{
+        backgroundImage: "linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px)",
+        backgroundSize: "68px 68px",
+        maskImage: "linear-gradient(to bottom,transparent,black 12%,black 88%,transparent)",
+      }} />
+      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-10 -z-0 h-96 w-[min(900px,100vw)] -translate-x-1/2 rounded-full bg-[#6D4DFE]/10 blur-[130px]" />
+      <div className="relative z-10 mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#4F47EA]">The ShareWallet philosophy</p>
-          <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.05em] text-[#111116] sm:text-5xl">
-            Better goals are built <span className="text-[#4F47EA]">together.</span>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A99DFF] sm:text-xs">THE SHAREWALLET PHILOSOPHY</p>
+          <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.05em] text-white sm:text-5xl">
+            Better goals are built <span className="text-[#A99DFF]">together.</span>
           </h2>
-          <p className="mt-4 text-sm leading-7 text-zinc-600 sm:text-base">
-            Every group is different. The things that matter stay the same: trust, clarity and showing up for each other.
+          <p className="mt-4 text-sm leading-7 text-white/50 sm:text-base">
+            Trust, clarity and showing up for each other — the foundations of every shared goal.
           </p>
         </div>
-        <div className="mt-14 flex snap-x snap-mandatory items-center gap-4 overflow-x-auto px-3 pb-8 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-center lg:overflow-visible">
+
+        <div className="mt-14 flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto px-3 pb-8 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-center lg:overflow-visible">
           {storyCards.map((card, index) => {
             const featured = index === 2;
             return (
               <motion.article
                 key={card.label}
-                initial={{ opacity: 0, y: 24, rotate: index % 2 === 0 ? -2 : 2 }}
-                whileInView={{ opacity: 1, y: 0, rotate: featured ? 0 : index % 2 === 0 ? -2 : 2 }}
+                initial={{ opacity: 0, y: 28, rotate: index % 2 === 0 ? -1.5 : 1.5 }}
+                whileInView={{ opacity: 1, y: 0, rotate: featured ? 0 : index % 2 === 0 ? -1.5 : 1.5 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -9, rotate: 0, scale: 1.025 }}
-                className={`relative flex min-h-[300px] w-[270px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-[1.7rem] border p-6 shadow-[0_18px_50px_rgba(20,18,50,0.09)] sm:min-h-[330px] sm:w-[290px] ${featured ? "border-[#4F47EA] bg-[#4F47EA] text-white lg:min-h-[365px] lg:w-[320px]" : "border-[#E5E2F5] bg-white text-[#171722]"}`}
+                className={`relative flex min-h-[310px] w-[270px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-[1.6rem] border p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:min-h-[340px] sm:w-[290px] ${featured ? "border-[#8D7CFF]/50 bg-[#171522] lg:min-h-[370px] lg:w-[320px]" : "border-white/[0.11] bg-[#101012]"}`}
               >
-                <div>
-                  <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${featured ? "bg-white/15 text-white" : "bg-[#F0EFFF] text-[#4F47EA]"}`}>
+                <div aria-hidden="true" className={`pointer-events-none absolute inset-0 ${featured ? "bg-gradient-to-br from-[#6D4DFE]/15 via-transparent to-transparent" : "bg-gradient-to-br from-white/[0.035] to-transparent"}`} />
+                <div className="relative">
+                  <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border ${featured ? "border-[#A99DFF]/25 bg-[#6D4DFE]/20 text-[#C5BCFF]" : "border-white/10 bg-white/[0.055] text-[#A99DFF]"}`}>
                     <Quote size={21} />
                   </div>
-                  <p className={`mt-7 text-[10px] font-bold tracking-[0.22em] ${featured ? "text-white/65" : "text-[#7770D9]"}`}>{card.label}</p>
-                  <blockquote className={`mt-3 text-xl font-semibold leading-[1.28] tracking-[-0.035em] sm:text-[22px] ${featured ? "text-white" : "text-[#171722]"}`}>
+                  <p className="mt-7 text-[10px] font-bold tracking-[0.22em] text-[#A99DFF]">{card.label}</p>
+                  <blockquote className="mt-3 text-xl font-semibold leading-[1.3] tracking-[-0.035em] text-white sm:text-[22px]">
                     “{card.quote}”
                   </blockquote>
                 </div>
-                <div className={`mt-8 border-t pt-5 ${featured ? "border-white/20" : "border-[#ECEAF5]"}`}>
+                <div className="relative mt-8 border-t border-white/10 pt-5">
                   <div className="flex items-center gap-3">
-                    <span className={`flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-bold ${featured ? "bg-white text-[#4F47EA]" : "bg-[#F0EFFF] text-[#4F47EA]"}`}>{card.initials}</span>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#A99DFF]/20 bg-[#6D4DFE]/15 text-[11px] font-bold text-[#C5BCFF]">{card.initials}</span>
                     <div>
-                      <p className={`text-xs font-semibold ${featured ? "text-white" : "text-[#171722]"}`}>The ShareWallet idea</p>
-                      <p className={`mt-1 text-[10px] ${featured ? "text-white/60" : "text-zinc-500"}`}>{card.detail}</p>
+                      <p className="text-xs font-semibold text-white/85">The ShareWallet idea</p>
+                      <p className="mt-1 text-[10px] text-white/40">{card.detail}</p>
                     </div>
                   </div>
                 </div>
-                <span aria-hidden="true" className={`pointer-events-none absolute -bottom-12 -right-10 text-[150px] font-black leading-none opacity-[0.055] ${featured ? "text-white" : "text-[#4F47EA]"}`}>“</span>
+                <span aria-hidden="true" className="pointer-events-none absolute -bottom-12 -right-8 text-[150px] font-black leading-none text-white opacity-[0.035]">“</span>
               </motion.article>
             );
           })}
         </div>
-        <p className="mt-1 text-center text-[11px] text-zinc-400">ShareWallet principles — real community stories will be featured as feedback comes in.</p>
+        <p className="mt-1 text-center text-[11px] text-white/35">ShareWallet principles — real community stories will be featured as feedback comes in.</p>
+        <div aria-hidden="true" className="pointer-events-none relative mt-10 select-none overflow-hidden text-center text-[clamp(4rem,15vw,13rem)] font-black leading-[0.8] tracking-[-0.09em] text-transparent opacity-[0.08]" style={{ WebkitTextStroke: "1px rgba(255,255,255,.75)" }}>
+          SHAREWALLET
+        </div>
       </div>
     </section>
   );
