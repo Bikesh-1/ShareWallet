@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import {
   ArrowDown,
@@ -84,6 +86,130 @@ const goals = [
   { icon: LifeBuoy, title: "A safety cushion", text: "Build a fund for unexpected moments." },
 ];
 
+
+const experienceCards = [
+  {
+    number: "01",
+    title: "Group savings",
+    short: "Save as one",
+    description: "Create a savings circle with the people you trust. Set a common target and keep everyone moving towards it.",
+    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1100&q=85",
+  },
+  {
+    number: "02",
+    title: "Monthly contributions",
+    short: "Stay on track",
+    description: "Bring monthly contributions into one organised space and make your group's progress easier to follow.",
+    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1100&q=85",
+  },
+  {
+    number: "03",
+    title: "Emergency support",
+    short: "Be there together",
+    description: "When an unexpected expense comes up, members can request support from their circle and coordinate help.",
+    image: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1100&q=85",
+  },
+  {
+    number: "04",
+    title: "Shared experiences",
+    short: "Make it happen",
+    description: "Plan a trip, a big purchase or a milestone together. Turn a shared idea into a goal you can work towards.",
+    image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1100&q=85",
+  },
+  {
+    number: "05",
+    title: "Group conversations",
+    short: "Keep connected",
+    description: "Keep the conversations around your plans close to your savings journey, all in one shared space.",
+    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1100&q=85",
+  },
+];
+
+function SavingsExperience() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = experienceCards[activeIndex];
+
+  return (
+    <section className="overflow-hidden bg-[#F8F8FB] px-5 py-20 sm:px-8 lg:py-28">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-14">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#4F47EA]">One circle. Many possibilities.</p>
+            <div className="relative mt-5 min-h-[250px] sm:min-h-[280px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active.number}
+                  initial={{ opacity: 0, y: 22, filter: "blur(7px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -14, filter: "blur(5px)" }}
+                  transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute inset-0"
+                >
+                  <span className="text-xs font-semibold tracking-[0.2em] text-zinc-400">0{activeIndex + 1} / 05</span>
+                  <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.04] tracking-[-0.055em] text-[#111116] sm:text-5xl xl:text-6xl">
+                    {active.title.split(" ").slice(0, -1).join(" ")}{" "}
+                    <span className="text-[#4F47EA]">{active.title.split(" ").slice(-1)}</span>
+                  </h2>
+                  <p className="mt-5 max-w-md text-sm leading-7 text-zinc-600 sm:text-base">{active.description}</p>
+                  <Link href="/signup" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#111116] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#4F47EA]">
+                    Get started <ArrowUpRight size={16} />
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="mt-5 flex items-center gap-2">
+              {experienceCards.map((card, index) => (
+                <button
+                  key={card.number}
+                  type="button"
+                  aria-label={`Show ${card.title}`}
+                  aria-pressed={activeIndex === index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${activeIndex === index ? "w-10 bg-[#4F47EA]" : "w-4 bg-zinc-300 hover:bg-zinc-400"}`}
+                />
+              ))}
+            </div>
+            <p className="mt-3 text-[11px] text-zinc-400">Hover or select a panel to explore</p>
+          </div>
+
+          <div className="flex h-[390px] min-w-0 gap-2 overflow-x-auto pb-2 md:h-[470px] md:overflow-hidden md:pb-0">
+            {experienceCards.map((card, index) => {
+              const isActive = activeIndex === index;
+              return (
+                <motion.button
+                  key={card.number}
+                  type="button"
+                  layout
+                  aria-pressed={isActive}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onFocus={() => setActiveIndex(index)}
+                  onClick={() => setActiveIndex(index)}
+                  transition={{ type: "spring", stiffness: 190, damping: 25, mass: 0.8 }}
+                  className={`group relative h-full shrink-0 overflow-hidden rounded-[1.35rem] text-left outline-none ring-offset-4 focus-visible:ring-2 focus-visible:ring-[#4F47EA] ${isActive ? "w-[260px] md:w-[min(54%,390px)]" : "w-[72px] md:w-[68px]"}`}
+                  style={{ flex: isActive ? "1 1 0%" : "0 0 auto" }}
+                >
+                  <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url('${card.image}')` }} />
+                  <div className={`absolute inset-0 transition-colors duration-500 ${isActive ? "bg-gradient-to-t from-black/80 via-black/10 to-black/10" : "bg-black/45 group-hover:bg-black/30"}`} />
+                  <span className="absolute left-4 top-4 text-xs font-semibold tracking-[0.18em] text-white/80">{card.number}</span>
+                  {isActive ? (
+                    <motion.div layout className="absolute inset-x-5 bottom-5">
+                      <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/65">{card.short}</motion.p>
+                      <motion.h3 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }} className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-white md:text-3xl">{card.title}</motion.h3>
+                    </motion.div>
+                  ) : (
+                    <span className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 whitespace-nowrap text-sm font-semibold text-white [writing-mode:vertical-rl] rotate-180 md:block">{card.title}</span>
+                  )}
+                  {!isActive && <span className="absolute inset-x-0 bottom-5 text-center text-xs font-semibold text-white md:hidden">{card.number}</span>}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SectionIntro({
   eyebrow,
   title,
@@ -125,6 +251,8 @@ export function LandingSections() {
         <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full border border-[#4F47EA]/10" />
         <div className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full border border-[#4F47EA]/10" />
       </section>
+
+      <SavingsExperience />
 
       <section id="how-it-works" className="bg-[#F8F8FB] px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-6xl">
