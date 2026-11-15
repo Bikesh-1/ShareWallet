@@ -444,10 +444,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen min-h-screen flex-col overflow-hidden bg-white dark:bg-[#101014]">
+    <div className="flex h-screen min-h-screen flex-col overflow-hidden bg-white">
       <LoginNavbar />
       <div className="relative flex min-h-0 flex-1 overflow-hidden">
-        <aside className="relative z-20 hidden h-full w-64 shrink-0 flex-col justify-between border-r border-zinc-200 bg-white p-2 dark:border-white/10 dark:bg-[#101014] lg:flex">
+        <aside className="relative z-20 hidden h-full w-64 shrink-0 flex-col justify-between bg-white border-r border-black-400 p-2 lg:flex">
           <div className="flex flex-col gap-2">
 
             {menuItems.map((item) => {
@@ -458,7 +458,7 @@ export default function Dashboard() {
                   onClick={() => setPage(item.id)}
                   className={`flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all ${page === item.id
                     ? "bg-[#000000] text-white shadow-md"
-                    : "text-[#000000] hover:bg-black hover:text-white dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white"
+                    : "text-[#000000] hover:bg-black hover:text-white"
                     }`}
                 >
                   <Icon size={18} />
