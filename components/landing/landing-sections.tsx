@@ -25,7 +25,6 @@ import {
   Sparkles,
   Eye,
   TrendingUp,
-  Quote,
 } from "lucide-react";
 
 const features = [
@@ -409,8 +408,6 @@ export function LandingSections() {
           </div>
         </div>
       </section>
-
-      <CommunityStories />
 
       <section id="security" className="border-y border-zinc-100 bg-[#F8F8FB] px-5 py-16 sm:px-8 lg:py-20">
         <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
