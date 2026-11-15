@@ -12,14 +12,14 @@ export default function Home() {
     <main className="w-full overflow-hidden bg-white text-[#101014]">
       <section id="home" className="relative flex min-h-[760px] min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-white px-5 text-center sm:px-8">
         <div
-          aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-0"
+          aria-hidden="true"
           style={{
-            backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)",
+            backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)",
             backgroundSize: "20px 20px",
             backgroundPosition: "0 0, 0 0",
-            maskImage: "repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px)",
-            WebkitMaskImage: "repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px)",
+            maskImage: "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px), repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px), radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)",
+            WebkitMaskImage: "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px), repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px), radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%)",
             maskComposite: "intersect",
             WebkitMaskComposite: "source-in",
           }}
