@@ -132,3 +132,18 @@ dialog[open],
     transform: translateY(0);
   }
 }
+
+/* ShareWallet global dark mode */
+html.dark, html.dark body { color-scheme: dark; background: #09090b; color: #f4f4f5; }
+html.dark body { background-color: #09090b; }
+html.dark [class~="bg-white"], html.dark [class~="bg-white/85"], html.dark [class~="bg-white/90"], html.dark [class~="bg-white/95"] { background-color: #111114 !important; }
+html.dark [class~="bg-gray-50"], html.dark [class~="bg-zinc-50"], html.dark [class~="bg-slate-50"], html.dark [class*="bg-[#F8F8"], html.dark [class*="bg-[#F7F7"], html.dark [class*="bg-[#FAFA"] { background-color: #0e0e12 !important; }
+html.dark [class~="bg-gray-100"], html.dark [class~="bg-zinc-100"], html.dark [class~="bg-slate-100"], html.dark [class~="bg-neutral-100"] { background-color: #1b1b21 !important; }
+html.dark [class~="text-black"], html.dark [class~="text-gray-900"], html.dark [class~="text-zinc-900"], html.dark [class~="text-slate-900"], html.dark [class~="text-[#101014]"], html.dark [class~="text-[#17171C]"], html.dark [class~="text-[#171722]"] { color: #f4f4f5 !important; }
+html.dark [class~="text-gray-800"], html.dark [class~="text-gray-700"], html.dark [class~="text-zinc-800"], html.dark [class~="text-zinc-700"], html.dark [class~="text-slate-700"] { color: #d4d4d8 !important; }
+html.dark [class~="text-gray-600"], html.dark [class~="text-gray-500"], html.dark [class~="text-zinc-600"], html.dark [class~="text-zinc-500"], html.dark [class~="text-slate-600"], html.dark [class~="text-slate-500"] { color: #a1a1aa !important; }
+html.dark [class*="border-black/"], html.dark [class*="border-gray-"], html.dark [class*="border-zinc-"], html.dark [class*="border-slate-"] { border-color: rgba(255,255,255,.12) !important; }
+html.dark input, html.dark textarea, html.dark select { color: #f4f4f5; background-color: #151519; border-color: rgba(255,255,255,.16); }
+html.dark input::placeholder, html.dark textarea::placeholder { color: #71717a; }
+html.dark table, html.dark th, html.dark td, html.dark hr { border-color: rgba(255,255,255,.12); }
+html.dark ::selection { color: #fff; background: rgba(109,77,254,.55); }
