@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CinematicFooter } from "@/components/ui/motion-footer";
 import {
   ArrowDown,
   ArrowRight,
@@ -302,18 +303,7 @@ export function LandingSections() {
         </div>
       </section>
 
-      <footer id="contact" className="bg-[#0D0D12] px-5 pb-8 pt-14 text-white sm:px-8">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          <div>
-            <Link href="/" className="inline-flex items-center gap-2 text-xl font-bold tracking-tight">Share<span className="text-[#9B94FF]">Wallet</span><span className="sr-only"> home</span></Link>
-            <p className="mt-4 max-w-xs text-sm leading-7 text-zinc-400">A shared space for people working towards better financial goals, together.</p>
-          </div>
-          <div><h3 className="text-sm font-semibold">Explore</h3><div className="mt-4 flex flex-col gap-3 text-sm text-zinc-400"><a className="transition hover:text-white" href="#about">About</a><a className="transition hover:text-white" href="#how-it-works">How it works</a><a className="transition hover:text-white" href="#features">Features</a></div></div>
-          <div><h3 className="text-sm font-semibold">Your account</h3><div className="mt-4 flex flex-col gap-3 text-sm text-zinc-400"><Link className="transition hover:text-white" href="/signin">Login</Link><Link className="transition hover:text-white" href="/signup">Create account</Link></div></div>
-          <div><h3 className="text-sm font-semibold">Get in touch</h3><div className="mt-4 flex flex-col gap-3 text-sm text-zinc-400"><a className="transition hover:text-white" href="mailto:support@sharewallet.live">support@sharewallet.live</a></div></div>
-        </div>
-        <div className="mx-auto mt-12 flex max-w-6xl flex-col gap-3 border-t border-white/10 pt-6 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between"><span>© {new Date().getFullYear()} ShareWallet. All rights reserved.</span><span>Built for goals worth sharing.</span></div>
-      </footer>
+      <CinematicFooter />
     </>
   );
 }
