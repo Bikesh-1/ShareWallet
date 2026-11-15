@@ -38,7 +38,7 @@ const AnimatedText = React.forwardRef<HTMLDivElement, AnimatedTextProps>(
     return (
       <div
         ref={ref}
-        className={`flex flex-col items-center justify-center gap-2 ${className}`}
+        className={`inline-flex flex-col items-center justify-center align-baseline gap-2 ${className}`}
         {...props}
       >
         <div className="relative inline-block">
