@@ -71,6 +71,7 @@ export async function GET(
       pendingContributions,
       payouts,
       refunds,
+      repayments,
       requests,
     ] = await Promise.all([
       prisma.contribution.findMany({
@@ -110,6 +111,17 @@ export async function GET(
         where: {
           groupId: group.id,
           type: "REFUND",
+          status: "SUCCESS",
+        },
+        select: {
+          amount: true,
+        },
+      }),
+
+      prisma.transaction.findMany({
+        where: {
+          groupId: group.id,
+          type: "LOAN_REPAYMENT",
           status: "SUCCESS",
         },
         select: {
@@ -163,9 +175,12 @@ export async function GET(
       0
     );
 
-    // Loan repayment transactions are not currently written by the payment flows.
-    const totalRepayments = 0;
+    const totalRepayments = repayments.reduce(
+      (sum, transaction) => sum + transaction.amount,
+      0
+    );
 
+    // Repayments return money to the group wallet, so include them in its net balance.
     const netFlow = totalContributions - totalPayouts - totalRefunds + totalRepayments;
 
     const requestStats = requests.map((request) => {
