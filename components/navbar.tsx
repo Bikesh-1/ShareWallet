@@ -21,7 +21,7 @@ export default function Navbar() {
 
     return (
         <header className="absolute left-1/2 top-4 z-50 w-[92%] max-w-[1500px] -translate-x-1/2 sm:top-5 sm:w-[90%]">
-            <div className="relative flex h-[58px] items-center justify-between rounded-2xl border border-black/[0.07] bg-white/85 px-3 shadow-[0_8px_30px_rgba(15,15,25,0.07)] backdrop-blur-xl sm:h-[64px] sm:px-5">
+            <div className="relative flex h-[58px] items-center justify-between rounded-2xl border border-black/[0.07] bg-white/85 px-3  sm:h-[64px] sm:px-5">
                 <Link href="/" aria-label="ShareWallet home" onClick={closeMenu} className="shrink-0">
                     <Image
                         src="/logo.png"
@@ -38,10 +38,10 @@ export default function Navbar() {
                         <a
                             key={link.href}
                             href={link.href}
-                            className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-[#55545D] transition-all duration-300 hover:bg-white hover:text-[#4F47EA] hover:shadow-sm lg:px-5 lg:text-sm"
+                            className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-[#55545D] transition-all duration-300 hover:bg-black hover:text-white hover:shadow-sm lg:px-5 lg:text-sm"
                         >
                             {link.label}
-                            <span className="absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-[#4F47EA] transition-transform duration-300 group-hover:scale-x-100" />
+                            
                         </a>
                     ))}
                 </nav>
@@ -55,7 +55,7 @@ export default function Navbar() {
                     </button>
                     <button
                         onClick={() => router.push("/signup")}
-                        className="group inline-flex items-center gap-2 rounded-xl bg-[#111116] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(17,17,22,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4F47EA] hover:shadow-[0_8px_20px_rgba(79,71,234,0.22)]"
+                        className="group inline-flex items-center gap-2 rounded-xl bg-[#111116] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#4F47EA]"
                     >
                         Create account
                         <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

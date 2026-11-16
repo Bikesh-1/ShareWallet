@@ -74,7 +74,7 @@ export function CinematicFooter() {
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A99DFF] sm:text-xs">
             Your goals. Your people. Your pace.
           </p>
-          <h2 className="mt-3 text-[clamp(3.5rem,10vw,8.5rem)] font-semibold leading-[0.92] tracking-[-0.075em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/45">
+          <h2 className=" text-[clamp(3.5rem,10vw,8.5rem)] font-semibold  tracking-[-0.055em] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/45">
             Ready to begin?
           </h2>
           <p className="mt-6 max-w-lg text-sm leading-7 text-white/50 sm:text-base">
@@ -108,7 +108,7 @@ export function CinematicFooter() {
           </div>
         </div>
 
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-7 left-1/2 -z-10 -translate-x-1/2 select-none whitespace-nowrap text-[25vw] font-black leading-[0.72] tracking-[-0.095em] text-transparent opacity-[0.11]" style={{ WebkitTextStroke: "1px rgba(255,255,255,.75)" }}>
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-7 left-1/2 -z-10 -translate-x-1/2 select-none whitespace-nowrap text-[15vw] font-black leading-[0.72] tracking-[-0.095em] text-transparent opacity-[0.11]" style={{ WebkitTextStroke: "1px rgba(255,255,255,.75)" }}>
           SHAREWALLET
         </div>
 
