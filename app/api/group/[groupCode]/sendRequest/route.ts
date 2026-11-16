@@ -124,8 +124,6 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
                     },
                 });
 
-                const baseAmount = Math.floor(amount / members.length);
-                const remainder = amount % members.length;
                 const approvalData = approvers.map(
                     (member) => ({
                         requestId: request.id,
@@ -137,20 +135,6 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
                 await tx.requestApproval.createMany({
                     data: approvalData,
                     skipDuplicates: true,
-                });
-
-                const contributionData = members.map((member, index) => ({
-                    requestId: request.id,
-                    userId: member.id,
-                    groupId: group.id,
-                    amount: baseAmount + (index < remainder ? 1 : 0),
-                    month,
-                    status: "PENDING" as const,
-                })
-                );
-
-                await tx.contribution.createMany({
-                    data: contributionData,
                 });
 
                 await tx.notification.createMany({
