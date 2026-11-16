@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-full overflow-hidden bg-[#FFFAFA] text-[#101014]">
+    <main className="w-full overflow-hidden bg-[#F5F5F5] text-[#101014]">
       <section id="home" onMouseMove={handleHeroMouseMove} onMouseLeave={handleHeroMouseLeave} className="relative flex min-h-[760px] min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#F5F5F5] px-5 text-center sm:px-8">
         <div
           className="hero-grid-base pointer-events-none absolute inset-0 z-0"
