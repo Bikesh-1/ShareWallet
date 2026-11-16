@@ -449,14 +449,31 @@ export default function GroupPage() {
                         </div>
                         <span className={`mt-2 inline-flex rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-[10px] font-bold text-zinc-700`}>{item.status}</span>
                         {item.status === "ACCEPTED" && item.user.id === groupRequests?.currentUserId && (
-                          <div className="mt-3">
-                            <button
-                              type="button"
-                              onClick={() => router.push(`/group/${groupCode}/repay/${item.id}`)}
-                              className="rounded-lg bg-black px-4 py-2 text-xs font-semibold text-white transition hover:bg-zinc-800"
-                            >
-                              Repay Now →
-                            </button>
+                          <div className="mt-2">
+                            {item.repaidAmount > 0 && (
+                              <p className="text-xs font-medium text-emerald-700">
+                                Repaid ₹{money(item.repaidAmount)} of ₹{money(Number(item.amount))}
+                              </p>
+                            )}
+                            {item.pendingRepaymentAmount > 0 && (
+                              <p className="mt-1 text-xs text-amber-700">
+                                ₹{money(item.pendingRepaymentAmount)} repayment awaiting confirmation
+                              </p>
+                            )}
+                            {item.outstandingAmount > 0 && item.pendingRepaymentAmount === 0 && (
+                              <button
+                                type="button"
+                                onClick={() => router.push(`/group/${groupCode}/repay/${item.id}`)}
+                                className="mt-3 rounded-lg bg-black px-4 py-2 text-xs font-semibold text-white transition hover:bg-zinc-800"
+                              >
+                                {item.repaidAmount > 0 ? "Repay Remaining →" : "Repay Now →"}
+                              </button>
+                            )}
+                            {item.outstandingAmount === 0 && item.pendingRepaymentAmount === 0 && (
+                              <span className="mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">
+                                FULLY REPAID
+                              </span>
+                            )}
                           </div>
                         )}
                         {item.status === "PENDING" && item.approvals?.[0]?.status === "PENDING" && (
