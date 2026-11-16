@@ -33,7 +33,7 @@ export default function Signin() {
     }
 
     return (
-        <div className="min-h-screen w-full relative">
+        <div className="min-h-screen w-full relative bg-[#F5F5F5]">
             <div
                 className="absolute inset-0 z-0"
                 style={{
