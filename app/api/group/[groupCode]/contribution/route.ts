@@ -122,7 +122,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
         }
 
         const contributionDetails = await prisma.contribution.findMany({
-            where: { groupId: group.id },
+            // Only real monthly contributions belong in contribution history; money-request records are separate.
+            where: { groupId: group.id, requestId: null },
             include: {
                 user: {
                             select: {
