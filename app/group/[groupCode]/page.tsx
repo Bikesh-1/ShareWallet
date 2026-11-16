@@ -506,9 +506,7 @@ export default function GroupPage() {
                 </label>
                 <input
                   type="month"
-                  readOnly
-                  defaultValue={currentMonth}
-                  placeholder="July"
+                  value={month}
                   onChange={(e) => setMonth(e.target.value)}
                   className="w-full rounded border border-[#2c2c2c] bg-white px-3 py-2 text-black placeholder:text-gray-500 outline-none transition-all duration-200 focus:border-[#dadada] focus:ring-2 focus:ring-[#6D4DFE]/30"
                 />
