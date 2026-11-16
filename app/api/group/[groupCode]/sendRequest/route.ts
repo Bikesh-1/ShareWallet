@@ -28,7 +28,7 @@ export async function POST(req: Request, { params, }: { params: Promise<{ groupC
         const requestSchema = z.object({
             reason: z.string().trim().min(5).max(500),
             amount: z.coerce.number().int().positive().max(Number.MAX_SAFE_INTEGER),
-            month: z.string().regex(/^\\d{4}-(0[1-9]|1[0-2])$/).optional(),
+            month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).optional(),
         });
         const parsedBody = requestSchema.safeParse(body);
         if (!parsedBody.success) {
