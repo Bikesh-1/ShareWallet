@@ -274,7 +274,7 @@ export default function GroupPage() {
 
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-white text-black">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#F5F5F5] text-black">
       <div className="pointer-events-none fixed inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(circle at 12% 0%, rgba(0,0,0,0.025), transparent 28%), radial-gradient(circle at 90% 12%, rgba(0,0,0,0.02), transparent 24%)" }} />
       <div className="relative z-20"><LoginNavbar /></div>
 
