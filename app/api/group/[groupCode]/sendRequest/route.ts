@@ -228,14 +228,33 @@ export async function GET(req: Request, { params }: { params: Promise<{ groupCod
                     where: { userId: user.id },
                     select: { status: true },
                 },
+                transactions: {
+                    where: { type: "LOAN_REPAYMENT" },
+                    select: { amount: true, status: true },
+                },
             },
 
             orderBy: {
                 requestAt: "desc",
             },
         });
+        const requestsWithRepayment = sentrequestDetails.map((request) => {
+            const repaidAmount = request.transactions
+                .filter((transaction) => transaction.status === "SUCCESS")
+                .reduce((sum, transaction) => sum + transaction.amount, 0);
+            const pendingRepaymentAmount = request.transactions
+                .filter((transaction) => transaction.status === "PENDING")
+                .reduce((sum, transaction) => sum + transaction.amount, 0);
+            const requestedAmount = Number(request.amount);
+            return {
+                ...request,
+                repaidAmount,
+                pendingRepaymentAmount,
+                outstandingAmount: Math.max(0, requestedAmount - repaidAmount - pendingRepaymentAmount),
+            };
+        });
         return NextResponse.json(
-            { sentrequestDetails, currentUserId: user.id, message: "Sending Request details. " },
+            { sentrequestDetails: requestsWithRepayment, currentUserId: user.id, message: "Sending Request details. " },
             { status: 200 }
         )
     } catch {
