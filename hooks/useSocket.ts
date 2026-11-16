@@ -53,7 +53,13 @@ export function useSocket({
 
                 socket = io(socketUrl, {
                     auth: { token },
+                    // Prefer WebSocket directly on Render instead of starting with XHR polling.
+                    transports: ["websocket", "polling"],
+                    tryAllTransports: true,
                     reconnection: true,
+                    reconnectionDelay: 1500,
+                    reconnectionDelayMax: 10000,
+                    timeout: 20000,
                 });
                 socketRef.current = socket;
 
@@ -62,7 +68,17 @@ export function useSocket({
                 });
 
                 socket.on("connect_error", (error) => {
-                    console.error("SOCKET CONNECTION ERROR:", error.message);
+                    const transportError = error as Error & {
+                        description?: number | string;
+                        context?: { status?: number; responseText?: string };
+                    };
+                    console.error("SOCKET CONNECTION ERROR:", {
+                        message: error.message,
+                        description: transportError.description,
+                        status: transportError.context?.status,
+                        response: transportError.context?.responseText,
+                        server: socketUrl,
+                    });
                 });
 
                 socket.on("group-error", (error: { message?: string }) => {
