@@ -8,6 +8,12 @@ export type SentRequest = {
   groupId: string;
   reason: string;
   amount: string;
+  /** Confirmed repayments already made against this request. */
+  repaidAmount?: number;
+  /** Repayment amount submitted but not yet confirmed. */
+  pendingRepaymentAmount?: number;
+  /** Remaining amount still owed on this request. */
+  outstandingAmount?: number;
   month: string;
   status: RequestStatus;
   approvals?: { status: "PENDING" | "APPROVED" | "REJECTED" }[];
