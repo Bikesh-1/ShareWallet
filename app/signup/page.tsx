@@ -170,7 +170,7 @@ export default function Signup() {
                         Already have an account?{" "}
                         <span
                             className="text-white underline cursor-pointer"
-                            onClick={() => router.push("/login")}
+                            onClick={() => router.push("/signin")}
                         >
                             Sign in
                         </span>
