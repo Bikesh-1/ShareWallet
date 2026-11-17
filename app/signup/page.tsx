@@ -51,12 +51,15 @@ export default function Signup() {
         <div className="relative min-h-screen w-full overflow-x-hidden bg-[#F5F5F5] text-black">
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-60"
+                className="pointer-events-none absolute inset-0 z-0"
                 style={{
-                    backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.13) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.13) 1px, transparent 1px)",
-                    backgroundSize: "48px 48px",
-                    maskImage: "radial-gradient(ellipse 85% 75% at 50% 40%, black 25%, transparent 100%)",
-                    WebkitMaskImage: "radial-gradient(ellipse 85% 75% at 50% 40%, black 25%, transparent 100%)",
+                    backgroundImage: "linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px),linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)",
+                    backgroundSize: "20px 20px",
+                    backgroundPosition: "0 0, 0 0",
+                    maskImage: "repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+                    WebkitMaskImage: "repeating-linear-gradient(to right,black 0px,black 3px,transparent 3px,transparent 8px),repeating-linear-gradient(to bottom,black 0px,black 3px,transparent 3px,transparent 8px),radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+                    maskComposite: "intersect",
+                    WebkitMaskComposite: "source-in",
                 }}
             />
             <Navbar />
