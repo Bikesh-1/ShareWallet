@@ -5,58 +5,14 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import {
-  ArrowDown,
-  ArrowRight,
   ArrowUpRight,
   Check,
-  CircleDollarSign,
-  HandCoins,
   HeartHandshake,
-  LockKeyhole,
-  MessageCircle,
-  ShieldCheck,
   Target,
   Users,
-  Wallet,
-  Plane,
-  Laptop,
-  GraduationCap,
-  LifeBuoy,
   Sparkles,
-  Eye,
   TrendingUp,
 } from "lucide-react";
-
-const features = [
-  {
-    icon: Users,
-    number: "01",
-    title: "Group savings",
-    description: "Create a shared space for the people you trust and work towards a common financial goal.",
-    tone: "bg-violet-50 text-[#4F47EA]",
-  },
-  {
-    icon: CircleDollarSign,
-    number: "02",
-    title: "Contributions",
-    description: "Keep monthly contributions organised and make it easier for everyone to stay on track.",
-    tone: "bg-blue-50 text-blue-600",
-  },
-  {
-    icon: HandCoins,
-    number: "03",
-    title: "Emergency funds",
-    description: "Request support from your group when an unexpected expense comes your way.",
-    tone: "bg-orange-50 text-orange-600",
-  },
-  {
-    icon: MessageCircle,
-    number: "04",
-    title: "Group conversations",
-    description: "Keep important group discussions and savings plans connected in one place.",
-    tone: "bg-emerald-50 text-emerald-600",
-  },
-];
 
 const steps = [
   {
@@ -78,14 +34,6 @@ const steps = [
     icon: TrendingUp,
   },
 ];
-
-const goals = [
-  { icon: Plane, title: "The next adventure", text: "Make that group trip happen." },
-  { icon: Laptop, title: "A bigger upgrade", text: "Save together for something useful." },
-  { icon: GraduationCap, title: "Learning goals", text: "Plan for courses and education." },
-  { icon: LifeBuoy, title: "A safety cushion", text: "Build a fund for unexpected moments." },
-];
-
 
 const experienceCards = [
   {
@@ -283,47 +231,6 @@ export function LandingSections() {
         </div>
       </section>
 
-      <section id="features" className="bg-white px-5 py-24 sm:px-8 lg:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-            <SectionIntro eyebrow="Built around your circle" title="One place for the things that matter." description="Everything your group needs to plan, contribute, communicate and support one another." />
-            <Link href="/signup" className="group inline-flex w-fit items-center gap-2 border-b border-zinc-300 pb-2 text-sm font-semibold text-zinc-950 transition hover:border-[#4F47EA] hover:text-[#4F47EA]">Explore ShareWallet <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
-          </div>
-          <div className="mt-16 grid gap-4 lg:grid-cols-12">
-            <article className="relative min-h-[350px] overflow-hidden rounded-[2rem] bg-[#F0EEFF] p-8 sm:p-10 lg:col-span-7">
-              <div className="relative z-10 max-w-md">
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#6258DE]">01 / Save together</span>
-                <h3 className="mt-8 text-3xl font-semibold tracking-[-0.05em] text-[#171626] sm:text-4xl">A shared goal is a powerful thing.</h3>
-                <p className="mt-4 max-w-sm text-sm leading-7 text-zinc-600">Create a savings group, invite your people and give everyone a common goal to work towards.</p>
-              </div>
-              <div className="absolute -bottom-16 -right-5 flex h-64 w-64 items-center justify-center rounded-full border border-[#4F47EA]/15 sm:right-8">
-                <div className="flex h-44 w-44 items-center justify-center rounded-full border border-[#4F47EA]/20 bg-white/50"><Users size={64} strokeWidth={1} className="text-[#4F47EA]" /></div>
-              </div>
-            </article>
-            <article className="min-h-[350px] rounded-[2rem] border border-zinc-200 bg-[#FAFAFA] p-8 sm:p-10 lg:col-span-5">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">02 / Stay consistent</span>
-              <div className="mt-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#4F47EA] shadow-sm"><CircleDollarSign size={27} /></div>
-              <h3 className="mt-8 text-2xl font-semibold tracking-[-0.04em] text-zinc-950">Contributions, without the confusion.</h3>
-              <p className="mt-3 text-sm leading-7 text-zinc-600">Keep monthly contributions organised and make group progress easier to follow.</p>
-            </article>
-            <article className="min-h-[270px] rounded-[2rem] border border-zinc-200 bg-white p-8 sm:p-10 lg:col-span-5">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">03 / Stay connected</span>
-              <div className="mt-8 flex items-start justify-between gap-4">
-                <div><h3 className="text-2xl font-semibold tracking-[-0.04em] text-zinc-950">Every plan has a conversation.</h3><p className="mt-3 max-w-sm text-sm leading-7 text-zinc-600">Keep your group discussions close to the goals you are building together.</p></div>
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF7F0] text-emerald-700"><MessageCircle size={23} /></span>
-              </div>
-            </article>
-            <article className="relative min-h-[270px] overflow-hidden rounded-[2rem] bg-[#111116] p-8 text-white sm:p-10 lg:col-span-7">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#AAA4FF]">04 / Be there for each other</span>
-              <div className="mt-7 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-                <div className="max-w-md"><h3 className="text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">Support when life takes an unexpected turn.</h3><p className="mt-3 text-sm leading-7 text-zinc-300">Members can request emergency support and coordinate help within their group.</p></div>
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-[#C0BAFF]"><HandCoins size={27} /></span>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section id="product" className="overflow-hidden bg-[#F5F5F7] px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
@@ -360,58 +267,6 @@ export function LandingSections() {
               </div>
               <div className="border-t border-zinc-100 px-6 py-4 text-[10px] text-zinc-400">Illustrative product preview · UI concept</div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="emergency" className="bg-white px-5 py-24 sm:px-8 lg:py-32">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 overflow-hidden rounded-[2rem] bg-[#111116] p-8 text-white sm:p-12 lg:grid-cols-[1fr_0.8fr] lg:p-16">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#AAA4FF]">A circle that cares</p>
-            <h2 className="mt-5 max-w-2xl text-3xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-5xl">When one needs help, the whole circle can show up.</h2>
-            <p className="mt-5 max-w-xl text-sm leading-7 text-zinc-300 sm:text-base">Unexpected expenses are part of life. ShareWallet gives members a way to request support and coordinate help with the people they trust.</p>
-            <Link href="/signup" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-[#EAE8FF]">Build your support circle <ArrowRight size={16} /></Link>
-          </div>
-          <div className="relative mx-auto flex min-h-[290px] w-full max-w-sm items-center justify-center">
-            <div className="absolute h-72 w-72 rounded-full border border-white/10" /><div className="absolute h-52 w-52 rounded-full border border-white/10" />
-            <div className="absolute h-36 w-36 rounded-full bg-[#4F47EA]/20 blur-2xl" />
-            <div className="relative flex h-32 w-32 items-center justify-center rounded-[2rem] border border-white/10 bg-white/[0.07] text-[#B8B2FF]"><HeartHandshake size={54} strokeWidth={1.2} /></div>
-            <span className="absolute right-0 top-5 rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-[10px] text-zinc-200">Request support</span>
-            <span className="absolute bottom-5 left-0 rounded-full border border-white/10 bg-white/[0.08] px-4 py-2 text-[10px] text-zinc-200">Your group, together</span>
-          </div>
-        </div>
-      </section>
-
-      <section id="goals" className="bg-[#F5F5F7] px-5 py-24 sm:px-8 lg:py-32">
-        <div className="mx-auto max-w-7xl">
-          <SectionIntro eyebrow="What will you make happen?" title="One circle. A thousand possibilities." description="A group goal can start with almost anything. Bring your people together and give that idea a plan." centered />
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {goals.map((goal, index) => { const Icon = goal.icon; return <article key={goal.title} className="group min-h-[230px] rounded-[1.7rem] border border-zinc-200 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-[#D8D5FF] hover:shadow-xl hover:shadow-violet-950/[0.05]"><div className="flex items-center justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F0EFFF] text-[#4F47EA]"><Icon size={22} /></span><span className="text-xs font-semibold tracking-[0.16em] text-zinc-300">0{index + 1}</span></div><h3 className="mt-9 text-lg font-semibold tracking-tight text-zinc-950">{goal.title}</h3><p className="mt-2 text-sm leading-6 text-zinc-500">{goal.text}</p></article>; })}
-          </div>
-        </div>
-      </section>
-
-      <section id="why-sharewallet" className="bg-white px-5 py-24 sm:px-8 lg:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-            <SectionIntro eyebrow="Why ShareWallet" title="Because progress is better when it is shared." description="A good savings circle is built on a clear plan, consistent participation and people who have each other's backs." />
-            <div className="divide-y divide-zinc-200 border-y border-zinc-200">
-              {[
-                { icon: Eye, title: "Clarity for everyone", text: "Keep group contributions and activity visible to the people involved." },
-                { icon: Target, title: "A reason to stay consistent", text: "Give your group a shared goal that keeps everyone moving in the same direction." },
-                { icon: HeartHandshake, title: "Progress as a team", text: "Make saving a shared habit, supported by the people around you." },
-              ].map((item, index) => { const Icon = item.icon; return <article key={item.title} className="flex gap-5 py-7"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F0EFFF] text-[#4F47EA]"><Icon size={22} /></span><div><p className="text-xs font-semibold tracking-[0.18em] text-zinc-400">0{index + 1}</p><h3 className="mt-1 text-lg font-semibold text-zinc-950">{item.title}</h3><p className="mt-2 text-sm leading-7 text-zinc-600">{item.text}</p></div></article>; })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="security" className="border-y border-zinc-200/70 bg-[#F5F5F7] px-5 py-20 sm:px-8 lg:py-24">
-        <div className="mx-auto flex max-w-7xl flex-col gap-10 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#4F47EA]">Built for peace of mind</p><h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-zinc-950 sm:text-4xl">A clearer, more organised way to save.</h2><p className="mt-4 text-sm leading-7 text-zinc-600">ShareWallet brings account access, group activity and payment workflows into one connected experience.</p></div>
-          <div className="grid w-full max-w-md grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5"><LockKeyhole className="text-[#4F47EA]" size={22} /><p className="mt-4 text-sm font-semibold text-zinc-900">Account access</p><p className="mt-1 text-xs text-zinc-500">Authentication flows</p></div>
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5"><ShieldCheck className="text-[#4F47EA]" size={22} /><p className="mt-4 text-sm font-semibold text-zinc-900">Clear activity</p><p className="mt-1 text-xs text-zinc-500">Group records</p></div>
           </div>
         </div>
       </section>
