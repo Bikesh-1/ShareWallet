@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import {
   ArrowUpRight, Check, HeartHandshake, Target, Users, Sparkles,
-  TrendingUp, Wallet, ShieldCheck, MessageCircle, CircleDollarSign,
+  TrendingUp,
 } from "lucide-react";
 
 const experienceCards = [
@@ -35,7 +35,7 @@ function SavingsExperience() {
       <div aria-hidden="true" className="pointer-events-none absolute -left-40 top-10 h-96 w-96 rounded-full bg-[#6D4DFE]/[0.07] blur-3xl" />
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <div><Eyebrow>One wallet. More possibilities.</Eyebrow><h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-[1.04] tracking-[-0.055em] text-[#111116] sm:text-5xl">Make more happen <span className="text-[#6258E8]">together.</span></h2></div>
+          <div><Eyebrow>One wallet. More possibilities.</Eyebrow><h2 className="mt-4 max-w-2xl text-3xl font-extrabold leading-[1.02] tracking-[-0.06em] text-[#111116] sm:text-5xl">Make more happen <span className="relative inline-block font-extrabold text-[#5145DF] after:absolute after:-bottom-1 after:left-0 after:-z-0 after:h-[0.22em] after:w-full after:rounded-sm after:bg-[#DCD8FF]">together.</span></h2></div>
           <p className="max-w-sm text-sm leading-7 text-zinc-500">A shared space for the plans, people and moments that matter.</p>
         </div>
         <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
@@ -44,7 +44,7 @@ function SavingsExperience() {
               <div className="flex items-center justify-between"><span className="text-xs font-semibold tracking-[0.18em] text-zinc-400">{active.number} / 04</span><span className="rounded-full bg-[#F0EEFF] px-3 py-1.5 text-[10px] font-semibold text-[#6258E8]">{active.kicker}</span></div>
               <AnimatePresence mode="wait">
                 <motion.div key={active.number} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
-                  <h3 className="mt-12 text-3xl font-semibold leading-[1.05] tracking-[-0.05em] text-zinc-950 sm:text-4xl">{active.title}</h3>
+                  <h3 className="mt-12 text-3xl font-extrabold leading-[1.02] tracking-[-0.06em] text-zinc-950 sm:text-4xl">{active.title}</h3>
                   <p className="mt-5 max-w-md text-sm leading-7 text-zinc-600">{active.description}</p>
                 </motion.div>
               </AnimatePresence>
@@ -61,7 +61,7 @@ function SavingsExperience() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/10" />
             <div className="absolute left-6 top-6 rounded-full border border-white/20 bg-black/20 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md">ShareWallet experience</div>
             <div className="absolute inset-x-7 bottom-7 flex items-end justify-between gap-4 text-white sm:inset-x-9 sm:bottom-9">
-              <div><p className="text-xs text-white/65">Built around your circle</p><p className="mt-2 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">{active.kicker}</p></div>
+              <div><p className="text-xs text-white/65">Built around your circle</p><p className="mt-2 text-2xl font-bold tracking-[-0.05em] sm:text-3xl">{active.kicker}</p></div>
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-md"><ArrowUpRight size={19} /></span>
             </div>
           </div>
@@ -76,7 +76,7 @@ export function LandingSections() {
     <>
       <section id="about" className="relative overflow-hidden bg-white px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div><Eyebrow>Money feels different together</Eyebrow><h2 className="mt-6 max-w-4xl text-4xl font-semibold leading-[0.98] tracking-[-0.065em] text-[#111116] sm:text-6xl lg:text-7xl">Your people.<br />Your goals. <span className="text-[#6258E8]">One circle.</span></h2></div>
+          <div><Eyebrow>Money feels different together</Eyebrow><h2 className="mt-6 max-w-4xl text-4xl font-extrabold leading-[0.96] tracking-[-0.07em] text-[#111116] sm:text-6xl lg:text-7xl">Your people.<br />Your goals. <span className="text-[#6258E8]">One circle.</span></h2></div>
           <div className="max-w-md lg:justify-self-end"><p className="text-base leading-8 text-zinc-600 sm:text-lg">ShareWallet brings your circle, shared plans and contributions into one simple place. Less chasing. More making progress together.</p><a href="#how-it-works" className="group mt-7 inline-flex items-center gap-2 text-sm font-semibold text-zinc-950 hover:text-[#6258E8]">See how it works <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></a></div>
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-28 h-96 w-96 rounded-full border border-[#6D4DFE]/10" />
@@ -86,9 +86,9 @@ export function LandingSections() {
 
       <section id="how-it-works" className="bg-white px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end"><div><Eyebrow>Simple by design</Eyebrow><h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-[1.05] tracking-[-0.055em] text-zinc-950 sm:text-5xl">Three steps to start <span className="text-[#6258E8]">strong.</span></h2></div><p className="max-w-sm text-sm leading-7 text-zinc-500">No complicated setup. Just bring your people and a goal worth sharing.</p></div>
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end"><div><Eyebrow>Simple by design</Eyebrow><h2 className="mt-4 max-w-2xl text-3xl font-extrabold leading-[1.02] tracking-[-0.06em] text-zinc-950 sm:text-5xl">Three steps to start <span className="text-[#6258E8]">strong.</span></h2></div><p className="max-w-sm text-sm leading-7 text-zinc-500">No complicated setup. Just bring your people and a goal worth sharing.</p></div>
           <div className="mt-14 grid gap-4 md:grid-cols-3">
-            {steps.map((step) => { const Icon = step.icon; return <motion.article key={step.number} whileHover={{ y: -5 }} transition={{ duration: 0.2 }} className="group rounded-[1.6rem] border border-zinc-200 bg-[#FAFAFB] p-7 sm:p-9"><div className="flex items-center justify-between"><span className="text-xs font-bold tracking-[0.2em] text-[#6258E8]">{step.number}</span><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#6258E8] shadow-sm transition group-hover:bg-[#6258E8] group-hover:text-white"><Icon size={22} /></span></div><h3 className="mt-14 text-xl font-semibold tracking-[-0.04em] text-zinc-950">{step.title}</h3><p className="mt-3 max-w-xs text-sm leading-7 text-zinc-600">{step.description}</p></motion.article>; })}
+            {steps.map((step) => { const Icon = step.icon; return <motion.article key={step.number} whileHover={{ y: -5 }} transition={{ duration: 0.2 }} className="group rounded-[1.6rem] border border-zinc-200 bg-[#FAFAFB] p-7 sm:p-9"><div className="flex items-center justify-between"><span className="text-xs font-bold tracking-[0.2em] text-[#6258E8]">{step.number}</span><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#6258E8] shadow-sm transition group-hover:bg-[#6258E8] group-hover:text-white"><Icon size={22} /></span></div><h3 className="mt-14 text-xl font-bold tracking-[-0.045em] text-zinc-950">{step.title}</h3><p className="mt-3 max-w-xs text-sm leading-7 text-zinc-600">{step.description}</p></motion.article>; })}
           </div>
         </div>
       </section>
@@ -105,7 +105,7 @@ export function LandingSections() {
         </div>
       </section>
 
-      <section className="bg-white px-5 py-24 sm:px-8 lg:py-28"><div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#111116] px-7 py-16 text-center text-white sm:px-12 lg:py-24"><div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.07]" /><div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.07]" /><div className="relative z-10 mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-[#B8B2FF]"><Sparkles size={23} /></div><Eyebrow>Your next chapter starts here</Eyebrow><h2 className="relative z-10 mx-auto mt-5 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-6xl">Big goals feel closer when you <span className="text-[#AAA4FF]">share them.</span></h2><p className="relative z-10 mx-auto mt-5 max-w-xl text-sm leading-7 text-zinc-300 sm:text-base">Bring your circle together and take the first step towards a shared savings goal.</p><Link href="/signup" className="relative z-10 mt-9 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-zinc-950 transition hover:bg-[#EAE8FF]">Create your account <ArrowUpRight size={17} /></Link></div></section>
+      <section className="bg-white px-5 py-24 sm:px-8 lg:py-28"><div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#111116] px-7 py-16 text-center text-white sm:px-12 lg:py-24"><div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.07]" /><div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.07]" /><div className="relative z-10 mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-[#B8B2FF]"><Sparkles size={23} /></div><Eyebrow>Your next chapter starts here</Eyebrow><h2 className="relative z-10 mx-auto mt-5 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-6xl">Big goals feel closer when you <span className="font-extrabold text-[#C4BEFF]">share them.</span></h2><p className="relative z-10 mx-auto mt-5 max-w-xl text-sm leading-7 text-zinc-300 sm:text-base">Bring your circle together and take the first step towards a shared savings goal.</p><Link href="/signup" className="relative z-10 mt-9 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-zinc-950 transition hover:bg-[#EAE8FF]">Create your account <ArrowUpRight size={17} /></Link></div></section>
 
       <CinematicFooter />
     </>
