@@ -1,9 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, HelpCircle, X } from "lucide-react";
-
-const STORAGE_KEY = "sharewallet:dashboard-tour:v1";
+import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
 const steps = [
   { title: "Welcome to ShareWallet", description: "A quick tour will show you where to manage your savings groups, friends, contributions and account activity.", section: null, target: null },
@@ -26,7 +24,6 @@ export default function DashboardTour() {
   const [rect, setRect] = useState<Rect | null>(null);
 
   const finish = useCallback(() => {
-    window.localStorage.setItem(STORAGE_KEY, "completed");
     setActive(false);
     setRect(null);
   }, []);
@@ -37,11 +34,10 @@ export default function DashboardTour() {
   }, []);
 
   useEffect(() => {
-    if (window.localStorage.getItem(STORAGE_KEY) !== "completed") {
-      const timer = window.setTimeout(() => setActive(true), 650);
-      return () => window.clearTimeout(timer);
-    }
-  }, []);
+    const handleStartTour = () => start();
+    window.addEventListener("sharewallet:start-tour", handleStartTour);
+    return () => window.removeEventListener("sharewallet:start-tour", handleStartTour);
+  }, [start]);
 
   useEffect(() => {
     if (!active) return;
@@ -81,19 +77,7 @@ export default function DashboardTour() {
     };
   }, [active, step]);
 
-  if (!active) {
-    return (
-      <button
-        type="button"
-        onClick={start}
-        aria-label="Restart ShareWallet product tour"
-        title="Take a dashboard tour"
-        className="fixed bottom-20 right-5 z-[80] inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#4F47EA] text-white shadow-xl transition hover:-translate-y-1 hover:bg-[#4038d5] lg:bottom-6"
-      >
-        <HelpCircle size={21} />
-      </button>
-    );
-  }
+  if (!active) return null;
 
   const current = steps[step];
   const viewportWidth = typeof window === "undefined" ? 1024 : window.innerWidth;
