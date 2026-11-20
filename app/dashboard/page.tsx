@@ -486,7 +486,7 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event("sharewallet:start-tour"))}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#6D4DFE] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#5b3de5] focus:outline-none focus:ring-2 focus:ring-[#6D4DFE]/40 focus:ring-offset-2"
+              className="inline-flex items-center gap-2 rounded-xl border border-black bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-sm transition hover:-translate-y-0.5 hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-black/30 focus:ring-offset-2"
             >
               <Compass size={16} /> Take Tour
             </button>
