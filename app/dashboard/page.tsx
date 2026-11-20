@@ -12,7 +12,7 @@ import {
   House, Users, Wallet, Activity, UserRound, Settings, Bell,
   Search, Plus, ExternalLink, RefreshCw,
   CheckCircle2, Clock3, XCircle, ArrowDownLeft, ArrowUpRight,
-  ShieldCheck, LogOut, UserPlus, CreditCard
+  ShieldCheck, LogOut, UserPlus, CreditCard, Compass
 } from "lucide-react";
 import { useGroupDetails } from "@/hooks/useGroupDetails";
 import { useFriendList } from "@/hooks/useFriendList";
@@ -482,6 +482,15 @@ export default function Dashboard() {
         </aside>
 
         <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 pb-24 sm:p-6 sm:pb-24 lg:p-8 lg:pb-8">
+          <div className="mb-5 flex justify-end">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("sharewallet:start-tour"))}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#6D4DFE] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#5b3de5] focus:outline-none focus:ring-2 focus:ring-[#6D4DFE]/40 focus:ring-offset-2"
+            >
+              <Compass size={16} /> Take Tour
+            </button>
+          </div>
           {renderContent()}
         </main>
 
