@@ -67,7 +67,7 @@ export default function DashboardTour() {
         top: Math.max(8, bounds.top - 7),
         left: Math.max(8, bounds.left - 7),
         width: Math.min(window.innerWidth - 16, bounds.width + 14),
-        height: Math.min(window.innerHeight - 16, bounds.height + 14),
+        height: Math.min(viewportHeight - 16, bounds.height + 14),
       });
     };
     timer = window.setTimeout(() => { frame = window.requestAnimationFrame(measure); }, 120);
@@ -96,10 +96,12 @@ export default function DashboardTour() {
   }
 
   const current = steps[step];
-  const cardWidth = Math.min(360, window.innerWidth - 32);
+  const viewportWidth = typeof window === "undefined" ? 1024 : window.innerWidth;
+  const viewportHeight = typeof window === "undefined" ? 768 : window.innerHeight;
+  const cardWidth = Math.min(360, viewportWidth - 32);
   const cardLeft = rect
-    ? Math.max(16, Math.min(rect.left, window.innerWidth - cardWidth - 16))
-    : Math.max(16, (window.innerWidth - cardWidth) / 2);
+    ? Math.max(16, Math.min(rect.left, viewportWidth - cardWidth - 16))
+    : Math.max(16, (viewportWidth - cardWidth) / 2);
   const placeBelow = rect ? rect.top + rect.height + 16 + 220 < window.innerHeight : false;
   const cardTop = rect
     ? Math.max(16, Math.min(placeBelow ? rect.top + rect.height + 16 : rect.top - 236, window.innerHeight - 250))
