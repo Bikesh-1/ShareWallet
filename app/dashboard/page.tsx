@@ -27,6 +27,7 @@ import ActivitySection from "@/components/dashboard/ActivitySection";
 import NotificationsSection from "@/components/dashboard/NotificationsSection";
 import ProfileSection from "@/components/dashboard/ProfileSection";
 import SettingsSection from "@/components/dashboard/SettingsSection";
+import DashboardTour from "@/components/DashboardTour";
 
 const menuItems = [
   { id: "home", label: "Home", icon: House },
@@ -190,6 +191,15 @@ export default function Dashboard() {
   const { data: profile, isPending: profileLoading, isError: profileError, error: profileErrorObj } = useUserDetails();
 
 
+
+  useEffect(() => {
+    const handleTourNavigation = (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+      if (customEvent.detail) setPage(customEvent.detail);
+    };
+    window.addEventListener("sharewallet:tour-navigate", handleTourNavigation);
+    return () => window.removeEventListener("sharewallet:tour-navigate", handleTourNavigation);
+  }, []);
 
   useEffect(() => {
     const openNotifications = () => setPage("notification");
@@ -456,6 +466,7 @@ export default function Dashboard() {
                 <button
                   key={item.id}
                   onClick={() => setPage(item.id)}
+                  data-tour={`nav-${item.id}`}
                   className={`flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium transition-all ${page === item.id
                     ? "bg-[#000000] text-white shadow-md"
                     : "text-[#000000] hover:bg-black hover:text-white"
@@ -482,6 +493,7 @@ export default function Dashboard() {
                 key={item.id}
                 type="button"
                 onClick={() => setPage(item.id)}
+                data-tour={`nav-${item.id}`}
                 className={`flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] font-medium transition ${page === item.id ? "text-white" : "text-zinc-400"}`}
               >
                 <span className={`rounded-lg p-1.5 ${page === item.id ? "bg-[#4F47EA] text-white" : ""}`}><Icon size={18} /></span>
@@ -491,6 +503,7 @@ export default function Dashboard() {
           })}
         </nav>
       </div>
+      <DashboardTour />
     </div>
   );
 };
