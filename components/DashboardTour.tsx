@@ -67,7 +67,7 @@ export default function DashboardTour() {
         top: Math.max(8, bounds.top - 7),
         left: Math.max(8, bounds.left - 7),
         width: Math.min(window.innerWidth - 16, bounds.width + 14),
-        height: Math.min(viewportHeight - 16, bounds.height + 14),
+        height: Math.min(window.innerHeight - 16, bounds.height + 14),
       });
     };
     timer = window.setTimeout(() => { frame = window.requestAnimationFrame(measure); }, 120);
@@ -102,10 +102,10 @@ export default function DashboardTour() {
   const cardLeft = rect
     ? Math.max(16, Math.min(rect.left, viewportWidth - cardWidth - 16))
     : Math.max(16, (viewportWidth - cardWidth) / 2);
-  const placeBelow = rect ? rect.top + rect.height + 16 + 220 < window.innerHeight : false;
+  const placeBelow = rect ? rect.top + rect.height + 16 + 220 < viewportHeight : false;
   const cardTop = rect
-    ? Math.max(16, Math.min(placeBelow ? rect.top + rect.height + 16 : rect.top - 236, window.innerHeight - 250))
-    : Math.max(24, (window.innerHeight - 250) / 2);
+    ? Math.max(16, Math.min(placeBelow ? rect.top + rect.height + 16 : rect.top - 236, viewportHeight - 250))
+    : Math.max(24, (viewportHeight - 250) / 2);
 
   return (
     <div className="fixed inset-0 z-[100]">
